@@ -1,0 +1,30 @@
+# 设置端口
+server:
+    port: 8030
+
+spring:
+    # 服务名称
+    application:
+        name: user-service
+    # 数据源
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/flash-sale?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        username: root
+        password: mysql
+    # nacos
+    cloud:
+        nacos:
+            server-addr: 127.0.0.1:8848
+    # redis
+    data:
+        redis:
+            host: 192.168.182.128
+            port: 6379
+            password: 123456
+            database: 0
+
+# 设置 mybatis-plus 日志
+mybatis-plus:
+    configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

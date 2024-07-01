@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.qiu.mapper.ReservationMapper">
+
+    <resultMap id="BaseResultMap" type="org.qiu.pojo.Reservation">
+        <id property="reservationId" column="reservationId" jdbcType="VARCHAR"/>
+        <result property="activityId" column="activityId" jdbcType="VARCHAR"/>
+        <result property="reservationName" column="reservationName" jdbcType="VARCHAR"/>
+        <result property="reservationStatus" column="reservationStatus" jdbcType="INTEGER"/>
+        <result property="startTime" column="startTime" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="endTime" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="Top5ResultMap" type="org.qiu.pojo.Reservation">
+        <id property="reservationId" column="reservationId" jdbcType="VARCHAR"/>
+        <result property="activityId" column="activityId" jdbcType="VARCHAR"/>
+        <result property="reservationName" column="reservationName" jdbcType="VARCHAR"/>
+        <result property="reservationStatus" column="reservationStatus" jdbcType="INTEGER"/>
+        <result property="startTime" column="startTime" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="endTime" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
+        <result property="count" column="count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="PageResultMap" type="org.qiu.pojo.ReservationQuery">
+        <id property="reservationId" column="reservationId" jdbcType="VARCHAR"/>
+        <result property="activityName" column="activityName" jdbcType="VARCHAR"/>
+        <result property="reservationName" column="reservationName" jdbcType="VARCHAR"/>
+        <result property="reservationStatus" column="reservationStatus" jdbcType="INTEGER"/>
+        <result property="startTime" column="startTime" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="endTime" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        reservationId,activityId,reservationName,
+        reservationStatus,startTime,endTime,
+        createTime,updateTime,isDeleted
+    </sql>
+
+    <sql id="Reservation_Column_List">
+        reservationId,r.activityId,reservationName,
+        reservationStatus,r.startTime,r.endTime,
+        r.createTime,r.updateTime,r.isDeleted
+    </sql>
+
+    <sql id="Top5_Column_List">
+        reservationId,activityId,reservationName,
+        reservationStatus,startTime,endTime,
+        createTime,updateTime,isDeleted,count
+    </sql>
+
+    <select id="selectTop5" resultMap="Top5ResultMap">
+        SELECT <include refid="Top5_Column_List"/>
+        FROM reservation r
+        JOIN (
+            SELECT res_u.reservationId as res_id, COUNT(*) as count
+            FROM reservation_user res_u
+            GROUP BY res_u.reservationId
+            ORDER BY count DESC
+            LIMIT 5
+        ) rc ON r.reservationId = rc.res_id;
+    </select>
+
+    <select id="reservation" resultType="org.qiu.pojo.Reservation">
+        SELECT <include refid="Reservation_Column_List"/>
+        FROM reservation r
+        JOIN activity a ON r.activityId = a.activityId
+        JOIN product p ON a.productId = p.productId
+        WHERE p.productId = #{productId}
+    </select>
+
+    <select id="selectReservationByProductId" resultType="org.qiu.pojo.Reservation">
+        SELECT <include refid="Reservation_Column_List" />
+        FROM reservation r,
+             (
+                 SELECT *
+                 FROM activity a
+                 WHERE a.productId = #{productId}
+             ) as t
+        WHERE r.activityId = t.activityId
+    </select>
+</mapper>

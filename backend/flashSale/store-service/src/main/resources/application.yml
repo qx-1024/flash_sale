@@ -1,0 +1,17 @@
+server:
+  port: 8021
+
+spring:
+  application:
+    name: store-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+
+minio:
+  endpoint: http://192.168.182.128:9000
+  accessKey: riIFtW7isF1Y1UuZvgJO
+  secretKey: tZOfIZIC7HdBKgLyoYevrftbAMWR3TPsgJfs4zxs
+  bucket: flash-sale-image-store
+
+#  MINIO_ROOT_USER=admin MINIO_ROOT_PASSWORD=password ./minio server ./data --console-address :9001 &

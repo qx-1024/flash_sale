@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.qiu.mapper.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="org.qiu.pojo.Order">
+        <id property="orderId" column="orderId" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="activityId" column="activityId" jdbcType="VARCHAR"/>
+        <result property="productId" column="productId" jdbcType="VARCHAR"/>
+        <result property="amount" column="amount" jdbcType="DECIMAL"/>
+        <result property="note" column="note" jdbcType="VARCHAR"/>
+        <result property="orderStatus" column="orderStatus" jdbcType="INTEGER"/>
+        <result property="payStatus" column="payStatus" jdbcType="INTEGER"/>
+        <result property="shippingStatus" column="shippingStatus" jdbcType="INTEGER"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        orderId,userId,activityId,
+        productId,amount,note,
+        orderStatus,payStatus,shippingStatus,
+        createTime,updateTime,isDeleted
+    </sql>
+</mapper>

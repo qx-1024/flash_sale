@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.qiu.mapper.ActivityMapper">
+
+    <resultMap id="BaseResultMap" type="org.qiu.pojo.Activity">
+        <id property="activityId" column="activityId" jdbcType="VARCHAR"/>
+        <result property="activityName" column="activityName" jdbcType="VARCHAR"/>
+        <result property="productId" column="productId" jdbcType="VARCHAR"/>
+        <result property="startTime" column="startTime" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="endTime" jdbcType="TIMESTAMP"/>
+        <result property="activityStatus" column="activityStatus" jdbcType="INTEGER"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        activityId,activityName,productId,
+        startTime,endTime,activityStatus,
+        createTime,updateTime,isDeleted
+    </sql>
+
+</mapper>
