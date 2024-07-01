@@ -1,0 +1,219 @@
+<template>
+    <el-container>
+        <el-aside width="150px">
+            <el-menu
+                class="rightMenu"
+                active-text-color="#32dadd"
+                router
+                :unique-opened="true"
+                :default-active="route.path"
+            >
+                <el-menu-item @click="changeTab(item)" v-for="(item, index) in menuList" :key="index" :index="item.path">
+                    <template #title>
+                        <el-icon>
+                            <component :is="item.icon"></component>
+                        </el-icon>
+                        <span>{{ item.name }}</span>
+                    </template>
+                </el-menu-item>
+
+                <!-- <el-menu-item index="6">
+                    <el-icon><Coin /></el-icon>
+                    <span>订 单 管 理</span>
+                </el-menu-item> -->
+            </el-menu>
+
+            <img src="../../assets/aside_bottom.svg" alt="">
+        </el-aside>
+
+        <el-container>
+            <el-header>
+                <el-menu
+                    mode="horizontal"
+                    text-color="#304156"
+                    active-text-color="#32dadd"
+                    background-color="#fff"
+                    class="topMenu"
+                    :ellipsis="false"
+                >
+                    <el-menu-item index="0">
+                        <img
+                            style="height: 60px"
+                            src="../../assets/logo.png"
+                            alt="秋玄科技"
+                        />
+                    </el-menu-item>
+                    <div class="flex-grow" />
+                        <el-sub-menu index="1">
+                            <template #title v-if="currentUser.length === 0">用 户 名</template>
+                            <template #title v-else>{{ currentUser.realName }}</template>
+                            <el-menu-item index="1-1" @click="logout">登 出</el-menu-item>
+                        </el-sub-menu>
+                </el-menu>
+            </el-header>
+
+            <el-main>
+                <router-view />
+            </el-main>
+
+            <el-footer>
+                Copyright © 2024-2025 秋玄 广东省梅州市梅江区金山街道嘉应学院计算机学院 版权所有
+            </el-footer>
+        </el-container>
+    </el-container>
+</template>
+
+
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from 'vue-router';
+import { doGet } from '../../http/httpRequest'
+
+// 获取路由对象
+const router = useRouter();
+const route = useRoute();
+
+let activeIndex = ref(0)
+let activeTabName = ref('')
+
+onMounted(() => {
+    activeTabName.value = route.name
+    getCurrentUser();
+})
+
+const menuList = ref([
+    {
+        id: 1,
+        icon: 'Operation',
+        name: '统 计 面 板',
+        path: '/admin'
+    },
+    {
+        id: 2,
+        icon: 'Goods',
+        name: '商 品 管 理',
+        path: '/admin/product'
+    },
+    {
+        id: 3,
+        icon: 'Timer',
+        name: '预 约 管 理',
+        path: '/admin/reservation'
+    },
+    {
+        id: 4,
+        icon: 'DataLine',
+        name: '闪 购 管 理',
+        path: '/admin/flashSale'
+    },
+    {
+        id: 5,
+        icon: 'User',
+        name: '用 户 管 理',
+        path: '/admin/user'
+    },
+])
+
+/**
+ * @description 切换菜单
+ */
+const changeTab = (item) => {
+    activeIndex.value = item.id - 1;
+    activeTabName.value = item.path;
+    router.push(item.path);
+}
+
+
+/**
+ * @description 获取当前登录用户
+ */
+const currentUser = ref({})
+const getCurrentUser = () => {
+    doGet('/user/currentUser', {})
+        .then(res => {
+            if (res.data.code === 200) {
+                currentUser.value = res.data.data;
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            window.localStorage.removeItem('token')
+            router.push('/login')
+        })
+}
+
+/**
+ * @description 退出
+ */
+const logout = () => {
+    doGet('/user/logout', {})
+        .then(res => {
+            if (res.data.code === 200) {
+                currentUser.value = {};
+                window.localStorage.removeItem('token')
+                router.push('/login')
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            window.localStorage.removeItem('token')
+            router.push('/login')
+        })
+}
+
+</script>
+
+
+<style scoped>
+.el-container {
+    background-color: #f0f3f8de;
+}
+
+.el-header {
+    width: calc(100vw - 150px);
+    line-height: 60px;
+    color: #e3e3e3;
+    background-color: #fff;
+    border-left: none;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.topMenu {
+    color: #304156;
+    border-bottom: none;
+}
+
+.rightMenu{
+    border-right: none;
+}
+
+.is-active{
+    border-right: 3px solid #32dadd;
+}
+
+.el-aside{
+    height: calc(100vh - 1px);
+    color: #e3e3e3;
+    background-color: #fff;
+    border-right: none;
+}
+
+.el-aside img {
+    position: absolute;
+    left: 10px;
+    bottom: 30px;
+    width: 100px;
+}
+
+.el-footer {
+    height: 30px;
+    font-size: 11px;
+    line-height: 30px;
+    text-align: center;
+    color: #304156;
+    background-color: #fff;
+}
+</style>
