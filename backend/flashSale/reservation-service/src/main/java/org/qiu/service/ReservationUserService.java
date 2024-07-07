@@ -15,4 +15,8 @@ import org.qiu.pojo.ReservationUser;
 public interface ReservationUserService extends MPJBaseService<ReservationUser> {
 
     Boolean reserve(ReservationUser reservationUser);
+
+    Boolean cancelReserve(ReservationUser reservationUser);
+
+    Boolean modifyReserve(ReservationUser reservationUser);
 }

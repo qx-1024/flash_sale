@@ -29,6 +29,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         order.setOrderId(orderId);
         return orderMapper.insert(order) > 0;
     }
+
+    @Override
+    public double getTotal() {
+        return orderMapper.getTotal();
+    }
 }
 
 

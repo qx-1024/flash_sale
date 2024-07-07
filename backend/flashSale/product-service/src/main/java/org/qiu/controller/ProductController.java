@@ -71,8 +71,6 @@ public class ProductController {
         return count != 0 ? R.OK(count) : R.FAIL("查询商品数量失败");
     }
 
-
-
     /**
      * 分页查询商品列表
      * @param current       当前页码

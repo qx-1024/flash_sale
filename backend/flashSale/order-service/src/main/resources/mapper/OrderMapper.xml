@@ -25,4 +25,11 @@
         orderStatus,payStatus,shippingStatus,
         createTime,updateTime,isDeleted
     </sql>
+
+
+    <select id="getTotal" resultType="java.lang.Double">
+        SELECT sum(amount)
+        FROM `order`
+        WHERE orderStatus = 1
+    </select>
 </mapper>

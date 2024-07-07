@@ -2,9 +2,7 @@ package org.qiu.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.annotation.Resource;
-import org.qiu.pojo.Reservation;
-import org.qiu.pojo.ReservationQuery;
-import org.qiu.pojo.ReservationUser;
+import org.qiu.pojo.*;
 import org.qiu.result.R;
 import org.qiu.service.ReservationService;
 import org.qiu.service.ReservationUserService;
@@ -32,8 +30,16 @@ public class ReservationController {
     @Resource
     private ReservationUserService reservationUserService;
 
+
+
+    /*------------*/
+    /*            */
+    /* 预约活动相关 */
+    /*            */
+    /*------------*/
+
     /**
-     * 查询预约活动列表
+     * 查询预约活动列表【查全部】
      * @return  预约活动列表
      */
     @GetMapping("/list")
@@ -43,27 +49,7 @@ public class ReservationController {
     }
 
     /**
-     * 根据商品 id 查询预约活动信息
-     * @param productId 商品 id
-     * @return          预约活动信息
-     */
-    @GetMapping("/allowReservation")
-    public R allowReservation(@RequestParam("productId") String productId){
-        Boolean allowed = reservationService.allowReservation(productId);
-        return allowed ? R.OK("查询预约活动信息成功") : R.FAIL("查询预约活动信息失败");
-    }
-
-    /**
-     * 用户预约闪购活动
-     */
-    @PostMapping("/reserve")
-    public R reserve(@RequestBody ReservationUser reservationUser){
-        Boolean reserved = reservationUserService.reserve(reservationUser);
-        return reserved ? R.OK("预约成功") : R.FAIL("预约失败");
-    }
-
-    /**
-     * TODO 根据商品 id 查询对应的预约活动信息
+     * 根据商品 id 查询对应的预约活动信息
      * @param productId     商品 id
      * @return              预约活动信息
      */
@@ -71,6 +57,17 @@ public class ReservationController {
     public R getReservationId(@RequestParam("productId") String productId){
         Reservation reservation = reservationService.selectByProductId(productId);
         return reservation != null ? R.OK(reservation) : R.FAIL("查询预约活动信息失败");
+    }
+
+    /**
+     * 根据商品 id 查询对应的预约活动是否允许预约
+     * @param productId 商品 id
+     * @return          预约活动是否允许预约
+     */
+    @GetMapping("/allowReservation")
+    public R allowReservation(@RequestParam("productId") String productId){
+        Boolean allowed = reservationService.allowReservation(productId);
+        return allowed ? R.OK("查询预约活动信息成功") : R.FAIL("查询预约活动信息失败");
     }
 
     /**
@@ -108,14 +105,6 @@ public class ReservationController {
                 .list();
         return reservations != null ? R.OK(reservations) : R.FAIL("查询未开始预约失败");
     }
-
-    /**/
-    /**/
-    /**/
-    /**/
-    /**/
-    /**/
-
 
     /**
      * 查询预约数量
@@ -155,6 +144,24 @@ public class ReservationController {
     public R selectOne(@RequestParam("reservationId") String reservationId){
         Reservation reservation = reservationService.getById(reservationId);
         return reservation != null ? R.OK(reservation) : R.FAIL("查询预约详情失败");
+    }
+
+    /**
+     * 查询最近一周每天的预约量
+     */
+     @GetMapping("/week")
+     public R selectWeekReservations(){
+         List<WeekReservation> reservations = reservationService.selectWeekReservations();
+         return reservations != null ? R.OK(reservations) : R.FAIL("查询最近一周每天的预约量失败");
+     }
+
+    /**
+     * 查询对应预约活动正在进行中的商品ID
+     */
+    @GetMapping("/productIds")
+    public R selectProductWithOnGoingReservation(){
+        List<Product> products = reservationService.selectProductWithOnGoingReservation();
+        return products != null ? R.OK(products) : R.FAIL("查询对应预约活动正在进行中的商品ID失败");
     }
 
     /**
@@ -205,4 +212,54 @@ public class ReservationController {
         boolean deleted = reservationService.removeByIds(reservationIds);
         return deleted ? R.OK("批量删除预约信息成功") : R.FAIL("批量删除预约信息失败");
     }
+
+
+
+    /*------------*/
+    /*            */
+    /* 预约信息相关 */
+    /*            */
+    /*------------*/
+
+    /**
+     * 查询预约信息
+     */
+    @GetMapping("/reserveInfo")
+    public R selectReserveInfo(@RequestParam("reservationId") String reservationId,
+                               @RequestParam("userId") String userId){
+        ReservationUser reservationInfo = reservationUserService.lambdaQuery()
+                .eq(ReservationUser::getReservationId, reservationId)
+                .eq(ReservationUser::getUserId, userId)
+                .one();
+
+        return reservationInfo != null ? R.OK(reservationInfo) : R.FAIL("查询预约信息失败");
+    }
+
+    /**
+     * 预约
+     */
+    @PostMapping("/reserve")
+    public R reserve(@RequestBody ReservationUser reservationUser){
+        Boolean reserved = reservationUserService.reserve(reservationUser);
+        return reserved ? R.OK("预约成功") : R.FAIL("预约失败");
+    }
+
+    /**
+     * 取消预约
+     */
+    @PostMapping("/cancelReserve")
+    public R cancelReserve(@RequestBody ReservationUser reservationUser){
+        Boolean canceled = reservationUserService.cancelReserve(reservationUser);
+        return canceled ? R.OK("取消预约成功") : R.FAIL("取消预约失败");
+    }
+
+    /**
+     * 修改预约
+     */
+    @PutMapping("/modifyReserve")
+    public R modifyReserve(@RequestBody ReservationUser reservationUser){
+        Boolean modified = reservationUserService.modifyReserve(reservationUser);
+        return modified ? R.OK("修改预约成功") : R.FAIL("修改预约失败");
+    }
+
 }

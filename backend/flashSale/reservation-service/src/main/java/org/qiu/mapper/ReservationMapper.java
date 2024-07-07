@@ -1,7 +1,9 @@
 package org.qiu.mapper;
 
 import com.github.yulichang.base.MPJBaseMapper;
+import org.qiu.pojo.Product;
 import org.qiu.pojo.Reservation;
+import org.qiu.pojo.WeekReservation;
 
 import java.util.List;
 
@@ -18,6 +20,12 @@ public interface ReservationMapper extends MPJBaseMapper<Reservation> {
     Reservation reservation(String productId);
 
     Reservation selectReservationByProductId(String productId);
+
+    List<WeekReservation> selectWeekReservations();
+
+    List<String> selectProductIdWithOnGoingReservation();
+
+    Product selectProduct(String id);
 }
 
 

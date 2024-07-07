@@ -27,6 +27,16 @@ public class OrderController {
     private OrderService orderService;
 
     /**
+     * 查询订单成交总金额
+     */
+    @GetMapping("/amountTotal")
+    public R selectTotal() {
+        double total = orderService.getTotal();
+        return R.OK(total);
+    }
+
+
+    /**
      * 查询订单信息列表
      */
     @GetMapping("/list")

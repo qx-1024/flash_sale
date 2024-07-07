@@ -33,13 +33,13 @@ public class ReservationUser {
     /**
      * 预约活动 id
      */
-    @TableField("reservation_id")
+    @TableField("reservationId")
     private String reservationId;
 
     /**
      * 预约用户 id
      */
-    @TableField("user_id")
+    @TableField("userId")
     private String userId;
 
     /**

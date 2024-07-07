@@ -13,4 +13,5 @@ import org.qiu.pojo.ReservationUser;
  * @Since 1.0
  **/
 public interface ReservationUserMapper extends MPJBaseMapper<ReservationUser> {
+
 }

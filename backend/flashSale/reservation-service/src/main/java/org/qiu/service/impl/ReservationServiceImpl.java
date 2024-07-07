@@ -8,16 +8,16 @@ import jakarta.annotation.Resource;
 import org.qiu.clients.IdClient;
 import org.qiu.constant.Constants;
 import org.qiu.mapper.ActivityMapper;
-import org.qiu.pojo.Activity;
-import org.qiu.pojo.Product;
-import org.qiu.pojo.Reservation;
-import org.qiu.pojo.ReservationQuery;
+import org.qiu.pojo.*;
 import org.qiu.service.ReservationService;
 import org.qiu.mapper.ReservationMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author Qiu
@@ -90,8 +90,6 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
 
     /**
      * 分页查询预约信息【使用 activityId 查询到 activityName】
-     * @param current
-     * @return
      */
     @Override
     public IPage<ReservationQuery> selectByPage(Integer current) {
@@ -105,6 +103,9 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
         );
     }
 
+    /**
+     * 根据商品 ID 查询对应的预约活动是否允许预约
+     */
     @Override
     public Boolean allowReservation(String productId) {
         Reservation reservation = reservationMapper.reservation(productId);
@@ -118,8 +119,38 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
                 );
     }
 
+    /**
+     * 根据商品 ID 查询预约活动信息
+     */
     @Override
     public Reservation selectByProductId(String productId) {
         return reservationMapper.selectReservationByProductId(productId);
     }
+
+    /**
+     * 查询最近一周每天的预约量
+     */
+    @Override
+    public List<WeekReservation> selectWeekReservations() {
+        return reservationMapper.selectWeekReservations();
+    }
+
+    /**
+     * 查询正在预约的商品
+     */
+    @Override
+    public List<Product> selectProductWithOnGoingReservation() {
+        List<String> ids = reservationMapper.selectProductIdWithOnGoingReservation();
+
+        if (!CollectionUtils.isEmpty(ids)) {
+            return ids.stream()
+                    .filter(id -> reservationMapper.selectProduct(id) != null)
+                    .map(id -> reservationMapper.selectProduct(id))
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
+    }
+
+
 }

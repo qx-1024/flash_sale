@@ -2,8 +2,7 @@ package org.qiu.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseService;
-import org.qiu.pojo.Reservation;
-import org.qiu.pojo.ReservationQuery;
+import org.qiu.pojo.*;
 
 import java.util.List;
 
@@ -23,4 +22,9 @@ public interface ReservationService extends MPJBaseService<Reservation> {
     Boolean allowReservation(String productId);
 
     Reservation selectByProductId(String productId);
+
+    List<WeekReservation> selectWeekReservations();
+
+    List<Product> selectProductWithOnGoingReservation();
+
 }

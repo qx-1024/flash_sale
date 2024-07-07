@@ -87,4 +87,33 @@
              ) as t
         WHERE r.activityId = t.activityId
     </select>
+
+    <select id="selectWeekReservations" resultType="org.qiu.pojo.WeekReservation">
+        <![CDATA[
+        SELECT DATE(createTime) AS date, COUNT(*) AS count
+        FROM reservation_user
+        WHERE createTime >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+        AND createTime <= NOW()
+        GROUP BY DATE(createTime)
+        ORDER BY date;
+        ]]>
+    </select>
+
+    <select id="selectProductIdWithOnGoingReservation" resultType="java.lang.String">
+        SELECT a.productId
+        FROM
+            (
+                SELECT *
+                FROM reservation
+                WHERE reservationStatus = 2
+            ) r
+        JOIN activity a
+        ON r.activityId = a.activityId
+    </select>
+
+    <select id="selectProduct" resultType="org.qiu.pojo.Product">
+        select *
+        from product
+        where productId = #{id}
+    </select>
 </mapper>
