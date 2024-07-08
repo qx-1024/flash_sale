@@ -27,16 +27,6 @@ public class ReservationController {
     @Resource
     private ReservationService reservationService;
 
-    @Resource
-    private ReservationUserService reservationUserService;
-
-
-
-    /*------------*/
-    /*            */
-    /* 预约活动相关 */
-    /*            */
-    /*------------*/
 
     /**
      * 查询预约活动列表【查全部】
@@ -54,7 +44,7 @@ public class ReservationController {
      * @return              预约活动信息
      */
     @GetMapping("/getReservationByProductId")
-    public R getReservationId(@RequestParam("productId") String productId){
+    public R getReservationByProductId(@RequestParam("productId") String productId){
         Reservation reservation = reservationService.selectByProductId(productId);
         return reservation != null ? R.OK(reservation) : R.FAIL("查询预约活动信息失败");
     }
@@ -125,7 +115,7 @@ public class ReservationController {
     }
 
     /**
-     * 查询预约列表
+     * 查询预约活动列表
      * @param current       页码
      * @return              预约分页列表
      */
@@ -163,6 +153,14 @@ public class ReservationController {
         List<Product> products = reservationService.selectProductWithOnGoingReservation();
         return products != null ? R.OK(products) : R.FAIL("查询对应预约活动正在进行中的商品ID失败");
     }
+
+
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+
 
     /**
      * 新增预约活动信息
@@ -213,53 +211,5 @@ public class ReservationController {
         return deleted ? R.OK("批量删除预约信息成功") : R.FAIL("批量删除预约信息失败");
     }
 
-
-
-    /*------------*/
-    /*            */
-    /* 预约信息相关 */
-    /*            */
-    /*------------*/
-
-    /**
-     * 查询预约信息
-     */
-    @GetMapping("/reserveInfo")
-    public R selectReserveInfo(@RequestParam("reservationId") String reservationId,
-                               @RequestParam("userId") String userId){
-        ReservationUser reservationInfo = reservationUserService.lambdaQuery()
-                .eq(ReservationUser::getReservationId, reservationId)
-                .eq(ReservationUser::getUserId, userId)
-                .one();
-
-        return reservationInfo != null ? R.OK(reservationInfo) : R.FAIL("查询预约信息失败");
-    }
-
-    /**
-     * 预约
-     */
-    @PostMapping("/reserve")
-    public R reserve(@RequestBody ReservationUser reservationUser){
-        Boolean reserved = reservationUserService.reserve(reservationUser);
-        return reserved ? R.OK("预约成功") : R.FAIL("预约失败");
-    }
-
-    /**
-     * 取消预约
-     */
-    @PostMapping("/cancelReserve")
-    public R cancelReserve(@RequestBody ReservationUser reservationUser){
-        Boolean canceled = reservationUserService.cancelReserve(reservationUser);
-        return canceled ? R.OK("取消预约成功") : R.FAIL("取消预约失败");
-    }
-
-    /**
-     * 修改预约
-     */
-    @PutMapping("/modifyReserve")
-    public R modifyReserve(@RequestBody ReservationUser reservationUser){
-        Boolean modified = reservationUserService.modifyReserve(reservationUser);
-        return modified ? R.OK("修改预约成功") : R.FAIL("修改预约失败");
-    }
 
 }

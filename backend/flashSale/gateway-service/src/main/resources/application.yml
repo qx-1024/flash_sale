@@ -46,7 +46,7 @@ spring:
         - id: reservation
           uri: lb://reservation-service
           predicates:
-            - Path=/reservation/**
+            - Path=/reservation/**, /reservation_user/**
         - id: activity
           uri: lb://activity-service
           predicates:

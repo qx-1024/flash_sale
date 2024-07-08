@@ -1,5 +1,5 @@
 <template>
-    <el-button class="mybtn" :icon="Plus" @click="add" size="small" round>添 加 预 约</el-button>
+    <el-button class="mybtn" :icon="Plus" @click="add" size="small" round>添 加 预 约 活 动</el-button>
     <img class="empty_data_img" src="../../assets/empty_data.svg" alt="空空如也~" v-if="tableData.length == 0">
     <el-table :data="tableData" stripe style="width: 100%" v-else>
         <el-table-column prop="reservationName" align="center" label="预约活动名称" show-overflow-tooltip/>

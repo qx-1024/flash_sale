@@ -81,6 +81,9 @@ onMounted(() => {
     getCurrentUser();
 })
 
+/**
+ * @description 菜单数组
+ */
 const menuList = ref([
     {
         id: 1,
@@ -90,27 +93,39 @@ const menuList = ref([
     },
     {
         id: 2,
+        icon: 'User',
+        name: '用 户 管 理',
+        path: '/admin/user'
+    },
+    {
+        id: 3,
         icon: 'Goods',
         name: '商 品 管 理',
         path: '/admin/product'
     },
     {
-        id: 3,
-        icon: 'Timer',
-        name: '预 约 管 理',
-        path: '/admin/reservation'
-    },
-    {
         id: 4,
-        icon: 'DataLine',
-        name: '闪 购 管 理',
-        path: '/admin/flashSale'
+        icon: 'Postcard',
+        name: '预 约 管 理',
+        path: '/admin/reservationUser'
     },
     {
         id: 5,
-        icon: 'User',
-        name: '用 户 管 理',
-        path: '/admin/user'
+        icon: 'Document',
+        name: '订 单 管 理',
+        path: '/admin/order'
+    },
+    {
+        id: 6,
+        icon: 'Timer',
+        name: '预 约 活 动',
+        path: '/admin/reservation'
+    },
+    {
+        id: 7,
+        icon: 'DataLine',
+        name: '闪 购 活 动',
+        path: '/admin/flashSale'
     },
 ])
 

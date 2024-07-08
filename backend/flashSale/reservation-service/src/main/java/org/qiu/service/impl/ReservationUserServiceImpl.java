@@ -1,11 +1,14 @@
 package org.qiu.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import jakarta.annotation.Resource;
 import org.qiu.clients.IdClient;
+import org.qiu.constant.Constants;
 import org.qiu.mapper.ReservationUserMapper;
-import org.qiu.pojo.ReservationUser;
+import org.qiu.pojo.*;
 import org.qiu.service.ReservationUserService;
 import org.springframework.stereotype.Service;
 
@@ -83,6 +86,11 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
         return false;
     }
 
+    /**
+     * 修改预约信息
+     * @param reservationUser   预约信息
+     * @return                  修改结果
+     */
     @Override
     public Boolean modifyReserve(ReservationUser reservationUser) {
         if (reservationUser == null){
@@ -101,6 +109,25 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
         }
 
         return false;
+    }
+
+    /**
+     * 分页查询预约信息列表
+     * @param current       当前页码
+     * @return              预约信息列表
+     */
+    @Override
+    public IPage<ReservationUserQuery> selectByPage(Integer current) {
+        return reservationUserMapper.selectJoinPage(
+                new Page<>(current, Constants.DEFAULT_PAGE_SIZE),
+                ReservationUserQuery.class,
+                new MPJLambdaWrapper<ReservationUser>()
+                        .selectAll(ReservationUser.class)
+                        .select(Reservation::getReservationName)
+                        .leftJoin(Reservation.class, Reservation::getReservationId, ReservationUser::getReservationId)
+                        .select(User::getRealName)
+                        .leftJoin(User.class, User::getUserId, ReservationUser::getUserId)
+        );
     }
 
 }

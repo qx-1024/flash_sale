@@ -36,12 +36,20 @@ let router = createRouter({
                     component: () => import('../views/admin/ReservationView.vue')
                 },
                 {
+                    path: 'reservationUser',
+                    component: () => import('../views/admin/ReservationUserView.vue')
+                },
+                {
                     path: 'flashSale',
                     component: () => import('../views/admin/FlashSaleActivityView.vue')
                 },
                 {
                     path: 'user',
                     component: () => import('../views/admin/UserView.vue')
+                },
+                {
+                    path: 'order',
+                    component: () => import('../views/admin/OrderView.vue')
                 }
             ]
         },

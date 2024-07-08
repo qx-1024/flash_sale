@@ -37,6 +37,7 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
             <version>2023.0.0.0-RC1</version>
             <exclusions>
+                <!-- 排除 Netflix Ribbon  -->
                 <exclusion>
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>

@@ -31,6 +31,20 @@
                     </ul>
                 </el-card>
             </el-col>
+
+            <el-col :span="8">
+                <el-card shadow="hover">
+                    <template #header>
+                        <div class="card-header">
+                            <span class="card-title">预 约 排 行 榜</span>
+                        </div>
+                    </template>
+                    <ul v-for="item in top5ByReservation" :key="item.id">
+                        <li> {{ item.reservationName }} -- 预约：<span> {{ item.count }} </span> 人</li>
+                    </ul>
+                </el-card>
+            </el-col>
+
             <el-col :span="8">
                 <el-card shadow="hover" class="userBoard">
                     <el-row class="one">
@@ -55,42 +69,28 @@
                     </el-row>
                 </el-card>
             </el-col>
-            <el-col :span="8">
-                <el-card shadow="hover">
-                    <template #header>
-                        <div class="card-header">
-                            <span class="card-title">预 约 排 行 榜</span>
-                        </div>
-                    </template>
-                    <ul v-for="item in top5ByReservation" :key="item.id">
-                        <li> {{ item.reservationName }} -- 预约：<span> {{ item.count }} </span></li>
-                    </ul>
-                </el-card>
-            </el-col>
         </el-row>
       </el-main>
 
 
       <el-footer>
         <el-row>
-            <el-col :span="16">
+            <el-col :span="24">
                 <el-card shadow="hover">
                     <span class="reservationCountByDayTitle">预 约 统 计</span>
                     <div id="reservationCountByDay"></div>
                 </el-card>
             </el-col>
-            <el-col :span="8">
+            <!-- <el-col :span="8">
                 <el-card shadow="hover">
-                    <template #header>
-                        <div class="card-header">
-                            <span class="card-title">闪 购 排 行 榜</span>
-                        </div>
-                    </template>
+                    <div class="card-header">
+                        <span class="card-title">闪 购 排 行 榜</span>
+                    </div>
                     <ul v-for="item in top5ByActivity" :key="item.id">
                         <li>{{ item.activityName }} -- 参与：<span> {{ item.activityCount }} </span> 人</li>
                     </ul>
                 </el-card>
-            </el-col>
+            </el-col> -->
         </el-row>
       </el-footer>
     </el-container>    
@@ -236,6 +236,7 @@ const getReservationTop5 = () => {
         .then(res => {
             if(res.data.code === 200){
                 top5ByReservation.value = res.data.data
+                console.log(top5ByReservation.value);
             }
         })
         .catch(err => {
@@ -352,6 +353,7 @@ const getVipCount = () => {
 }
 
 .el-footer .el-card {
+    padding-left: 130px;
     height: 280px;
 }
 
@@ -408,6 +410,7 @@ ul li {
 
 ul li span {
     color: #ea5455;
+    font-weight: bold;
 }
 
 #reservationCountByDay {

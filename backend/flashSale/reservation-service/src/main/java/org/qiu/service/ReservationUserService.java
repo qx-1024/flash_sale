@@ -1,7 +1,10 @@
 package org.qiu.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseService;
+import org.qiu.pojo.ReservationQuery;
 import org.qiu.pojo.ReservationUser;
+import org.qiu.pojo.ReservationUserQuery;
 
 /**
  * @Description:
@@ -19,4 +22,6 @@ public interface ReservationUserService extends MPJBaseService<ReservationUser> 
     Boolean cancelReserve(ReservationUser reservationUser);
 
     Boolean modifyReserve(ReservationUser reservationUser);
+
+    IPage<ReservationUserQuery> selectByPage(Integer current);
 }
