@@ -6,19 +6,23 @@ let router = createRouter({
     routes: [
         {
             path: '/',
-            component: () => import('../views/HomeView.vue')
+            component: () => import('../views/HomeView.vue'),
+            meta: { requiresAdmin: false },
         },
         {
             path: '/home',
-            component: () => import('../views/HomeView.vue')
+            component: () => import('../views/HomeView.vue'),
+            meta: { requiresAdmin: false },
         },
         {
             path: '/product',
-            component: () => import('../views/DetailView.vue')
+            component: () => import('../views/DetailView.vue'),
+            meta: { requiresAdmin: false },
         },
         {
             path: '/login',
-            component: () => import('../views/LoginView.vue')
+            component: () => import('../views/LoginView.vue'),
+            meta: { requiresAdmin: false },
         },
         {
             path: '/admin',
@@ -57,40 +61,39 @@ let router = createRouter({
         },
         {
             path: '/404',
-            component: () => import('../views/404.vue')
+            component: () => import('../views/404.vue'),
+            meta: { requiresAdmin: false },
         },
         {
             path: '/:pathMatch(.*)',
             redirect: '/404',
-            hidden: true
+            hidden: true,
+            meta: { requiresAdmin: false },
         }
     ]
 })
 
 
 
-// 路由守卫
+
 // 当前登录的用户
 let currentUser = null;
 
 router.beforeEach(async (to, from, next) => {
-    // 等待获取当前用户信息
-    await getCurrentUser();
-
-    // 检查路由是否需要 admin 权限
-    if (to.matched.some(record => record.meta.requiresAdmin)) {
-        // 如果需要 admin 权限
-        if (isAdmin()) {
-            // 用户是 admin，放行
-            next();
-        } else {
-            // 用户不是 admin，重定向到其他页面，比如登录页
-            next('/');
+    // 如果用户访问的是需要管理员权限的路由
+    if (to.path === '/admin') {
+        // 先确保获取了当前用户信息
+        await getCurrentUser();
+        
+        // 如果用户不是管理员，则重定向到登录页
+        if (!isAdmin()) {
+            next('/login');
+            return;
         }
-    } else {
-        // 如果路由不需要 admin 权限，直接放行
-        next();
     }
+
+    // 其他路由直接放行
+    next();
 });
 
 function isAdmin() {
@@ -99,7 +102,7 @@ function isAdmin() {
 
 async function getCurrentUser() {
     if (currentUser !== null) {
-        return; // 如果已经获取过当前用户信息，则直接返回
+        return;
     }
 
     try {
@@ -108,11 +111,13 @@ async function getCurrentUser() {
             currentUser = res.data.data;
         }
     } catch (err) {
-        // 处理异常情况，例如清除 token 并跳转到登录页
+        // 处理异常情况，可以考虑记录错误信息或者重试机制
+        console.error('Failed to fetch current user:', err);
+        // 清除本地存储的 token 或其他处理
         window.localStorage.removeItem('token');
-        router.push('/login');
     }
 }
+
 
 
 

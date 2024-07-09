@@ -20,7 +20,7 @@
             <!-- 右 -->
             <el-col :span="13">
                 <!-- 箭头 -->
-                <el-icon size="30" class="rightArrow"><Right /></el-icon>
+                <el-icon size="30" class="rightArrow" @click="goback"><Right /></el-icon>
                 <!-- 矩形 -->
                 <div class="shape"></div>
 
@@ -94,8 +94,10 @@
 import { ElMessage, ElNotification } from 'element-plus';
 import { onBeforeMount, onMounted, onUnmounted, ref } from 'vue';
 import { doGet } from '../http/httpRequest';
+import { useRouter } from 'vue-router';
 import { useProductStore } from '../stores/product';
 
+const router = useRouter()
 
 /********************************************* 初始化 *******************************************/
 const productStore = useProductStore();
@@ -132,6 +134,14 @@ const loadPorductDetail = () => {
     }).catch(err => {
         console.log(err);
     })
+}
+
+/**
+ * @description 返回上一页
+ */
+const goback = () => {
+    console.log('back');
+    router.go(-1)
 }
 
 /********************************************* 预约 *******************************************/
@@ -284,7 +294,7 @@ img {
     right: 130px;
     color: #ff8a6e;
     animation: move 2s ease-in-out infinite;
-    z-index: -1;
+    z-index: 1;
 }
 
 .shape {
