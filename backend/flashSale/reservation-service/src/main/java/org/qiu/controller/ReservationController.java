@@ -5,7 +5,6 @@ import jakarta.annotation.Resource;
 import org.qiu.pojo.*;
 import org.qiu.result.R;
 import org.qiu.service.ReservationService;
-import org.qiu.service.ReservationUserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class ReservationController {
     }
 
     /**
-     * 根据商品 id 查询对应的预约活动信息
+     * 根据商品 id 查询对应的预约活动信息【热点数据】
      * @param productId     商品 id
      * @return              预约活动信息
      */
@@ -50,7 +49,7 @@ public class ReservationController {
     }
 
     /**
-     * 根据商品 id 查询对应的预约活动是否允许预约
+     * 根据商品 id 查询对应的预约活动是否允许预约【热点数据】
      * @param productId 商品 id
      * @return          预约活动是否允许预约
      */

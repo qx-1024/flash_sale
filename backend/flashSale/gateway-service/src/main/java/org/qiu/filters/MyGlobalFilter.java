@@ -11,7 +11,9 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -22,6 +24,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,7 +44,12 @@ public class MyGlobalFilter implements GlobalFilter {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
+    private RedisScript<Long> rateLimitScript;
+
+    @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -53,6 +61,20 @@ public class MyGlobalFilter implements GlobalFilter {
         HttpHeaders headers = request.getHeaders();
         // 获取请求头中的 token
         String token = headers.getFirst(Constants.TOKEN_HEADER);
+
+
+        // 同一个 IP 在一秒内仅有 5 次请求被接收，其余的请求直接拒绝
+        String clientIpAddress = request.getRemoteAddress().getAddress().getHostAddress();
+        String key = Constants.REQUEST_KEY + clientIpAddress;
+
+        // 执行 Lua 脚本来进行请求限制
+        Long res = redisTemplate.execute(rateLimitScript, Collections.singletonList(key), "5");
+        if (res != null && res == 0) {
+            // 如果超过限制，返回 429 Too Many Requests
+            response.setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
+            return response.setComplete();
+        }
+
 
         // 对登录、注册、获取验证码、登出以外的请求拦截
         if (uriStr.equals(Constants.USER_LOGIN_URI) ||
@@ -75,6 +97,7 @@ public class MyGlobalFilter implements GlobalFilter {
                 return response.writeWith(Mono.just(buffer));
             }
 
+
             // token 不为空，但验证未通过
             if (!JWTUtil.checkToken(token)) {
                 R result = R.FAIL(CodeEnum.TOKEN_INVALID);
@@ -85,6 +108,7 @@ public class MyGlobalFilter implements GlobalFilter {
                 DataBuffer buffer = response.bufferFactory().wrap(bytes);
                 return response.writeWith(Mono.just(buffer));
             }
+
 
             // token 验证通过，但 redis 中不存在（过期）
             String userId = JWTUtil.parseToken(token);
@@ -99,6 +123,7 @@ public class MyGlobalFilter implements GlobalFilter {
                 return response.writeWith(Mono.just(buffer));
             }
 
+
             // redis 中有 token，比较前端传过来的 token 和 redis 的 token 是否相等
             if (!token.equals(jwt)) {
                 R result = R.FAIL(CodeEnum.TOKEN_INVALID);
@@ -110,22 +135,13 @@ public class MyGlobalFilter implements GlobalFilter {
                 return response.writeWith(Mono.just(buffer));
             }
 
+
             // 使用线程池，更新 redis 中 token 的过期时间
             threadPoolTaskExecutor.execute(() -> {
                 redisTemplate.expire(Constants.TOKEN_KEY + userId,
                         Constants.TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
             });
 
-            // token 没问题
-            String pattern = uriStr.substring(uriStr.indexOf("/"), uriStr.indexOf("/") + 1);
-            // 访问的是后端管理页面
-            if(pattern.equals(Constants.ADMIN_URI)){
-                // 是管理员，放行
-                if (userId.equals(Constants.ADMIN_ID)){
-                    return chain.filter(exchange);
-                }
-                return null;
-            }
 
             return chain.filter(exchange);
         }

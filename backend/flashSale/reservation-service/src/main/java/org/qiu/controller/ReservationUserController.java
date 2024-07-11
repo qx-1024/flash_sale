@@ -54,7 +54,8 @@ public class ReservationUserController {
      * 预约
      */
     @PostMapping("/reserve")
-    public R reserve(@RequestBody ReservationUser reservationUser){
+    public R reserve(@RequestBody ReservationUser reservationUser,
+                     @RequestHeader("X-Forwarded-For") String ipAddress){
         Boolean reserved = reservationUserService.reserve(reservationUser);
         return reserved ? R.OK("预约成功") : R.FAIL("预约失败");
     }

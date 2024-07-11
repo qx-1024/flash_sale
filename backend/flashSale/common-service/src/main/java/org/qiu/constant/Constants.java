@@ -16,8 +16,6 @@ public class Constants {
     public static final long VERIFY_CODE_EXPIRE_TIME = 1L;
 
 
-    // 分页查询默认页码
-    public static final int DEFAULT_PAGE_NUM = 1;
 
     // 分页查询默认每页条数
     public static final int DEFAULT_PAGE_SIZE = 8;
@@ -40,11 +38,15 @@ public class Constants {
     // token header
     public static final String TOKEN_HEADER = "Authorization";
 
+    // request key(Used to record the number of requests within a second)
+    public static final String REQUEST_KEY = "flash:request:";
+
 
     public static final String USER_LOGIN_URI = "/user/login";
     public static final String USER_LOGOUT_URI = "/user/logout";
     public static final String USER_REGISTER_URI = "/user/save";
     public static final String USER_GET_CAPTCHA_URI = "/user/loginValidateCode";
+
     public static final String ADMIN_URI = "/admin";
     public static final String ADMIN_ID = "51483200459251712";
 }

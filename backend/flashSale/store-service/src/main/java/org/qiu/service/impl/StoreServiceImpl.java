@@ -74,6 +74,7 @@ public class StoreServiceImpl implements StoreService {
 
         // 生成预签名URL
         String url = getUrl(objectName);
+        System.out.println("上传成功，预签名URL：" + url);
 
         // 关闭文件输入流
         inputStream.close();

@@ -10,7 +10,10 @@ import org.qiu.constant.Constants;
 import org.qiu.mapper.ReservationUserMapper;
 import org.qiu.pojo.*;
 import org.qiu.service.ReservationUserService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description:
@@ -31,6 +34,8 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
     @Resource
     private ReservationUserMapper reservationUserMapper;
 
+    @Resource
+    private RedisTemplate redisTemplate;
 
     /**
      * 预约

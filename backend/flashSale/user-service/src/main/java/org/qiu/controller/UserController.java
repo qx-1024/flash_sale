@@ -82,7 +82,7 @@ public class UserController {
         return user != null ? R.OK(user) : R.FAIL("用户未登录");
     }
 
-    // TODO：未编写测试接口
+
     /**
      * 用户退出登录
      * @param request   请求对象

@@ -27,12 +27,18 @@ public class ProductController {
     @Resource
     private ProductService productService;
 
+    /**
+     * 查询所有商品
+     */
     @GetMapping("/list")
     public R selectList(){
         List<Product> productList = productService.list();
         return productList != null ? R.OK(productList) : R.FAIL("查询商品列表失败");
     }
 
+    /**
+     * 查询参与闪购的商品列表【热点数据】
+     */
     @GetMapping("/flashSaleProductList")
     public R selectFlashSaleProductList(){
         List<Product> list = productService.lambdaQuery()
