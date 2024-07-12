@@ -41,6 +41,9 @@ public class Constants {
     // request key(Used to record the number of requests within a second)
     public static final String REQUEST_KEY = "flash:request:";
 
+    // flash sale product key
+    public static final String FLASH_SALE_PRODUCT_KEY = "flash:product:list";
+
 
     public static final String USER_LOGIN_URI = "/user/login";
     public static final String USER_LOGOUT_URI = "/user/logout";

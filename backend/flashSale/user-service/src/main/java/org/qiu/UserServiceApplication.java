@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.mybatis.spring.annotation.MapperScan;
@@ -53,9 +55,7 @@ public class UserServiceApplication implements CommandLineRunner {
     }
 
     /**
-     * Redis 序列化：解决乱码问题，例如：\xAC\xED\x00\x05t\x00\x04pmnm
-     * @param args
-     * @throws Exception
+     * Redis 序列化：解决乱码问题
      */
     @Override
     public void run(String... args) throws Exception {

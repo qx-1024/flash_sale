@@ -14,4 +14,7 @@ import java.util.List;
 public interface ProductService extends IService<Product> {
 
     int saveProduct(Product product);
+
+    List<Product> getFlashSaleProductList();
+
 }

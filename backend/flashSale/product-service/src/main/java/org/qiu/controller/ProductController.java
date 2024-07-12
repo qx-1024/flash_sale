@@ -41,9 +41,7 @@ public class ProductController {
      */
     @GetMapping("/flashSaleProductList")
     public R selectFlashSaleProductList(){
-        List<Product> list = productService.lambdaQuery()
-                .eq(Product::getIsFlashSale, 1)
-                .list();
+        List<Product> list = productService.getFlashSaleProductList();
         return list != null ? R.OK(list) : R.FAIL("查询闪购商品列表失败");
     }
 

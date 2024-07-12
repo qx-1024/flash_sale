@@ -22,7 +22,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -48,8 +47,6 @@ public class MyGlobalFilter implements GlobalFilter {
 
     @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
-
-
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -77,13 +74,10 @@ public class MyGlobalFilter implements GlobalFilter {
 
 
         // 对登录、注册、获取验证码、登出以外的请求拦截
-        if (uriStr.equals(Constants.USER_LOGIN_URI) ||
-            uriStr.equals(Constants.USER_REGISTER_URI) ||
-            uriStr.equals(Constants.USER_GET_CAPTCHA_URI) ||
-            uriStr.equals(Constants.USER_LOGOUT_URI)
-        ) {
-            return chain.filter(exchange);
-        } else {
+        if (!uriStr.equals(Constants.USER_LOGIN_URI) &&
+                !uriStr.equals(Constants.USER_REGISTER_URI) &&
+                !uriStr.equals(Constants.USER_GET_CAPTCHA_URI) &&
+                !uriStr.equals(Constants.USER_LOGOUT_URI)) {
             // token 不存在
             if (!StringUtils.hasText(token)) {
                 R result = R.FAIL(CodeEnum.TOKEN_NOT_EXIST);
@@ -143,8 +137,8 @@ public class MyGlobalFilter implements GlobalFilter {
             });
 
 
-            return chain.filter(exchange);
         }
+        return chain.filter(exchange);
     }
 
     /**
