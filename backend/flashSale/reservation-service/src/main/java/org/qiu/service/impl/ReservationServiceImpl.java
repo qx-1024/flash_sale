@@ -11,9 +11,13 @@ import org.qiu.mapper.ActivityMapper;
 import org.qiu.pojo.*;
 import org.qiu.service.ReservationService;
 import org.qiu.mapper.ReservationMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +40,9 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
 
     @Resource
     private ActivityMapper activityMapper;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 新增预约活动信息【手动生成 id】
@@ -108,15 +115,19 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
      */
     @Override
     public Boolean allowReservation(String productId) {
-        Reservation reservation = reservationMapper.reservation(productId);
+        Reservation reservation = null;
+        Reservation reservationInRedis = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_LIST_KEY + productId);
+
+        if (reservationInRedis == null) {
+            reservation = reservationMapper.reservationStatus(productId);
+        } else {
+            reservation = reservationInRedis;
+        }
+
         LocalDateTime now = LocalDateTime.now();
 
-        // 预约已结束
-        return reservation == null ||
-                (
-                    now.isAfter(reservation.getStartTime()) &&
-                    now.isBefore(reservation.getEndTime())
-                );
+        // 判断当前时间是否在预约活动时间范围内
+        return reservation != null && (now.isAfter(reservation.getStartTime()) && now.isBefore(reservation.getEndTime()));
     }
 
     /**

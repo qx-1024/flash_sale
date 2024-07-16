@@ -17,7 +17,7 @@ public interface ReservationMapper extends MPJBaseMapper<Reservation> {
 
     List<Reservation> selectTop5();
 
-    Reservation reservation(String productId);
+    Reservation reservationStatus(String productId);
 
     Reservation selectReservationByProductId(String productId);
 

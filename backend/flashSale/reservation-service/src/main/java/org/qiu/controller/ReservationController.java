@@ -56,7 +56,7 @@ public class ReservationController {
     @GetMapping("/allowReservation")
     public R allowReservation(@RequestParam("productId") String productId){
         Boolean allowed = reservationService.allowReservation(productId);
-        return allowed ? R.OK("查询预约活动信息成功") : R.FAIL("查询预约活动信息失败");
+        return allowed ? R.OK(allowed) : R.FAIL("查询预约活动信息失败");
     }
 
     /**

@@ -69,7 +69,7 @@
         ) rc ON r.reservationId = rc.res_id;
     </select>
 
-    <select id="reservation" resultType="org.qiu.pojo.Reservation">
+    <select id="reservationStatus" resultType="org.qiu.pojo.Reservation">
         SELECT <include refid="Reservation_Column_List"/>
         FROM reservation r
         JOIN activity a ON r.activityId = a.activityId
