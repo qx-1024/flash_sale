@@ -49,13 +49,17 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
      */
     @Override
     public int saveReservation(Reservation reservation) {
+        // 预约活动信息校验：确保开始时间早于结束时间
+        if (reservation.getStartTime().isAfter(reservation.getEndTime())) {
+            return -4;
+        }
+
         // 生成预约活动 ID
         reservation.setReservationId(idClient.generateId().toString());
 
-        // 根据闪购活动名称查询是否有对应预约活动，确保不会重复添加同一个预约活动
+        // 根据闪购活动 ID 查询是否有对应预约活动，确保同一个闪购活动不会重复添加预约活动
         Reservation r = reservationMapper.selectOne(
-                new MPJLambdaWrapper<Reservation>()
-                        .eq(Reservation::getReservationName, reservation.getReservationName())
+                new MPJLambdaWrapper<Reservation>().eq(Reservation::getActivityId, reservation.getActivityId())
         );
 
         // 该闪购活动的预约活动已存在
@@ -63,10 +67,9 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
             return -3;
         }
 
-        // 根据活动名称查询对应的闪购活动信息
+        // 根据闪购活动 ID 查询对应的闪购活动信息
         Activity activity = activityMapper.selectOne(
-            new MPJLambdaWrapper<Activity>()
-                .eq(Activity::getActivityName, reservation.getActivityName())
+            new MPJLambdaWrapper<Activity>().eq(Activity::getActivityId, reservation.getActivityId())
         );
 
         if (activity != null) {
@@ -74,9 +77,6 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
             if (activity.getActivityStatus() != 0) {
                 return -1;
             }
-
-            // 设置预约活动中的活动 ID
-            reservation.setActivityId(activity.getActivityId());
 
             // 判断预约的结束时间是否在闪购活动的开始时间之前
             if (reservation.getEndTime().isAfter(activity.getStartTime())) {
@@ -116,12 +116,12 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
     @Override
     public Boolean allowReservation(String productId) {
         Reservation reservation = null;
-        Reservation reservationInRedis = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_LIST_KEY + productId);
+        Reservation cacheData = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_LIST_KEY + productId);
 
-        if (reservationInRedis == null) {
+        if (cacheData == null) {
             reservation = reservationMapper.reservationStatus(productId);
         } else {
-            reservation = reservationInRedis;
+            reservation = cacheData;
         }
 
         LocalDateTime now = LocalDateTime.now();

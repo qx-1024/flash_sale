@@ -8,11 +8,13 @@ import org.qiu.mapper.ReservationMapper;
 import org.qiu.pojo.Product;
 import org.qiu.pojo.Reservation;
 import org.qiu.service.ProductService;
+import org.qiu.service.ReservationService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -32,17 +34,21 @@ public class DataTask {
     private ReservationMapper reservationMapper;
 
     @Resource
+    private ReservationService reservationService;
+
+    @Resource
     private ProductService productService;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    private static final long ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
+    // 时长常量：一分钟
+    private static final long ONE_MINUTE_IN_MILLIS = 60 * 1000;
 
     /**
-     * 在项目启动时初始化缓存，后续每天中午12点更新一次缓存
+     * 在项目启动时初始化缓存，后续在每分钟更新一次缓存
      */
-    @Scheduled(initialDelay = 0, fixedRate = ONE_DAY_IN_MILLIS)
+    @Scheduled(initialDelay = 0, fixedRate = ONE_MINUTE_IN_MILLIS)
     public void initializeAndUpdateCache() {
         List<String> ids = productService.listObjs(
                 new QueryWrapper<Product>()
@@ -58,4 +64,38 @@ public class DataTask {
                     );
         });
     }
+
+    /**
+     * 在项目启动时执行一次，后续在每一个整点执行
+     */
+    @PostConstruct
+    @Scheduled(cron = "0 0 * * * *")
+    public void updateReservationStatus(){
+        List<Reservation> reservations = reservationService.lambdaQuery().list();
+
+        reservations.forEach(reservation -> {
+            LocalDateTime startTime = reservation.getStartTime();
+            LocalDateTime endTime = reservation.getEndTime();
+            LocalDateTime now = LocalDateTime.now();
+
+            // 预约未开始
+            if (now.isBefore(startTime)) {
+                reservation.setReservationStatus(Constants.RESERVATION_STATUS_NOT_STARTED);
+            }
+
+            // 预约已结束
+            if (now.isAfter(endTime)){
+                reservation.setReservationStatus(Constants.RESERVATION_STATUS_FINISHED);
+            }
+
+            // 预约进行中
+            if (now.isAfter(startTime) && now.isBefore(endTime)){
+                reservation.setReservationStatus(Constants.RESERVATION_STATUS_IN_PROGRESS);
+            }
+
+            reservationService.updateById(reservation);
+        });
+    }
+
+
 }
