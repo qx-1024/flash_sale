@@ -9,9 +9,18 @@ import org.qiu.service.StoreService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * @Description: 存储系统
@@ -64,10 +73,13 @@ public class StoreServiceImpl implements StoreService {
         String dateStr = dateFormat.format(now);
 
         // 示例：product_20240101_213871263871249872.jpg
-        String objectName = String.format("%s_%s_%s%s", type, dateStr , key, suffix);
+        String objectName = String.format("%s_%s_%s%s", type, dateStr, key, suffix);
 
         // 获取文件输入流
         InputStream inputStream = file.getInputStream();
+
+        // 压缩图片
+        inputStream = compressImage(inputStream, 0.5f ,suffix);
 
         // 上传文件
         uploadFile(objectName, inputStream, contentType, file.getSize());
@@ -136,5 +148,51 @@ public class StoreServiceImpl implements StoreService {
                             .build()
             );
         }
+    }
+
+    /**
+     * 压缩图片
+     * @param inputImageStream      图片文件的输入流
+     * @param compressionQuality    压缩质量，范围从0到1，1表示不压缩
+     * @param extension             文件后缀名
+     * @return                      压缩后图片文件的输入流
+     * @throws IOException          IO 异常
+     */
+    public static InputStream compressImage(
+            InputStream inputImageStream,
+            float compressionQuality,
+            String extension
+    ) throws IOException {
+        // Read the input image
+        BufferedImage image = ImageIO.read(inputImageStream);
+
+        // Create a ByteArrayOutputStream to hold the compressed image
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // Get all available writers for the given extension
+        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(extension);
+        if (!writers.hasNext()) {
+            throw new IllegalArgumentException("No writers found for extension " + extension);
+        }
+
+        ImageWriter writer = writers.next();
+        ImageWriteParam param = writer.getDefaultWriteParam();
+
+        // Set compression quality
+        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        param.setCompressionQuality(compressionQuality);
+
+        // Write the image with compression to the OutputStream
+        MemoryCacheImageOutputStream cacheImageOutputStream = new MemoryCacheImageOutputStream(outputStream);
+        writer.setOutput(cacheImageOutputStream);
+        writer.write(null, new javax.imageio.IIOImage(image, null, null), param);
+
+        // Close streams
+        cacheImageOutputStream.close();
+        outputStream.close();
+        writer.dispose();
+
+        // Convert ByteArrayOutputStream to InputStream
+        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 }
