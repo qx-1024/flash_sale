@@ -42,8 +42,9 @@ public class DataTask {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    // 时长常量：一分钟
+    // 时长常量
     private static final long ONE_MINUTE_IN_MILLIS = 60 * 1000;
+
 
     /**
      * 在项目启动时初始化缓存，后续在每分钟更新一次缓存
@@ -51,16 +52,22 @@ public class DataTask {
     @Scheduled(initialDelay = 0, fixedRate = ONE_MINUTE_IN_MILLIS)
     public void initializeAndUpdateCache() {
         List<String> ids = productService.listObjs(
-                new QueryWrapper<Product>()
-                        .lambda()
-                        .select(Product::getProductId)
+                new QueryWrapper<Product>().lambda().select(Product::getProductId)
         );
 
         ids.forEach(id -> {
+            // use to allowReservation function in ReservationServiceImpl
             redisTemplate.opsForValue()
                     .set(
-                            Constants.RESERVATION_LIST_KEY + id,
+                            Constants.RESERVATION_STATUS_KEY + id,
                             reservationMapper.reservationStatus(id)
+                    );
+
+            // use to selectByProductId function in ReservationServiceImpl
+            redisTemplate.opsForValue()
+                    .set(
+                            Constants.RESERVATION_BYPRODUCT_KEY + id,
+                            reservationMapper.selectReservationByProductId(id)
                     );
         });
     }

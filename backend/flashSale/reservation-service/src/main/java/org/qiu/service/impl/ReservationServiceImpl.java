@@ -58,12 +58,12 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
         reservation.setReservationId(idClient.generateId().toString());
 
         // 根据闪购活动 ID 查询是否有对应预约活动，确保同一个闪购活动不会重复添加预约活动
-        Reservation r = reservationMapper.selectOne(
+        Reservation existingReservation = reservationMapper.selectOne(
                 new MPJLambdaWrapper<Reservation>().eq(Reservation::getActivityId, reservation.getActivityId())
         );
 
         // 该闪购活动的预约活动已存在
-        if (r != null){
+        if (existingReservation != null){
             return -3;
         }
 
@@ -73,18 +73,25 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
         );
 
         if (activity != null) {
-            // 判断闪购活动是否未开始
+            // 闪购活动未开始
             if (activity.getActivityStatus() != 0) {
                 return -1;
             }
 
-            // 判断预约的结束时间是否在闪购活动的开始时间之前
+            // 预约的结束时间不在闪购活动的开始时间之前
             if (reservation.getEndTime().isAfter(activity.getStartTime())) {
                 return -2;
             }
         }
 
-        return reservationMapper.insert(reservation);
+        // 执行插入操作
+        int insertResult = reservationMapper.insert(reservation);
+        if (insertResult > 0) {
+            return insertResult; // 返回插入结果
+        } else {
+            // 可能需要进一步处理插入失败的情况
+            return -5; // 插入失败
+        }
     }
 
     /**
@@ -115,19 +122,22 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
      */
     @Override
     public Boolean allowReservation(String productId) {
-        Reservation reservation = null;
-        Reservation cacheData = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_LIST_KEY + productId);
+        Reservation reservation = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_STATUS_KEY + productId);
 
-        if (cacheData == null) {
+        if (reservation == null) {
             reservation = reservationMapper.reservationStatus(productId);
-        } else {
-            reservation = cacheData;
+            // 将数据库查询结果写入缓存
+            if (reservation != null) {
+                redisTemplate.opsForValue().set(Constants.RESERVATION_STATUS_KEY + productId, reservation);
+            }
         }
 
+        // 判断当前时间是否在预约活动时间范围内
         LocalDateTime now = LocalDateTime.now();
 
-        // 判断当前时间是否在预约活动时间范围内
-        return reservation != null && (now.isAfter(reservation.getStartTime()) && now.isBefore(reservation.getEndTime()));
+        return reservation != null &&
+                now.isAfter(reservation.getStartTime()) &&
+                now.isBefore(reservation.getEndTime());
     }
 
     /**
@@ -135,7 +145,17 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
      */
     @Override
     public Reservation selectByProductId(String productId) {
-        return reservationMapper.selectReservationByProductId(productId);
+        Reservation reservation = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_BYPRODUCT_KEY + productId);
+
+        if (reservation == null) {
+            reservation = reservationMapper.selectReservationByProductId(productId);
+            // 将数据库查询结果写入缓存
+            if (reservation != null) {
+                redisTemplate.opsForValue().set(Constants.RESERVATION_BYPRODUCT_KEY + productId, reservation);
+            }
+        }
+
+        return reservation;
     }
 
     /**
