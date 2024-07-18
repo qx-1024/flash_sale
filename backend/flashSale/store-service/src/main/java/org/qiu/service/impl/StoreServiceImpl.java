@@ -3,6 +3,8 @@ package org.qiu.service.impl;
 import io.minio.*;
 import io.minio.http.Method;
 import jakarta.annotation.Resource;
+import net.coobird.thumbnailator.Thumbnailator;
+import net.coobird.thumbnailator.Thumbnails;
 import org.qiu.clients.IdClient;
 import org.qiu.config.MinIOInfo;
 import org.qiu.service.StoreService;
@@ -42,6 +44,16 @@ public class StoreServiceImpl implements StoreService {
     @Resource
     private IdClient idClient;
 
+    private static final int SIZE_10 = 1024 * 1024 * 10;    // 10M
+    private static final int SIZE_5 = 1024 * 1024 * 5;      // 5M
+    private static final int SIZE_3 = 1024 * 1024 * 3;      // 3M
+    private static final int SIZE_1 = 1024 * 1024;          // 1M
+
+    private static final float QUALITY_5 = 0.5f;            // 压缩质量0.5
+    private static final float QUALITY_3 = 0.3f;            // 压缩质量0.3
+    private static final float QUALITY_2 = 0.2f;            // 压缩质量0.2
+    private static final float QUALITY_1 = 0.1f;            // 压缩质量0.1
+
     /**
      * 上传图片
      * @param file  上传的图片文件
@@ -56,6 +68,12 @@ public class StoreServiceImpl implements StoreService {
 
         // 检查桶是否存在，不存在则创建
         checkBucket();
+
+        // 判断文件大小是否小于10M
+        long size = file.getSize();
+        if (size > SIZE_10) {
+            return "文件上传异常：文件大小不能超过10M";
+        }
 
         // 生成文件名
         String originalFilename = file.getOriginalFilename();
@@ -79,7 +97,26 @@ public class StoreServiceImpl implements StoreService {
         InputStream inputStream = file.getInputStream();
 
         // 压缩图片
-        inputStream = compressImage(inputStream, 0.5f ,suffix);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        double quality = 1.0;
+
+        if (size < SIZE_10 && size > SIZE_5){
+            quality = QUALITY_1;
+        } else if(size < SIZE_5 && size > SIZE_3){
+            quality = QUALITY_2;
+        } else if (size < SIZE_3 && size > SIZE_1){
+            quality = QUALITY_3;
+        } else if (size < SIZE_1){
+            quality = QUALITY_5;
+        }
+
+        // 使用 Thumbnails 库进行图片压缩
+        Thumbnails.of(inputStream)
+                .scale(0.5f)
+                .outputQuality(quality)
+                .toOutputStream(outputStream);
+
+        inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
         // 上传文件
         uploadFile(objectName, inputStream, contentType, file.getSize());
@@ -148,51 +185,5 @@ public class StoreServiceImpl implements StoreService {
                             .build()
             );
         }
-    }
-
-    /**
-     * 压缩图片
-     * @param inputImageStream      图片文件的输入流
-     * @param compressionQuality    压缩质量，范围从0到1，1表示不压缩
-     * @param extension             文件后缀名
-     * @return                      压缩后图片文件的输入流
-     * @throws IOException          IO 异常
-     */
-    public static InputStream compressImage(
-            InputStream inputImageStream,
-            float compressionQuality,
-            String extension
-    ) throws IOException {
-        // Read the input image
-        BufferedImage image = ImageIO.read(inputImageStream);
-
-        // Create a ByteArrayOutputStream to hold the compressed image
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        // Get all available writers for the given extension
-        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(extension);
-        if (!writers.hasNext()) {
-            throw new IllegalArgumentException("No writers found for extension " + extension);
-        }
-
-        ImageWriter writer = writers.next();
-        ImageWriteParam param = writer.getDefaultWriteParam();
-
-        // Set compression quality
-        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-        param.setCompressionQuality(compressionQuality);
-
-        // Write the image with compression to the OutputStream
-        MemoryCacheImageOutputStream cacheImageOutputStream = new MemoryCacheImageOutputStream(outputStream);
-        writer.setOutput(cacheImageOutputStream);
-        writer.write(null, new javax.imageio.IIOImage(image, null, null), param);
-
-        // Close streams
-        cacheImageOutputStream.close();
-        outputStream.close();
-        writer.dispose();
-
-        // Convert ByteArrayOutputStream to InputStream
-        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 }
