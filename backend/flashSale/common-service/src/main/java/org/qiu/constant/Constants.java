@@ -34,6 +34,10 @@ public class Constants {
     // token 过期时间【默认 30 分钟】
     public static final int TOKEN_EXPIRE_TIME = 30;
 
+
+    // token header
+    public static final String TOKEN_HEADER = "Authorization";
+
     // token private key
     public static final String TOKEN_SECRET = "aBcDeFgH1I2J3K4L5mNoPq6R7S8T9U!@#$%&*";
 
@@ -43,20 +47,19 @@ public class Constants {
     // token in redis Key
     public static final String TOKEN_KEY = "flash:login:token:";
 
-    // token header
-    public static final String TOKEN_HEADER = "Authorization";
+
 
     // request key(Used to record the number of requests within a second)
     public static final String REQUEST_KEY = "flash:request:";
 
+
+
     // flash sale product key
     public static final String FLASH_SALE_PRODUCT_KEY = "flash:product:list";
 
-    // reservation list of status key
-    public static final String RESERVATION_STATUS_KEY = "flash:reservation:status:";
+    // reservation list key
+    public static final String RESERVATION_KEY = "flash:reservation:";
 
-    // reservation list of product key
-    public static final String RESERVATION_BYPRODUCT_KEY = "flash:reservation:byproduct:";
 
 
 

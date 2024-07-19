@@ -6,6 +6,7 @@ import org.qiu.constant.Constants;
 import org.qiu.pojo.Product;
 import org.qiu.result.R;
 import org.qiu.service.ProductService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,9 @@ public class ProductController {
 
     @Resource
     private ProductService productService;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 查询所有商品
@@ -88,13 +92,18 @@ public class ProductController {
     }
 
     /**
-     * 根据商品ID查询商品
+     * 根据商品ID查询商品【热点数据--前台用户查询商品详情】
      * @param productId     商品ID
      * @return              商品
      */
     @GetMapping("/one")
     public R selectOne(@RequestParam("productId") String productId){
-        Product product = productService.getById(productId);
+        Product product = (Product) redisTemplate.opsForValue().get(Constants.FLASH_SALE_PRODUCT_KEY + productId);
+
+        if ( product == null) {
+            product = productService.getById(productId);
+        }
+
         return product != null ? R.OK(product) : R.FAIL("查询商品失败");
     }
 
@@ -106,6 +115,13 @@ public class ProductController {
     @PostMapping("/save")
     public R save(@RequestBody Product product){
         int saved = productService.saveProduct(product);
+
+        // 新增到缓存
+        redisTemplate.opsForValue().set(
+                Constants.FLASH_SALE_PRODUCT_KEY + product.getProductId(),
+                product
+        );
+
         return saved == 1 ? R.OK("新增商品成功") : R.FAIL("新增商品失败");
     }
 
@@ -117,6 +133,13 @@ public class ProductController {
     @PutMapping("/update")
     public R update(@RequestBody Product product){
         boolean updated = productService.updateById(product);
+
+        // 更新缓存
+        redisTemplate.opsForValue().set(
+                Constants.FLASH_SALE_PRODUCT_KEY + product.getProductId(),
+                product
+        );
+
         return updated ? R.OK("更新商品成功") : R.FAIL("更新商品失败");
     }
 
@@ -128,7 +151,10 @@ public class ProductController {
     @DeleteMapping("/delete")
     public R delete(@RequestParam("productId") String productId){
         boolean deleted = productService.removeById(productId);
-        return deleted ? R.OK("删除商品成功") : R.FAIL("删除商品失败");
+
+        Boolean deleteCache = redisTemplate.delete(Constants.FLASH_SALE_PRODUCT_KEY + productId);
+
+        return deleted && Boolean.TRUE.equals(deleteCache) ? R.OK("删除商品成功") : R.FAIL("删除商品失败");
     }
 
     /**

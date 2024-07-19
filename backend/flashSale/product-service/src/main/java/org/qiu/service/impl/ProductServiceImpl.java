@@ -32,13 +32,23 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     private ProductMapper productMapper;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public int saveProduct(Product product) {
         // 设置商品 ID
-        product.setProductId(idClient.generateId().toString());
-        return productMapper.insert(product);
+        String productId = idClient.generateId().toString();
+        product.setProductId(productId);
+
+        int inserted = productMapper.insert(product);
+
+        // 新增商品信息到缓存
+        redisTemplate.opsForValue().set(
+                Constants.FLASH_SALE_PRODUCT_KEY + productId,
+               product
+        );
+
+        return inserted;
     }
 
     @Override

@@ -3,7 +3,6 @@ package org.qiu.service.impl;
 import io.minio.*;
 import io.minio.http.Method;
 import jakarta.annotation.Resource;
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 import org.qiu.clients.IdClient;
 import org.qiu.config.MinIOInfo;
@@ -11,18 +10,10 @@ import org.qiu.service.StoreService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.*;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 
 /**
  * @Description: 存储系统
@@ -93,30 +84,8 @@ public class StoreServiceImpl implements StoreService {
         // 示例：product_20240101_213871263871249872.jpg
         String objectName = String.format("%s_%s_%s%s", type, dateStr, key, suffix);
 
-        // 获取文件输入流
-        InputStream inputStream = file.getInputStream();
-
         // 压缩图片
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        double quality = 1.0;
-
-        if (size < SIZE_10 && size > SIZE_5){
-            quality = QUALITY_1;
-        } else if(size < SIZE_5 && size > SIZE_3){
-            quality = QUALITY_2;
-        } else if (size < SIZE_3 && size > SIZE_1){
-            quality = QUALITY_3;
-        } else if (size < SIZE_1){
-            quality = QUALITY_5;
-        }
-
-        // 使用 Thumbnails 库进行图片压缩
-        Thumbnails.of(inputStream)
-                .scale(0.5f)
-                .outputQuality(quality)
-                .toOutputStream(outputStream);
-
-        inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        InputStream inputStream = file.getInputStream();
 
         // 上传文件
         uploadFile(objectName, inputStream, contentType, file.getSize());
@@ -171,19 +140,59 @@ public class StoreServiceImpl implements StoreService {
      * 检查桶是否存在，不存在则创建
      */
     private void checkBucket() throws Exception{
+        String bucketName = minIOInfo.getBucket();
         boolean bucketExists = minioClient.bucketExists(
                 BucketExistsArgs
                         .builder()
-                        .bucket(minIOInfo.getBucket())
+                        .bucket(bucketName)
                         .build()
         );
         if (!bucketExists){
             minioClient.makeBucket(
                     MakeBucketArgs
                             .builder()
-                            .bucket(minIOInfo.getBucket())
+                            .bucket(bucketName)
                             .build()
             );
+        }
+    }
+
+    /**
+     * 根据文件大小进行压缩【Thumbnailator】
+     */
+    public InputStream compressImageByThumbnails(InputStream inputStream,
+                                                 Long size,
+                                                 String format) throws IOException {
+        double quality = 1.0;
+
+        // 根据不同的图片大小选择压缩质量
+        if (size < SIZE_1) {
+            quality = QUALITY_5;
+        } else if (size < SIZE_3) {
+            quality = QUALITY_3;
+        } else if (size < SIZE_5) {
+            quality = QUALITY_2;
+        } else if (size < SIZE_10) {
+            quality = QUALITY_1;
+        }
+
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            // 使用 Thumbnails 库进行图片压缩
+            Thumbnails.of(inputStream)
+                    .scale(1f)
+                    .outputQuality(quality)
+                    .outputFormat(format)
+                    .toOutputStream(outputStream);
+
+            // 将压缩后的结果转换为 InputStream
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        } finally {
+            // 关闭输入流
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
     }
 }

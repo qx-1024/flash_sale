@@ -29,12 +29,16 @@ public class DataTask {
     private ProductMapper productMapper;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
+
+
+    // 时间常量：半天
+    private static final long QUITE_A_WHILE = 12 * 60 * 60 * 1000;
 
     /**
      * 在项目启动时初始化缓存，后续每秒更新一次缓存
      */
-    @Scheduled(initialDelay = 0, fixedRate = 1000)
+    @Scheduled(initialDelay = 0, fixedRate = QUITE_A_WHILE)
     public void initializeAndUpdateCache() {
         // 查询数据库中所有标记为闪购商品的数据
         List<Product> products = productMapper.selectList(

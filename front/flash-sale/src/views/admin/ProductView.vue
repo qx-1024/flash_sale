@@ -154,11 +154,11 @@ const productRules = ref({
     ],
     price: [
         { required: true, message: '商品价格不能为空', trigger: 'blur' },
-        { pattern: /^\d+$/, message: '价格必须是数字', trigger: 'blur' },
+        { pattern: /^\d+(\.\d+)?$/, message: '价格必须是数字', trigger: 'blur' },
     ],
     stock: [
         { required: true, message: '商品库存不能为空', trigger: 'blur' },
-        { pattern: /^[1-9]\d*$/,message: '库存必须是整字', trigger: 'blur' },
+        { pattern: /^[1-9]\d*$/,message: '库存必须是整数', trigger: 'blur' },
     ]
 })
 
@@ -215,6 +215,8 @@ const edit = (id) => {
     }).then(res => {
         if(res.data.code === 200){
             editProductForm.value = res.data.data
+
+            editProductForm.value.isFlashSale = editProductForm.value.isFlashSale === 1 ? '是' : '否'
         }
     }).catch(err => {
         console.log(err);
@@ -347,6 +349,7 @@ const uploadImage = (param) =>{
     uploadFile('/store/upload', formData).then(res => {
         if(res.data.code === 200){
             imageUrl.value = res.data.data;
+
             ElMessage({
                 message: '上传成功',
                 type: 'success',

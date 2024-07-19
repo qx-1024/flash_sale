@@ -59,15 +59,8 @@ public class DataTask {
             // use to allowReservation function in ReservationServiceImpl
             redisTemplate.opsForValue()
                     .set(
-                            Constants.RESERVATION_STATUS_KEY + id,
+                            Constants.RESERVATION_KEY + id,
                             reservationMapper.reservationStatus(id)
-                    );
-
-            // use to selectByProductId function in ReservationServiceImpl
-            redisTemplate.opsForValue()
-                    .set(
-                            Constants.RESERVATION_BYPRODUCT_KEY + id,
-                            reservationMapper.selectReservationByProductId(id)
                     );
         });
     }

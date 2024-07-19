@@ -32,22 +32,22 @@
 
         <!-- 商品列表 -->
         <el-main>
-            <div v-if="productList.length > 0">
+            <div>
                 <h1>闪 购 专 区</h1>
                 <el-row v-for="row in rowNum" :key="row">
                     <el-col :span="6" v-for="col in colNum" :key="col">
-                        <el-card style="max-width: 400px" shadow="hover" @click="toDetail(productList[(row - 1) * 4 + col - 1].productId)">
-                            <img :src="productList[(row - 1) * 4 + col - 1].images" >
+                        <el-card style="max-width: 400px" shadow="hover" @click="toDetail(productList[(row - 1) * 4 + col - 1].productId)" v-if="productList[(row - 1) * 4 + col - 1]">
+                            <img :src="productList[(row - 1) * 4 + col - 1]?.images" >
 
                             <div class="card-header">
                                 <div class="card-title">
-                                    {{ productList[(row - 1) * 4 + col - 1].productName }}
+                                    {{ productList[(row - 1) * 4 + col - 1]?.productName }}
                                 </div>
                                 <div class="card-sale">
-                                    已 售：{{ productList[(row - 1) * 4 + col - 1].sales }}
+                                    已 售：{{ productList[(row - 1) * 4 + col - 1]?.sales }}
                                 </div>
                                 <div class="card-price">
-                                    ￥{{ productList[(row - 1) * 4 + col - 1].price }}
+                                    ￥{{ productList[(row - 1) * 4 + col - 1]?.price }}
                                 </div>
                             </div>
                         </el-card>
@@ -59,22 +59,22 @@
                 <el-icon color="#ff8a6e"><star-filled /></el-icon>
             </el-divider>
 
-            <div v-if="productList.length > 0">
+            <div>
                 <h1>预 约 专 区</h1>
                 <el-row v-for="row in rowNum" :key="row">
                     <el-col :span="6" v-for="col in colNum" :key="col">
-                        <el-card style="max-width: 400px" shadow="hover" @click="toDetail(productList[(row - 1) * 4 + col - 1].productId)">
-                            <img :src="productList[(row - 1) * 4 + col - 1].images" >
+                        <el-card style="max-width: 400px" shadow="hover" @click="toDetail(productList[(row - 1) * 4 + col - 1].productId)" v-if="productList[(row - 1) * 4 + col - 1]">
+                            <img :src="productList[(row - 1) * 4 + col - 1]?.images" >
 
                             <div class="card-header">
                                 <div class="card-title">
-                                    {{ productList[(row - 1) * 4 + col - 1].productName }}
+                                    {{ productList[(row - 1) * 4 + col - 1]?.productName }}
                                 </div>
                                 <div class="card-sale">
-                                    已 售：{{ productList[(row - 1) * 4 + col - 1].sales }}
+                                    已 售：{{ productList[(row - 1) * 4 + col - 1]?.sales }}
                                 </div>
                                 <div class="card-price">
-                                    ￥{{ productList[(row - 1) * 4 + col - 1].price }}
+                                    ￥{{ productList[(row - 1) * 4 + col - 1]?.price }}
                                 </div>
                             </div>
                         </el-card>
@@ -101,6 +101,7 @@ import { useProductStore } from '../stores/product'
 
 const router = useRouter()
 const productStore = useProductStore()
+
 
 onMounted(() => {
     getSaleTop5();
@@ -181,7 +182,6 @@ const getCurrentUser = () => {
             }
         })
         .catch(err => {
-            console.log(err)
             window.localStorage.removeItem('token')
             router.push('/login')
         })
@@ -192,11 +192,11 @@ const getCurrentUser = () => {
  * 轮播图数组
  */
 const swiperList = ref([
-  {id: 1, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240701100209668_65985334298943488.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240701%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240701T020209Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=693368b31798d72c52029dbebfe03026c9be4ebe415d5c39f9ba73edcd39cb3f"},
-  {id: 2, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240701100253937_65985520068861952.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240701%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240701T020253Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=72c749c0c3198f4964e5991dc32e4c2fb33640c29af353e76a8eef19076b7b4b"},
-  {id: 3, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240701100311397_65985593301409792.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240701%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240701T020311Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=57f8ebe4157caba59c617a01a112e5586b9ccc23a55a43283ef2c27c9f9fc180"},
-  {id: 4, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240701100332448_65985681591508992.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240701%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240701T020332Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=5b63ff1cec7d6ad2737813334c7ebb1f73dc2174e43bfc01b9c3f990ce8084d8"},
-  {id: 5, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240701100349311_65985752324251648.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240701%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240701T020349Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=c5915fc3023c17529fb5d51aed404ee482d5e34d2a9e8e5709f4900c41aca151"},
+  {id: 1, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240719105644729_72522052548304896.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240719%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240719T025644Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=feb18c272251aa7235fed424bbc089d67aae46d23bc31c913ad629df833b8728"},
+  {id: 2, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240719105727580_72522232307785728.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240719%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240719T025727Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=542c7c02df5bf5c1fd8c7317aa0268c978ea3358b253a0d6218cc6a7ca8555d7"},
+  {id: 3, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240719105744726_72522304198156288.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240719%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240719T025744Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=d153efa376760b6f38a764d8e11b9ae71214b6473ce81c5ffbf774f2e6276dca"},
+  {id: 4, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240719105800313_72522369599938560.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240719%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240719T025800Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=97d87337936e00b637b3adfd687a3225c37709401f6a8fbf2dc5bb844257cb53"},
+  {id: 5, img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240719105815598_72522433693097984.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240719%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240719T025815Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=30ca9f534f9917e81665d8e938ba49048eb214a9f6b381896ae7b46273b65c93"},
 ])
 
 
@@ -318,7 +318,8 @@ const logout = () => {
 h1 {
     margin-bottom: 30px;
     padding-bottom: 5px;
-    color: #32dadd;
+    /* color: #32dadd; */
+    color: #2d4059;
     font-size: 36px;
     text-align: center;
 }
@@ -386,7 +387,7 @@ h1 {
 
 /************************************* 页脚 *******************************************/
 .el-footer {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 30px;
     color: #bbb;
     text-align: center;

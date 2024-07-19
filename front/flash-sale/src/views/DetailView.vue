@@ -140,7 +140,6 @@ const loadPorductDetail = () => {
  * @description 返回上一页
  */
 const goback = () => {
-    console.log('back');
     router.go(-1)
 }
 

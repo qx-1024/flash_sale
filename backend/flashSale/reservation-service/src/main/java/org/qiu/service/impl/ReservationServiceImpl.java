@@ -122,13 +122,13 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
      */
     @Override
     public Boolean allowReservation(String productId) {
-        Reservation reservation = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_STATUS_KEY + productId);
+        Reservation reservation = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_KEY + productId);
 
         if (reservation == null) {
             reservation = reservationMapper.reservationStatus(productId);
             // 将数据库查询结果写入缓存
             if (reservation != null) {
-                redisTemplate.opsForValue().set(Constants.RESERVATION_STATUS_KEY + productId, reservation);
+                redisTemplate.opsForValue().set(Constants.RESERVATION_KEY + productId, reservation);
             }
         }
 
@@ -145,13 +145,13 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
      */
     @Override
     public Reservation selectByProductId(String productId) {
-        Reservation reservation = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_BYPRODUCT_KEY + productId);
+        Reservation reservation = (Reservation) redisTemplate.opsForValue().get(Constants.RESERVATION_KEY + productId);
 
         if (reservation == null) {
             reservation = reservationMapper.selectReservationByProductId(productId);
             // 将数据库查询结果写入缓存
             if (reservation != null) {
-                redisTemplate.opsForValue().set(Constants.RESERVATION_BYPRODUCT_KEY + productId, reservation);
+                redisTemplate.opsForValue().set(Constants.RESERVATION_KEY + productId, reservation);
             }
         }
 
