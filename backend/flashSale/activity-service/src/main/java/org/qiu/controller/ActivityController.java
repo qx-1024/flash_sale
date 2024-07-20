@@ -1,19 +1,19 @@
 package org.qiu.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.qiu.constant.Constants;
 import org.qiu.pojo.Activity;
 import org.qiu.pojo.ActivityQuery;
 import org.qiu.result.R;
 import org.qiu.service.ActivityService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * @Description:
+ * @Description: 闪购活动控制层
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -29,6 +29,10 @@ public class ActivityController {
     @Resource
     private ActivityService activityService;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // TODO 未使用
     /**
      * 查询活动列表
      * @return  活动列表
@@ -39,6 +43,7 @@ public class ActivityController {
         return activityList != null ? R.OK(activityList) : R.FAIL("查询活动列表失败");
     }
 
+    // TODO 未使用
     /**
      * 查询未开始的活动列表
      * @return  未开始的活动列表
@@ -51,6 +56,7 @@ public class ActivityController {
         return activityList != null ? R.OK(activityList) : R.FAIL("查询未开始的闪购活动列表失败");
     }
 
+    // TODO 未使用
     /**
      * 查询进行中的活动列表
      * @return  进行中的活动列表
@@ -63,6 +69,7 @@ public class ActivityController {
         return activityList != null ? R.OK(activityList) : R.FAIL("查询进行中的闪购活动列表失败");
     }
 
+    // TODO 未使用
     /**
      * 查询已结束的活动列表
      * @return  已结束的活动列表
@@ -94,7 +101,7 @@ public class ActivityController {
         return count != 0 ? R.OK(count) : R.FAIL("查询活动数量失败");
     }
 
-    // TODO 未进行查询逻辑编写【需要与订单进行联表】
+    // TODO 未使用
     @GetMapping("/top5")
     public R getTop5Activity(){
         List<Activity> activities = activityService.lambdaQuery().list();
@@ -119,8 +126,14 @@ public class ActivityController {
      */
     @GetMapping("/one")
     public R selectActivityById(@RequestParam("activityId") String activityId){
-        Activity activity = activityService.getById(activityId);
-        return activity != null ? R.OK(activity) : R.FAIL("查询闪购活动失败");
+        Activity activity = (Activity) redisTemplate.opsForValue().get(Constants.ACTIVITY_KEY + activityId);
+
+        if (activity == null) {
+            activity = activityService.getById(activityId);
+            redisTemplate.opsForValue().set(Constants.ACTIVITY_KEY + activityId, activity);
+        }
+
+        return R.OK(activity);
     }
 
     /**
@@ -141,7 +154,10 @@ public class ActivityController {
      */
     @PutMapping("/update")
     public R update(@RequestBody Activity activity){
+        redisTemplate.opsForValue().set(Constants.ACTIVITY_KEY + activity.getActivityId(), activity);
+
         boolean updated = activityService.updateById(activity);
+
         return updated ? R.OK("更新闪购活动成功") : R.FAIL("更新闪购活动失败");
     }
 
@@ -152,10 +168,14 @@ public class ActivityController {
      */
     @DeleteMapping("/delete")
     public R delete(@RequestParam("activityId") String activityId){
+        redisTemplate.delete(Constants.ACTIVITY_KEY + activityId);
+
         boolean deleted = activityService.removeById(activityId);
+
         return deleted ? R.OK("删除闪购活动成功") : R.FAIL("删除闪购活动失败");
     }
 
+    // TODO 未使用
     /**
      * 批量删除指定闪购活动
      * @param activityIds   闪购活动ID列表

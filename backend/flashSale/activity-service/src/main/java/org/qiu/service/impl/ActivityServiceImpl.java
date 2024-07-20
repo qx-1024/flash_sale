@@ -12,6 +12,7 @@ import org.qiu.pojo.ActivityQuery;
 import org.qiu.pojo.Product;
 import org.qiu.service.ActivityService;
 import org.qiu.mapper.ActivityMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -31,6 +32,9 @@ public class ActivityServiceImpl extends MPJBaseServiceImpl<ActivityMapper, Acti
     @Resource
     private ActivityMapper activityMapper;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
     /**
      * 新增闪购活动
      * @param activity      闪购活动对象
@@ -39,7 +43,11 @@ public class ActivityServiceImpl extends MPJBaseServiceImpl<ActivityMapper, Acti
     @Override
     public int saveActivity(Activity activity) {
         // 设置闪购活动 id
-        activity.setActivityId(idClient.generateId().toString());
+        String activityId = idClient.generateId().toString();
+        activity.setActivityId(activityId);
+
+        redisTemplate.opsForValue().set(Constants.ACTIVITY_KEY + activityId, activity);
+
         return activityMapper.insert(activity);
     }
 

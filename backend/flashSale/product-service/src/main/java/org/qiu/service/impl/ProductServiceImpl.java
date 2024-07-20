@@ -1,8 +1,6 @@
 package org.qiu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import org.qiu.clients.IdClient;
@@ -13,7 +11,6 @@ import org.qiu.mapper.ProductMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 /**

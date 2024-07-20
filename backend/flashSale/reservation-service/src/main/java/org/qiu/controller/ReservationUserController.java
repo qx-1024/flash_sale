@@ -2,7 +2,6 @@ package org.qiu.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.annotation.Resource;
-import org.qiu.pojo.ReservationQuery;
 import org.qiu.pojo.ReservationUser;
 import org.qiu.pojo.ReservationUserQuery;
 import org.qiu.result.R;
@@ -54,8 +53,7 @@ public class ReservationUserController {
      * 预约
      */
     @PostMapping("/reserve")
-    public R reserve(@RequestBody ReservationUser reservationUser,
-                     @RequestHeader("X-Forwarded-For") String ipAddress){
+    public R reserve(@RequestBody ReservationUser reservationUser){
         Boolean reserved = reservationUserService.reserve(reservationUser);
         return reserved ? R.OK("预约成功") : R.FAIL("预约失败");
     }

@@ -35,7 +35,7 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
     private ReservationUserMapper reservationUserMapper;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 预约

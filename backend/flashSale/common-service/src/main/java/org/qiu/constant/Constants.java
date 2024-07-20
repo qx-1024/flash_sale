@@ -29,6 +29,16 @@ public class Constants {
     // 预约活动状态，2：进行中
     public static final Integer RESERVATION_STATUS_IN_PROGRESS = 2;
 
+    // 闪购活动状态，0：未开始
+    public static final Integer ACTIVITY_STATUS_NOT_STARTED = 0;
+
+    // 闪购活动状态，1：已结束
+    public static final Integer ACTIVITY_STATUS_FINISHED = 1;
+
+    // 闪购活动状态，2：进行中
+    public static final Integer ACTIVITY_STATUS_IN_PROGRESS = 2;
+
+
 
 
     // token 过期时间【默认 30 分钟】
@@ -59,6 +69,9 @@ public class Constants {
 
     // reservation list key
     public static final String RESERVATION_KEY = "flash:reservation:";
+
+    // activity list key
+    public static final String ACTIVITY_KEY = "flash:activity:";
 
 
 

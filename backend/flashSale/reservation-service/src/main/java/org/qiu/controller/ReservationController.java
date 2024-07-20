@@ -2,9 +2,11 @@ package org.qiu.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.annotation.Resource;
+import org.qiu.constant.Constants;
 import org.qiu.pojo.*;
 import org.qiu.result.R;
 import org.qiu.service.ReservationService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +28,11 @@ public class ReservationController {
     @Resource
     private ReservationService reservationService;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
+
+    // TODO 未使用
     /**
      * 查询预约活动列表【查全部】
      * @return  预约活动列表
@@ -59,6 +65,7 @@ public class ReservationController {
         return allowed ? R.OK(allowed) : R.FAIL("查询预约活动信息失败");
     }
 
+    // TODO 未使用
     /**
      * 查询进行中的预约
      * @return  进行中的预约
@@ -71,6 +78,7 @@ public class ReservationController {
         return reservations != null ? R.OK(reservations) : R.FAIL("查询进行中预约失败");
     }
 
+    // TODO 未使用
     /**
      * 查询已结束的预约
      * @return  已结束的预约
@@ -83,6 +91,7 @@ public class ReservationController {
         return reservations != null ? R.OK(reservations) : R.FAIL("查询已结束预约失败");
     }
 
+    // TODO 未使用
     /**
      * 查询未开始的预约
      * @return  未开始的预约
@@ -186,7 +195,10 @@ public class ReservationController {
      */
     @PutMapping("/update")
     public R update(@RequestBody Reservation reservation){
+        redisTemplate.opsForValue().set(Constants.RESERVATION_KEY + reservation.getReservationId(), reservation);
+
         boolean updated = reservationService.updateById(reservation);
+
         return updated ? R.OK("更新预约信息成功") : R.FAIL("更新预约信息失败");
     }
 
@@ -197,10 +209,14 @@ public class ReservationController {
      */
     @DeleteMapping("/delete")
     public R delete(@RequestParam("reservationId") String reservationId){
+        redisTemplate.delete(Constants.RESERVATION_KEY + reservationId);
+
         boolean deleted = reservationService.removeById(reservationId);
+
         return deleted ? R.OK("删除预约信息成功") : R.FAIL("删除预约信息失败");
     }
 
+    // TODO 未使用
     /**
      * 批量删除预约信息
      * @param reservationIds    预约 id 列表

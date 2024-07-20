@@ -31,6 +31,7 @@ public class ProductController {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+    // TODO 未使用
     /**
      * 查询所有商品
      */
@@ -157,6 +158,7 @@ public class ProductController {
         return deleted && Boolean.TRUE.equals(deleteCache) ? R.OK("删除商品成功") : R.FAIL("删除商品失败");
     }
 
+    // TODO 未使用
     /**
      * 批量删除商品
      * @param productIds    商品ID列表

@@ -66,6 +66,7 @@ public class MyGlobalFilter implements GlobalFilter {
 
         // 执行 Lua 脚本来进行请求限制
         Long res = redisTemplate.execute(rateLimitScript, Collections.singletonList(key), "5");
+
         if (res != null && res == 0) {
             // 如果超过限制，返回 429 Too Many Requests
             response.setStatusCode(HttpStatus.TOO_MANY_REQUESTS);

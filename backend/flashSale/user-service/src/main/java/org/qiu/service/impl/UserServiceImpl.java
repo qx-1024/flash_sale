@@ -31,7 +31,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserMapper userMapper;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 用户登录

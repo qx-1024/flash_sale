@@ -11,13 +11,10 @@ import org.qiu.mapper.ActivityMapper;
 import org.qiu.pojo.*;
 import org.qiu.service.ReservationService;
 import org.qiu.mapper.ReservationMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -85,6 +82,7 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
         }
 
         // 执行插入操作
+        redisTemplate.opsForValue().set(Constants.RESERVATION_KEY + reservation.getReservationId(), reservation);
         int insertResult = reservationMapper.insert(reservation);
         if (insertResult > 0) {
             return insertResult; // 返回插入结果
