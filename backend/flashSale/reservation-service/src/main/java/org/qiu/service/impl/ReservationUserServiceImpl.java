@@ -9,11 +9,12 @@ import org.qiu.clients.IdClient;
 import org.qiu.constant.Constants;
 import org.qiu.mapper.ReservationUserMapper;
 import org.qiu.pojo.*;
+import org.qiu.service.ReservationService;
 import org.qiu.service.ReservationUserService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
 /**
  * @Description:
@@ -30,6 +31,9 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
 
     @Resource
     private IdClient idClient;
+
+    @Resource
+    private ReservationService reservationService;
 
     @Resource
     private ReservationUserMapper reservationUserMapper;
@@ -49,20 +53,42 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
         }
 
         // 查询是否已经预约
-        ReservationUser reservation = reservationUserMapper.selectOne(
+        String reservationId = reservationUser.getReservationId();
+        ReservationUser ru = reservationUserMapper.selectOne(
                 new MPJLambdaWrapper<ReservationUser>()
-                        .eq(ReservationUser::getUserId, reservationUser.getUserId())
+                        .eq(ReservationUser::getUserId, reservationId)
                         .eq(ReservationUser::getReservationId, reservationUser.getReservationId())
         );
 
-        if (reservation == null){
-            reservationUser.setId(idClient.generateId().toString());
-
-            // 插入预约记录
-            return reservationUserMapper.insert(reservationUser) > 0;
+        if (ru != null) {
+            return false;
         }
 
-        return false;
+        // 判断该预约活动是否在进行中
+        Reservation reservation = (Reservation) redisTemplate.opsForValue()
+                .get(Constants.RESERVATION_KEY + reservationId);
+
+        if (reservation == null){
+            reservation = reservationService.lambdaQuery()
+                    .eq(Reservation::getReservationId, reservationId)
+                    .one();
+            if (reservation != null){
+                // 将查询到的 reservation 放入缓存
+                redisTemplate.opsForValue()
+                        .set(Constants.RESERVATION_KEY + reservationId, reservation);
+            }
+        }
+
+        if (reservation != null &&
+            Constants.RESERVATION_STATUS_IN_PROGRESS.equals(reservation.getReservationStatus())
+        ){
+            return false;
+        }
+
+        reservationUser.setId(idClient.generateId().toString());
+
+        // 插入预约记录
+        return reservationUserMapper.insert(reservationUser) > 0;
     }
 
     /**
