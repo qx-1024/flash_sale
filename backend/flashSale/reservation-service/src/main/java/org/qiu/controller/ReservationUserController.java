@@ -9,7 +9,7 @@ import org.qiu.service.ReservationUserService;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @Description:
+ * @Description: 用户预约相关
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale

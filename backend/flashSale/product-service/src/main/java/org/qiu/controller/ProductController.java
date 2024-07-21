@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @Description: 商品接口控制器
+ * @Description: 商品相关接口
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -31,18 +31,8 @@ public class ProductController {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    // TODO 未使用
     /**
-     * 查询所有商品
-     */
-    @GetMapping("/list")
-    public R selectList(){
-        List<Product> productList = productService.list();
-        return productList != null ? R.OK(productList) : R.FAIL("查询商品列表失败");
-    }
-
-    /**
-     * 查询参与闪购的商品列表【热点数据】
+     * 查询参与闪购的商品列表【热点数据--闪购专区】
      */
     @GetMapping("/flashSaleProductList")
     public R selectFlashSaleProductList(){
@@ -62,14 +52,6 @@ public class ProductController {
                 .list();
         return list != null ? R.OK(list) : R.FAIL("查询商品列表失败");
     }
-
-
-    /**/
-    /**/
-    /**/
-    /**/
-    /**/
-    /**/
 
     /**
      * 查询商品数量
@@ -93,7 +75,7 @@ public class ProductController {
     }
 
     /**
-     * 根据商品ID查询商品【热点数据--前台用户查询商品详情】
+     * 根据商品 ID 查询商品【热点数据--前台用户查询商品详情】
      * @param productId     商品ID
      * @return              商品
      */
@@ -156,6 +138,26 @@ public class ProductController {
         Boolean deleteCache = redisTemplate.delete(Constants.FLASH_SALE_PRODUCT_KEY + productId);
 
         return deleted && Boolean.TRUE.equals(deleteCache) ? R.OK("删除商品成功") : R.FAIL("删除商品失败");
+    }
+
+
+
+
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+
+    // TODO 未使用
+    /**
+     * 查询所有商品
+     */
+    @GetMapping("/list")
+    public R selectList(){
+        List<Product> productList = productService.list();
+        return productList != null ? R.OK(productList) : R.FAIL("查询商品列表失败");
     }
 
     // TODO 未使用

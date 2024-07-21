@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @Description: 预约接口
+ * @Description: 预约活动相关接口
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -31,17 +31,6 @@ public class ReservationController {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-
-    // TODO 未使用
-    /**
-     * 查询预约活动列表【查全部】
-     * @return  预约活动列表
-     */
-    @GetMapping("/list")
-    public R selectAll(){
-        List<Reservation> reservations = reservationService.list();
-        return reservations != null ? R.OK(reservations) : R.FAIL("查询预约列表失败");
-    }
 
     /**
      * 根据商品 id 查询对应的预约活动信息【热点数据】
@@ -63,45 +52,6 @@ public class ReservationController {
     public R allowReservation(@RequestParam("productId") String productId){
         Boolean allowed = reservationService.allowReservation(productId);
         return allowed ? R.OK(allowed) : R.FAIL("查询预约活动信息失败");
-    }
-
-    // TODO 未使用
-    /**
-     * 查询进行中的预约
-     * @return  进行中的预约
-     */
-    @GetMapping("/ongoingReservations")
-    public R selectOngoingReservations(){
-        List<Reservation> reservations = reservationService.lambdaQuery()
-                .eq(Reservation::getReservationStatus, 2)
-                .list();
-        return reservations != null ? R.OK(reservations) : R.FAIL("查询进行中预约失败");
-    }
-
-    // TODO 未使用
-    /**
-     * 查询已结束的预约
-     * @return  已结束的预约
-     */
-    @GetMapping("/endedReservations")
-    public R selectEndedReservations(){
-        List<Reservation> reservations = reservationService.lambdaQuery()
-                .eq(Reservation::getReservationStatus, 1)
-                .list();
-        return reservations != null ? R.OK(reservations) : R.FAIL("查询已结束预约失败");
-    }
-
-    // TODO 未使用
-    /**
-     * 查询未开始的预约
-     * @return  未开始的预约
-     */
-    @GetMapping("/unstartedReservations")
-    public R selectUnstartedReservations(){
-        List<Reservation> reservations = reservationService.lambdaQuery()
-                .eq(Reservation::getReservationStatus, 0)
-                .list();
-        return reservations != null ? R.OK(reservations) : R.FAIL("查询未开始预约失败");
     }
 
     /**
@@ -162,14 +112,6 @@ public class ReservationController {
         return products != null ? R.OK(products) : R.FAIL("查询对应预约活动正在进行中的商品ID失败");
     }
 
-
-    /**/
-    /**/
-    /**/
-    /**/
-    /**/
-
-
     /**
      * 新增预约活动信息
      * @param reservation   预约活动信息
@@ -214,6 +156,65 @@ public class ReservationController {
         boolean deleted = reservationService.removeById(reservationId);
 
         return deleted ? R.OK("删除预约信息成功") : R.FAIL("删除预约信息失败");
+    }
+
+
+
+
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+
+    // TODO 未使用
+    /**
+     * 查询预约活动列表【查全部】
+     * @return  预约活动列表
+     */
+    @GetMapping("/list")
+    public R selectAll(){
+        List<Reservation> reservations = reservationService.list();
+        return reservations != null ? R.OK(reservations) : R.FAIL("查询预约列表失败");
+    }
+
+    // TODO 未使用
+    /**
+     * 查询进行中的预约
+     * @return  进行中的预约
+     */
+    @GetMapping("/ongoingReservations")
+    public R selectOngoingReservations(){
+        List<Reservation> reservations = reservationService.lambdaQuery()
+                .eq(Reservation::getReservationStatus, 2)
+                .list();
+        return reservations != null ? R.OK(reservations) : R.FAIL("查询进行中预约失败");
+    }
+
+    // TODO 未使用
+    /**
+     * 查询已结束的预约
+     * @return  已结束的预约
+     */
+    @GetMapping("/endedReservations")
+    public R selectEndedReservations(){
+        List<Reservation> reservations = reservationService.lambdaQuery()
+                .eq(Reservation::getReservationStatus, 1)
+                .list();
+        return reservations != null ? R.OK(reservations) : R.FAIL("查询已结束预约失败");
+    }
+
+    // TODO 未使用
+    /**
+     * 查询未开始的预约
+     * @return  未开始的预约
+     */
+    @GetMapping("/unstartedReservations")
+    public R selectUnstartedReservations(){
+        List<Reservation> reservations = reservationService.lambdaQuery()
+                .eq(Reservation::getReservationStatus, 0)
+                .list();
+        return reservations != null ? R.OK(reservations) : R.FAIL("查询未开始预约失败");
     }
 
     // TODO 未使用

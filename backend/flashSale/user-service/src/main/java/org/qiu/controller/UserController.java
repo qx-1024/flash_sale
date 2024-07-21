@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Description: 用户接口控制器
+ * @Description: 用户相关接口
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: creativityHub
@@ -39,7 +39,7 @@ public class UserController {
     private DefaultKaptcha captchaProducer;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 登录验证码图片
@@ -68,21 +68,6 @@ public class UserController {
         return token != null ? R.OK("登录成功", token) : R.FAIL("登录失败");
     }
 
-    // TODO：未编写测试接口
-    /**
-     * 获取当前登录的用户
-     * @param request   请求对象
-     * @return          用户信息对象
-     */
-    @GetMapping("/currentUser")
-    public R currentUser(HttpServletRequest request) {
-        String token = request.getHeader(Constants.TOKEN_HEADER);
-        String userId = JWTUtil.parseToken(token);
-        User user = userService.selectOne(userId);
-        return user != null ? R.OK(user) : R.FAIL("用户未登录");
-    }
-
-
     /**
      * 用户退出登录
      * @param request   请求对象
@@ -97,11 +82,24 @@ public class UserController {
         return R.OK("用户已退出登录");
     }
 
-    /**/
-    /**/
-    /**/
-    /**/
-    /**/
+    /**
+     * 获取当前登录的用户
+     * @param request   请求对象
+     * @return          用户信息对象
+     */
+    @GetMapping("/currentUser")
+    public R currentUser(HttpServletRequest request) {
+        String token = request.getHeader(Constants.TOKEN_HEADER);
+        String userId = JWTUtil.parseToken(token);
+
+        User user = (User) redisTemplate.opsForValue().get(Constants.CURRENT_LOGIN_USER + userId);
+
+        if (user == null) {
+            user = userService.selectOne(userId);
+        }
+
+        return user != null ? R.OK(user) : R.FAIL("用户未登录");
+    }
 
     /**
      * 查询用户数量
@@ -118,7 +116,7 @@ public class UserController {
     @GetMapping("/male")
     public R getMaleCount(){
         int maleCount = userService.lambdaQuery()
-                .eq(User::getGender, "男")
+                .eq(User::getGender, 0)
                 .list()
                 .size();
         return maleCount > 0 ? R.OK(maleCount) : R.FAIL("查询男性用户数量失败");
@@ -130,7 +128,7 @@ public class UserController {
     @GetMapping("/female")
     public R getFemaleCount(){
         int femaleCount = userService.lambdaQuery()
-                .eq(User::getGender, "女")
+                .eq(User::getGender, 1)
                 .list()
                 .size();
         return femaleCount > 0 ? R.OK(femaleCount) : R.FAIL("查询女性用户数量失败");
@@ -142,12 +140,11 @@ public class UserController {
     @GetMapping("/vip")
     public R getVipCount(){
         int vipCount = userService.lambdaQuery()
-                .eq(User::getUserType, "VIP用户")
+                .eq(User::getUserType, 1)
                 .list()
                 .size();
         return vipCount > 0 ? R.OK(vipCount) : R.FAIL("查询 vip 用户数量失败");
     }
-
 
     /**
      * 分页查询用户信息
@@ -218,6 +215,16 @@ public class UserController {
         return removed ? R.OK("删除用户成功") : R.FAIL("删除用户失败");
     }
 
+
+
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+
+    // TODO: 未使用
     /**
      * 根据 id 批量删除用户【逻辑删除】
      * @param userIds   用户id集合

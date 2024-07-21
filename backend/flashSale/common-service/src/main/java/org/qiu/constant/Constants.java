@@ -13,6 +13,9 @@ public class Constants {
     // 验证码的 Redis Key
     public static final String CAPTCHA_CODE_KEY = "flash:login:captcha:";
 
+    // 当前登录用户
+    public static final String CURRENT_LOGIN_USER = "flash:login:current:";
+
     // 验证码的过期时间
     public static final long VERIFY_CODE_EXPIRE_TIME = 1L;
 
@@ -72,6 +75,9 @@ public class Constants {
 
     // activity list key
     public static final String ACTIVITY_KEY = "flash:activity:";
+
+    // order list key
+    public static final String ORDER_KEY = "flash:order:";
 
 
 

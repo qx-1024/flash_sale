@@ -6,12 +6,13 @@ import org.qiu.constant.Constants;
 import org.qiu.pojo.Order;
 import org.qiu.result.R;
 import org.qiu.service.OrderService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * @Description: 订单控制器
+ * @Description: 订单相关接口
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -26,6 +27,10 @@ public class OrderController {
     @Resource
     private OrderService orderService;
 
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
+
     /**
      * 查询订单成交总金额
      */
@@ -33,16 +38,6 @@ public class OrderController {
     public R selectTotal() {
         double total = orderService.getTotal();
         return R.OK(total);
-    }
-
-
-    /**
-     * 查询订单信息列表
-     */
-    @GetMapping("/list")
-    public R selectList() {
-        List<Order> orderList = orderService.lambdaQuery().list();
-        return orderList != null ? R.OK(orderList) : R.FAIL("查询订单列表失败");
     }
 
     /**
@@ -63,7 +58,13 @@ public class OrderController {
      */
     @GetMapping("/one")
     public R selectOne(@RequestParam("orderId") Long orderId) {
-        Order order = orderService.lambdaQuery().eq(Order::getOrderId, orderId).one();
+        // 从缓存中获取订单信息
+        Order order = (Order) redisTemplate.opsForValue().get(Constants.ORDER_KEY + orderId);
+
+        if (order == null) {
+            order = orderService.lambdaQuery().eq(Order::getOrderId, orderId).one();
+        }
+
         return order != null ? R.OK(order) : R.FAIL("查询订单详情失败");
     }
 
@@ -94,7 +95,10 @@ public class OrderController {
      */
     @PutMapping("/update")
     public R update(@RequestBody Order order) {
+        redisTemplate.opsForValue().set(Constants.ORDER_KEY + order.getOrderId(), order);
+
         boolean result = orderService.updateById(order);
+
         return result ? R.OK() : R.FAIL("更新订单失败");
     }
 
@@ -105,10 +109,33 @@ public class OrderController {
      */
     @DeleteMapping("/delete")
     public R delete(@RequestParam("orderId") Long orderId) {
+        redisTemplate.delete(Constants.ORDER_KEY + orderId);
+
         boolean result = orderService.removeById(orderId);
+
         return result ? R.OK() : R.FAIL("删除订单失败");
     }
 
+
+
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+
+    // TODO：未使用
+    /**
+     * 查询订单信息列表
+     */
+    @GetMapping("/list")
+    public R selectList() {
+        List<Order> orderList = orderService.lambdaQuery().list();
+        return orderList != null ? R.OK(orderList) : R.FAIL("查询订单列表失败");
+    }
+
+    // TODO：未使用
     /**
      * 批量删除订单
      * @param orderIds  订单ID列表

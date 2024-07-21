@@ -59,20 +59,27 @@ public class UserServiceApplication implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
+        // 设置 RedisTemplate 的键序列化器为 StringRedisSerializer
         redisTemplate.setKeySerializer(new StringRedisSerializer());
 
+        // 创建 ObjectMapper 实例
         ObjectMapper mapper = new ObjectMapper();
-
+        // 设置 ObjectMapper 的可见性，使其能够访问所有字段和方法
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(),
-                ObjectMapper.DefaultTyping.EVERYTHING);
+        // 激活默认的类型信息，以便序列化和反序列化时包含类型信息
+        mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.EVERYTHING);
+        // 创建一个 JavaTimeModule 对象，用于支持 Java 8 时间类型的序列化和反序列化
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        // 注册 JavaTimeModule 到 ObjectMapper 中，以便支持 Java 8 时间类型的处理
+        mapper.registerModule(javaTimeModule);
+        // 配置 ObjectMapper，将日期序列化为 ISO-8601 格式的字符串而不是时间戳
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-        redisTemplate.setValueSerializer(
-                new Jackson2JsonRedisSerializer<Object>(mapper, Object.class)
-        );
+        // 设置 RedisTemplate 的值序列化器为 Jackson2JsonRedisSerializer，使用上面配置的 ObjectMapper
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Object>(mapper, Object.class));
+        // 设置 RedisTemplate 的哈希键序列化器为 StringRedisSerializer
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(
-                new Jackson2JsonRedisSerializer<Object>(mapper, Object.class)
-        );
+        // 设置 RedisTemplate 的哈希值序列化器为 Jackson2JsonRedisSerializer，使用上面配置的 ObjectMapper
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<Object>(mapper, Object.class));
     }
 }

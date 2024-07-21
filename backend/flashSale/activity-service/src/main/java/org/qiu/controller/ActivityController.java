@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @Description: 闪购活动控制层
+ * @Description: 闪购活动相关接口
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -32,65 +32,6 @@ public class ActivityController {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    // TODO 未使用
-    /**
-     * 查询活动列表
-     * @return  活动列表
-     */
-    @GetMapping("/list")
-    public R selectList(){
-        List<Activity> activityList = activityService.list();
-        return activityList != null ? R.OK(activityList) : R.FAIL("查询活动列表失败");
-    }
-
-    // TODO 未使用
-    /**
-     * 查询未开始的活动列表
-     * @return  未开始的活动列表
-     */
-    @GetMapping("/unStartedActivities")
-    public R selectUnStartedActivities(){
-        List<Activity> activityList = activityService.lambdaQuery()
-                .eq(Activity::getActivityStatus, 0)
-                .list();
-        return activityList != null ? R.OK(activityList) : R.FAIL("查询未开始的闪购活动列表失败");
-    }
-
-    // TODO 未使用
-    /**
-     * 查询进行中的活动列表
-     * @return  进行中的活动列表
-     */
-    @GetMapping("/ongoingActivities")
-    public R selectOngoingActivities(){
-        List<Activity> activityList = activityService.lambdaQuery()
-                .eq(Activity::getActivityStatus, 1)
-                .list();
-        return activityList != null ? R.OK(activityList) : R.FAIL("查询进行中的闪购活动列表失败");
-    }
-
-    // TODO 未使用
-    /**
-     * 查询已结束的活动列表
-     * @return  已结束的活动列表
-     */
-    @GetMapping("/endedActivities")
-    public R selectEndedActivities(){
-        List<Activity> activityList = activityService.lambdaQuery()
-                .eq(Activity::getActivityStatus, 2)
-                .list();
-        return activityList != null ? R.OK(activityList) : R.FAIL("查询已结束的闪购活动列表失败");
-    }
-
-
-
-
-    /**/
-    /**/
-    /**/
-    /**/
-    /**/
-    /**/
 
     /**
      * 获取闪购活动总数
@@ -99,13 +40,6 @@ public class ActivityController {
     public R getActivityCount(){
         long count = activityService.count();
         return count != 0 ? R.OK(count) : R.FAIL("查询活动数量失败");
-    }
-
-    // TODO 未使用
-    @GetMapping("/top5")
-    public R getTop5Activity(){
-        List<Activity> activities = activityService.lambdaQuery().list();
-        return activities != null ? R.OK(activities) : R.FAIL("查询活动列表失败");
     }
 
     /**
@@ -173,6 +107,72 @@ public class ActivityController {
         boolean deleted = activityService.removeById(activityId);
 
         return deleted ? R.OK("删除闪购活动成功") : R.FAIL("删除闪购活动失败");
+    }
+
+
+
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+    /**/
+
+    // TODO 未使用
+    /**
+     * 查询活动列表
+     * @return  活动列表
+     */
+    @GetMapping("/list")
+    public R selectList(){
+        List<Activity> activityList = activityService.list();
+        return activityList != null ? R.OK(activityList) : R.FAIL("查询活动列表失败");
+    }
+
+    // TODO 未使用
+    /**
+     * 查询未开始的活动列表
+     * @return  未开始的活动列表
+     */
+    @GetMapping("/unStartedActivities")
+    public R selectUnStartedActivities(){
+        List<Activity> activityList = activityService.lambdaQuery()
+                .eq(Activity::getActivityStatus, 0)
+                .list();
+        return activityList != null ? R.OK(activityList) : R.FAIL("查询未开始的闪购活动列表失败");
+    }
+
+    // TODO 未使用
+    /**
+     * 查询进行中的活动列表
+     * @return  进行中的活动列表
+     */
+    @GetMapping("/ongoingActivities")
+    public R selectOngoingActivities(){
+        List<Activity> activityList = activityService.lambdaQuery()
+                .eq(Activity::getActivityStatus, 1)
+                .list();
+        return activityList != null ? R.OK(activityList) : R.FAIL("查询进行中的闪购活动列表失败");
+    }
+
+    // TODO 未使用
+    /**
+     * 查询已结束的活动列表
+     * @return  已结束的活动列表
+     */
+    @GetMapping("/endedActivities")
+    public R selectEndedActivities(){
+        List<Activity> activityList = activityService.lambdaQuery()
+                .eq(Activity::getActivityStatus, 2)
+                .list();
+        return activityList != null ? R.OK(activityList) : R.FAIL("查询已结束的闪购活动列表失败");
+    }
+
+    // TODO 未使用
+    @GetMapping("/top5")
+    public R getTop5Activity(){
+        List<Activity> activities = activityService.lambdaQuery().list();
+        return activities != null ? R.OK(activities) : R.FAIL("查询活动列表失败");
     }
 
     // TODO 未使用

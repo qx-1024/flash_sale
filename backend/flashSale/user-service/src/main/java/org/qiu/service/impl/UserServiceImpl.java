@@ -49,6 +49,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 根据用户名查询用户
         User user = userMapper.selectByAccount(account);
+
         // 对用户传入的密码进行加密
         password = SHA256Util.encrypt(password);
         boolean password_correct = user != null && user.getPassword().equals(password);
@@ -63,6 +64,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 保存用户 token 到 Redis
             redisTemplate.opsForValue().set(Constants.TOKEN_KEY + userId, token,
                     Constants.TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
+
+            // 保存用户 ID 到 Redis，表示用户处于登录状态
+            redisTemplate.opsForValue().set(Constants.CURRENT_LOGIN_USER + userId, user);
 
             // 返回 token
             return token;

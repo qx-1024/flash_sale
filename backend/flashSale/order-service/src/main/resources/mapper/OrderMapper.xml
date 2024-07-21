@@ -28,7 +28,7 @@
 
 
     <select id="getTotal" resultType="java.lang.Double">
-        SELECT sum(amount)
+        SELECT sum(amount) total
         FROM `order`
         WHERE orderStatus = 1
     </select>
