@@ -77,8 +77,9 @@ public class UserController {
     public R logout(HttpServletRequest request){
         String token = request.getHeader(Constants.TOKEN_HEADER);
         String userId = JWTUtil.parseToken(token);
-        // 清除 Redis 中的 token
+        // 清除 Redis 中的 token 以及当前登录的用户信息
         redisTemplate.delete(Constants.TOKEN_KEY + userId);
+        redisTemplate.delete(Constants.CURRENT_LOGIN_USER + userId);
         return R.OK("用户已退出登录");
     }
 

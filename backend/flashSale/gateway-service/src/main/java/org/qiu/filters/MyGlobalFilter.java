@@ -131,9 +131,12 @@ public class MyGlobalFilter implements GlobalFilter {
             }
 
 
-            // 使用线程池，更新 redis 中 token 的过期时间
+            // 使用线程池，更新 redis 中 token 以及当前登录用户信息的过期时间
             threadPoolTaskExecutor.execute(() -> {
                 redisTemplate.expire(Constants.TOKEN_KEY + userId,
+                        Constants.TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
+
+                redisTemplate.expire(Constants.CURRENT_LOGIN_USER + userId,
                         Constants.TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
             });
 

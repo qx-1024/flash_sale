@@ -1,7 +1,7 @@
 package org.qiu.constant;
 
 /**
- * @Description: 常量
+ * @Description: 全局常量
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -16,8 +16,15 @@ public class Constants {
     // 当前登录用户
     public static final String CURRENT_LOGIN_USER = "flash:login:current:";
 
+    // token 过期时间【默认 30 分钟】
+    public static final int TOKEN_EXPIRE_TIME = 30;
+
+    // 当前登录用户信息有效时间
+    public static final int CURRENT_LOGIN_USER_EXPIRE_TIME = 30;
+
     // 验证码的过期时间
     public static final long VERIFY_CODE_EXPIRE_TIME = 1L;
+
 
 
     // 分页查询默认每页条数
@@ -43,11 +50,6 @@ public class Constants {
 
 
 
-
-    // token 过期时间【默认 30 分钟】
-    public static final int TOKEN_EXPIRE_TIME = 30;
-
-
     // token header
     public static final String TOKEN_HEADER = "Authorization";
 
@@ -59,12 +61,6 @@ public class Constants {
 
     // token in redis Key
     public static final String TOKEN_KEY = "flash:login:token:";
-
-
-
-    // request key(Used to record the number of requests within a second)
-    public static final String REQUEST_KEY = "flash:request:";
-
 
 
     // flash sale product key
@@ -80,7 +76,8 @@ public class Constants {
     public static final String ORDER_KEY = "flash:order:";
 
 
-
+    // request key(Used to record the number of requests within a second)
+    public static final String REQUEST_KEY = "flash:request:";
 
     public static final String USER_LOGIN_URI = "/user/login";
     public static final String USER_LOGOUT_URI = "/user/logout";
