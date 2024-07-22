@@ -33,12 +33,12 @@ public class DataTask {
 
 
     // 时间常量
-    private static final long ONE_HOUR = 12 * 60 * 60 * 1000;
+    private static final long TWELVE_HOUR = 12 * 60 * 60 * 1000;
 
     /**
      * 在项目启动时初始化缓存，后续每秒更新一次缓存
      */
-    @Scheduled(initialDelay = 0, fixedRate = ONE_HOUR)
+    @Scheduled(initialDelay = 0, fixedRate = TWELVE_HOUR)
     public void initializeAndUpdateCache() {
         // 查询数据库中所有标记为闪购商品的数据
         List<Product> products = productMapper.selectList(

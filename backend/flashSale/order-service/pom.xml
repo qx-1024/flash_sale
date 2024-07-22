@@ -26,6 +26,12 @@
             <version>0.0.1</version>
         </dependency>
 
+        <!-- MQ 消息转换器 Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+
         <!-- Redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

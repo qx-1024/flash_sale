@@ -4,20 +4,33 @@ server:
 spring:
   application:
     name: order-service
+  # MySQL
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/flash-sale?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
     password: mysql
+  # Nacos
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
+  # Redis
   data:
     redis:
       host: 192.168.182.128
       port: 6379
       password: 123456
       database: 0
+  # RabbitMQ
+  rabbitmq:
+    host: 192.168.182.128
+    port: 5672
+    virtual-host: /
+    username: qiu
+    password: 123456
+    listener:
+      simple:
+        prefetch: 10  # 并发消费数量
 
 mybatis-plus:
   configuration:

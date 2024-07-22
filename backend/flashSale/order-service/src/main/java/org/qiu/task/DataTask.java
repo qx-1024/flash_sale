@@ -34,13 +34,13 @@ public class DataTask {
     private RedisTemplate<String, Object> redisTemplate;
 
     // 时长常量
-    private static final long ONE_MINUTE_IN_MILLIS = 60 * 1000;
+    private static final long TWELVE_HOUR = 12 * 60 * 60 * 1000;
 
 
     /**
      * 在项目启动时初始化缓存，后续在每分钟更新一次缓存
      */
-    @Scheduled(initialDelay = 0, fixedRate = ONE_MINUTE_IN_MILLIS)
+    @Scheduled(initialDelay = 0, fixedRate = TWELVE_HOUR)
     public void initializeAndUpdateCache() {
         List<Order> orderList = orderService.lambdaQuery().list();
 

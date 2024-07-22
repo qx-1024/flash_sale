@@ -3,6 +3,7 @@ package org.qiu.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.qiu.constant.Constants;
+import org.qiu.pojo.BuyInfo;
 import org.qiu.pojo.Product;
 import org.qiu.result.R;
 import org.qiu.service.ProductService;
@@ -88,6 +89,18 @@ public class ProductController {
         }
 
         return product != null ? R.OK(product) : R.FAIL("查询商品失败");
+    }
+
+
+    /**
+     * 用户闪购【采用异步消费的方式生成订单信息】
+     * @param buyInfo   闪购信息：用户ID、商品ID
+     * @return          闪购结果
+     */
+    @PostMapping("/buy")
+    public R buy(@RequestBody BuyInfo buyInfo){
+        boolean bought = productService.buy(buyInfo);
+        return bought ? R.OK("购买成功") : R.FAIL("购买失败");
     }
 
     /**

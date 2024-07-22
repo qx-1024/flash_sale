@@ -3,11 +3,14 @@ package org.qiu.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.qiu.clients.IdClient;
 import org.qiu.constant.Constants;
+import org.qiu.pojo.BuyInfo;
 import org.qiu.pojo.Product;
 import org.qiu.service.ProductService;
 import org.qiu.mapper.ProductMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,7 @@ import java.util.List;
 * @description 针对表【product】的数据库操作Service实现
 * @createDate 2024-05-27 17:58:56
 */
+@Slf4j
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     implements ProductService{
@@ -30,6 +34,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public int saveProduct(Product product) {
@@ -69,6 +76,20 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
 
         // 返回最终的闪购商品列表，可能是从缓存获取的或者是从数据库查询得到并存入缓存的
         return list;
+    }
+
+    @Override
+    public boolean buy(BuyInfo buyInfo) {
+        // 已支付，可以生成订单
+        if (buyInfo.getPayStatus() == 1) {
+
+            buyInfo.setOrderId(idClient.generateId().toString());
+
+            rabbitTemplate.convertAndSend(Constants.FLASH_SALE_QUEUE_NAME, buyInfo);
+
+            return true;
+        }
+        return false;
     }
 }
 

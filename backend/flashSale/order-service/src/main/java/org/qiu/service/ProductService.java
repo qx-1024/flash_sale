@@ -1,10 +1,10 @@
 package org.qiu.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.qiu.pojo.BuyInfo;
 import org.qiu.pojo.Product;
-import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -14,10 +14,7 @@ import java.util.List;
 */
 public interface ProductService extends IService<Product> {
 
-    int saveProduct(Product product);
+    BigDecimal getPrice(String productId);
 
-    List<Product> getFlashSaleProductList();
-
-    boolean buy(BuyInfo buyInfo);
-
+    String getActivityId(String productId);
 }

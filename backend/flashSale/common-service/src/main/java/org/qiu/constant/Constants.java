@@ -75,6 +75,9 @@ public class Constants {
     // order list key
     public static final String ORDER_KEY = "flash:order:";
 
+    // flash sale order queue name
+    public static final String FLASH_SALE_QUEUE_NAME = "flash.work.queue";
+
 
     // request key(Used to record the number of requests within a second)
     public static final String REQUEST_KEY = "flash:request:";

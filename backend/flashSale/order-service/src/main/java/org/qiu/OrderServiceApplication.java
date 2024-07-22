@@ -11,6 +11,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -47,6 +49,14 @@ public class OrderServiceApplication implements CommandLineRunner {
     }
 
     /**
+     * 配置 RabbitMQ 消息转换器
+     */
+    @Bean
+    public MessageConverter jsonMessageConverter(){
+        return new Jackson2JsonMessageConverter();
+    }
+
+    /**
      * 设置时区
      */
     @PostConstruct
@@ -54,6 +64,9 @@ public class OrderServiceApplication implements CommandLineRunner {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
     }
 
+    /**
+     * Redis 序列化
+     */
     @Override
     public void run(String... args) throws Exception {
         // 设置 RedisTemplate 的键序列化器为 StringRedisSerializer
