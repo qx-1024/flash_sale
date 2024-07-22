@@ -31,6 +31,17 @@ spring:
     listener:
       simple:
         prefetch: 10  # 并发消费数量
+        # SpringAMQP 利用 AOP 对消息进行环绕增强，业务正常则返回 ack，异常则返回 nack 或 reject
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          multiplier: 2
+          # 是否是无状态的，如果为 true，则每次重试都是一个新的 consumer
+          # 如果为 false，则重试使用的是原来的 consumer
+          # 业务中包含事务，则使用 false
+          stateless: true
 
 mybatis-plus:
   configuration:

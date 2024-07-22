@@ -11,6 +11,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.amqp.rabbit.retry.ImmediateRequeueMessageRecoverer;
+import org.springframework.amqp.rabbit.retry.MessageRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.CommandLineRunner;
@@ -54,6 +56,14 @@ public class OrderServiceApplication implements CommandLineRunner {
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new Jackson2JsonMessageConverter();
+    }
+
+    /**
+     * 设置 RabbitMQ 消息重试策略
+     */
+    @Bean
+    public MessageRecoverer messageRecoverer(){
+        return new ImmediateRequeueMessageRecoverer();
     }
 
     /**
