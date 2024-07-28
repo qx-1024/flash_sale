@@ -248,21 +248,7 @@ const logout = () => {
     line-height: 50px;
     text-align: right;
     padding-right: 30px;
-    background-color: #2d4059aa;
-}
-
-.nav sapn{
-    font-size: 14px;
-    letter-spacing: .2em;
-    color: #fff;
-}
-
-.el-link {
-    color: #fff;
-}
-
-.el-backtop {
-    color: #ff8a6e;
+    background-color: var(--flash-black-lighter-1);
 }
 
 /************************************ 轮播图 ******************************************/
@@ -274,7 +260,7 @@ const logout = () => {
 .ranking {
     height: 100px;
     font-size: 14px;
-    color: #2d4059;
+    color: var(--flash-black-color);
     margin-top: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -292,7 +278,7 @@ const logout = () => {
 }
 
 .ranking-store{
-    color: #2d4059aa;
+    color: var(--flash-black-lighter-2);
 }
 
 .ranking-right {
@@ -304,13 +290,13 @@ const logout = () => {
 .ranking-sale {
     font-weight: bold;
     font-size: 36px;
-    color: #ff8a6e;
+    color: var(--flash-darkblue-color);
 }
 
 .ranking-price-box {
     line-height: 25px;
     height: 25px;
-    color: #2d4059aa;
+    color: var(--flash-black-lighter-2);
     letter-spacing: .1em;
 }
 
@@ -318,8 +304,7 @@ const logout = () => {
 h1 {
     margin-bottom: 30px;
     padding-bottom: 5px;
-    /* color: #32dadd; */
-    color: #2d4059;
+    color: var(--flash-black-lighter-1);
     font-size: 36px;
     text-align: center;
 }
@@ -361,18 +346,6 @@ h1 {
     margin-top: 5px;
     margin-bottom: 5px;
     font-size: 13px;
-}
-
-.card-btn {
-    margin-top: 10px;
-    width: 100%;
-    letter-spacing: 1em;
-    color: #fff;
-    background-color: #32dadd;
-}
-
-.card-btn:hover {
-    background-color: #59f9fc;
 }
 
 .el-main img {

@@ -1,3 +1,29 @@
+:root{
+  --flash-black-color: #000000;
+  --flash-black-lighter-1: #3a4750; /* 第一个更浅的颜色 */
+  --flash-black-lighter-2: #000000aa; /* 第二个更浅的颜色 */
+  --flash-black-lighter-3: #999999; /* 第三个更浅的颜色 */
+  --flash-black-lighter-4: #cccccc; /* 第四个更浅的颜色 */
+
+  --flash-darkblue-color: #005792;
+  --flash-darkblue-lighter-1: #226b9e; /* 第一个更浅的颜色 */
+  --flash-darkblue-lighter-2: #447f9f; /* 第二个更浅的颜色 */
+  --flash-darkblue-lighter-3: #6692a1; /* 第三个更浅的颜色 */
+  --flash-darkblue-lighter-4: #88a5a3; /* 第四个更浅的颜色 */
+
+  --flash-skyblue-color: #00bbf0;
+  --flash-skyblue-lighter-1: #33cde8; /* 第一个更浅的颜色 */
+  --flash-skyblue-lighter-2: #66e0ff; /* 第二个更浅的颜色 */
+  --flash-skyblue-lighter-3: #99f2ff; /* 第三个更浅的颜色 */
+  --flash-skyblue-lighter-4: #f2f4fa; /* 第四个更浅的颜色 */
+
+  --flash-lighterblue-color: #d9faff;
+  --flash-lighterblue-lighter-1: #eefcfb; /* 第一个更浅的颜色 */
+  --flash-lighterblue-lighter-2: #f4fefe; /* 第二个更浅的颜色 */
+  --flash-lighterblue-lighter-3: #fafafa; /* 第三个更浅的颜色 */
+  --flash-lighterblue-lighter-4: #fbfbfb; /* 第四个更浅的颜色 */
+}
+
 body{
   margin: 0;
   padding: 0; 

@@ -380,12 +380,12 @@ const uploadImage = (param) =>{
 
 .mybtn {
     border: none;
-    color: #fff;
-    background-color: #32dadd;
+    color: var(--flash-lighterblue-lighter-4);
+    background-color: var(--flash-skyblue-color);
 }
 
 .mybtn:hover {
-    background-color: #59f9fc;
+    background-color: var(--flash-skyblue-lighter-1);
 }
 
 em {

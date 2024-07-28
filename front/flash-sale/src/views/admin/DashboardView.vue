@@ -3,7 +3,8 @@
         <el-aside width="150px">
             <el-menu
                 class="rightMenu"
-                active-text-color="#32dadd"
+                text-color="#00204a"
+                active-text-color="#00bbf0"
                 router
                 :unique-opened="true"
                 :default-active="route.path"
@@ -16,11 +17,6 @@
                         <span>{{ item.name }}</span>
                     </template>
                 </el-menu-item>
-
-                <!-- <el-menu-item index="6">
-                    <el-icon><Coin /></el-icon>
-                    <span>订 单 管 理</span>
-                </el-menu-item> -->
             </el-menu>
 
             <img src="../../assets/aside_bottom.svg" alt="">
@@ -30,9 +26,6 @@
             <el-header>
                 <el-menu
                     mode="horizontal"
-                    text-color="#304156"
-                    active-text-color="#32dadd"
-                    background-color="#fff"
                     class="topMenu"
                     :ellipsis="false"
                 >
@@ -181,7 +174,7 @@ const logout = () => {
 
 <style scoped>
 .el-container {
-    background-color: #f0f3f8de;
+    background-color: var(--flash-skyblue-lighter-4);
 }
 
 .el-header {
@@ -197,7 +190,7 @@ const logout = () => {
 }
 
 .topMenu {
-    color: #304156;
+    color: var(--flash-black-color);
     border-bottom: none;
 }
 
@@ -206,12 +199,12 @@ const logout = () => {
 }
 
 .is-active{
-    border-right: 3px solid #32dadd;
+    border-right: 3px solid var(--flash-skyblue-color);
 }
 
 .el-aside{
     height: calc(100vh - 1px);
-    color: #e3e3e3;
+    color: var(--flash-black-color);
     background-color: #fff;
     border-right: none;
 }
@@ -228,7 +221,7 @@ const logout = () => {
     font-size: 11px;
     line-height: 30px;
     text-align: center;
-    color: #304156;
+    color: var(--flash-black-lighter-1);
     background-color: #fff;
 }
 </style>

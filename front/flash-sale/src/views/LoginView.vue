@@ -276,6 +276,8 @@ const login = () => {
                         router.push("/home")
                     } else {
                         ElMessage.error("登录失败")
+                        // 刷新页面
+                        window.location.reload()
                     }
                 })
             })
@@ -483,7 +485,7 @@ const confirmCommit = () =>{
 h1 {
     margin-top: 0;
     width: 100%;
-    color: #364f6b;
+    color: var(--flash-black-color);
 }
 
 .options {
@@ -494,10 +496,10 @@ h1 {
     width: 100%;
     border: none;
     color: #fff;
-    background-color: #32dadd;
+    background-color: var(--flash-skyblue-color);
 }
 
 .mybtn:hover {
-    background-color: #59f9fc;
+    background-color: var(--flash-skyblue-lighter-1);
 }
 </style>
