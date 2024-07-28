@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.awt.image.DataBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -188,13 +189,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 生成验证码
         String code = VerificationUtil.validateCode(request, response, captchaProducer, Constants.SESSION_KEY);
 
-        // 将验证码存储到Redis中
-        redisTemplate.opsForValue().set(Constants.CAPTCHA_CODE_KEY + code, code,
-                Constants.VERIFY_CODE_EXPIRE_TIME, TimeUnit.MINUTES);
+        // 异步操作 Redis
+        CompletableFuture.runAsync(() -> {
+            // 将验证码存储到Redis中
+            redisTemplate.opsForValue().set(Constants.CAPTCHA_CODE_KEY + code, code,
+                    Constants.VERIFY_CODE_EXPIRE_TIME, TimeUnit.MINUTES);
 
-        // 存储该IP地址最后一次获取验证码的时间戳
-        redisTemplate.opsForValue().set(clientIp, String.valueOf(System.currentTimeMillis()),
-                Constants.IP_COOLDOWN_DURATION, TimeUnit.SECONDS);
+            // 存储该IP地址最后一次获取验证码的时间戳
+            redisTemplate.opsForValue().set(clientIp, String.valueOf(System.currentTimeMillis()),
+                    Constants.IP_COOLDOWN_DURATION, TimeUnit.SECONDS);
+        });
+
     }
 
     /**
