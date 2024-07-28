@@ -26,6 +26,10 @@ public enum CodeEnum {
     // token 无效
     TOKEN_INVALID(903, "token 无效"),
 
+    // 禁止获取验证码
+    FORBIDDEN_GET_CODE(904, "请等待 60 秒后再尝试获取验证码"),
+
+
     USER_LOGOUT(200, "退出成功");
 
 

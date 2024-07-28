@@ -26,7 +26,7 @@ public class VertifyConfig {
         properties.put("kaptcha.border", "no");
 
         // 字体颜色
-        properties.put("kaptcha.textproducer.font.color","166,227,233");
+        properties.put("kaptcha.textproducer.font.color","250,250,250");
         // 字体大小
         properties.put("kaptcha.textproducer.font.size","30");
         //文字间隔
@@ -34,7 +34,7 @@ public class VertifyConfig {
         //干扰实现类
         properties.setProperty("kaptcha.noise.impl", "com.google.code.kaptcha.impl.DefaultNoise");
         //干扰颜色
-        properties.setProperty("kaptcha.noise.color", "56,66,89");
+        properties.setProperty("kaptcha.noise.color", "232,241,245");
         // 字符个数
         properties.put("kaptcha.textproducer.char.length","4");
         // 字体
@@ -49,8 +49,8 @@ public class VertifyConfig {
         //干扰图片样式（使用阴影）
         properties.setProperty("kaptcha.obscurificator.impl", "com.google.code.kaptcha.impl.ShadowGimpy");
         // 背景渐变
-        properties.setProperty("kaptcha.background.clear.from", "82,97,107");
-        properties.setProperty("kaptcha.background.clear.to", "201,214,223");
+        properties.setProperty("kaptcha.background.clear.from", "69,93,122");
+        properties.setProperty("kaptcha.background.clear.to", "227,227,227");
         //背景实现类
         properties.setProperty("kaptcha.background.impl", "com.google.code.kaptcha.impl.DefaultBackground");
 

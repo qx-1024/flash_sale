@@ -2,6 +2,9 @@ package org.qiu.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.qiu.pojo.User;
 
 /**
@@ -21,4 +24,5 @@ public interface UserService extends IService<User> {
 
     int updateUserPassWord(String username, String password, String confirmPassword);
 
+    void getCode(HttpServletRequest request, HttpServletResponse response, DefaultKaptcha captchaProducer) throws Exception;
 }

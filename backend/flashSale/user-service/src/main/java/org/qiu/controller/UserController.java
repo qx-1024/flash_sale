@@ -48,10 +48,7 @@ public class UserController {
     public void loginValidateCode(HttpServletRequest request,
                                   HttpServletResponse response)
             throws Exception {
-        String code = VerificationUtil.validateCode(request, response,
-                captchaProducer, Constants.SESSION_KEY);
-        redisTemplate.opsForValue().set(Constants.CAPTCHA_CODE_KEY + code, code,
-                        Constants.VERIFY_CODE_EXPIRE_TIME, TimeUnit.MINUTES);
+        userService.getCode(request, response, captchaProducer);
     }
 
     /**

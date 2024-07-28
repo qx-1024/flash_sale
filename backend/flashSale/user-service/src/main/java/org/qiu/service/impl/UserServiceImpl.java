@@ -2,17 +2,27 @@ package org.qiu.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.qiu.constant.Constants;
 import org.qiu.clients.IdClient;
 import org.qiu.mapper.UserMapper;
 import org.qiu.pojo.User;
+import org.qiu.result.CodeEnum;
+import org.qiu.result.R;
 import org.qiu.service.UserService;
+import org.qiu.utils.JSONUtil;
 import org.qiu.utils.JWTUtil;
 import org.qiu.utils.SHA256Util;
+import org.qiu.utils.VerificationUtil;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.awt.image.DataBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -150,6 +160,61 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // 更新数据库中对应的用户的密码
         return user != null ? userMapper.updateById(user) : 0;
+    }
+
+    @Override
+    public void getCode(HttpServletRequest request,
+                          HttpServletResponse response,
+                          DefaultKaptcha captchaProducer)
+            throws Exception {
+        // 获取客户端的IP地址
+        String clientIp = getClientIp(request);
+
+        // 检查该IP地址是否在冷却时间内
+        boolean isCoolingDown = redisTemplate.opsForValue().get(clientIp) != null;
+
+        if (isCoolingDown) {
+            // IP地址在冷却时间内，不允许获取验证码
+            R result = R.FAIL(CodeEnum.FORBIDDEN_GET_CODE);
+
+            String json = JSONUtil.toJSON(result);
+
+            response.setContentType("application/json;charset=UTF-8"); // 设置响应头为JSON格式
+            response.getWriter().write(json);
+
+            return ;
+        }
+
+        // 生成验证码
+        String code = VerificationUtil.validateCode(request, response, captchaProducer, Constants.SESSION_KEY);
+
+        // 将验证码存储到Redis中
+        redisTemplate.opsForValue().set(Constants.CAPTCHA_CODE_KEY + code, code,
+                Constants.VERIFY_CODE_EXPIRE_TIME, TimeUnit.MINUTES);
+
+        // 存储该IP地址最后一次获取验证码的时间戳
+        redisTemplate.opsForValue().set(clientIp, String.valueOf(System.currentTimeMillis()),
+                Constants.IP_COOLDOWN_DURATION, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 获取客户端的IP地址
+     *
+     * @param request HTTP请求对象
+     * @return 客户端的IP地址
+     */
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 
 }

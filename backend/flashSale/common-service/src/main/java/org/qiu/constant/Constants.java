@@ -25,6 +25,9 @@ public class Constants {
     // 验证码的过期时间
     public static final long VERIFY_CODE_EXPIRE_TIME = 1L;
 
+    // 获取验证码的 IP 的过期时间
+    public static final long IP_COOLDOWN_DURATION = 60L;
+
 
 
     // 分页查询默认每页条数
