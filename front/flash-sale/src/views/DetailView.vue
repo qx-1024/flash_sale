@@ -344,16 +344,16 @@ img {
 }
 
 .el-button:hover {
-    background-color: #59f9fc;
+    background-color: var(--flash-green-color);
 }
 
 .reservationBtn {
-    background-color: #ff5722;
+    background-color: var(--flash-red-lighter-2);
     margin-right: 10px;
 }
 
 .reservationBtn:hover {
-    background-color: #ff8a6e;
+    background-color: var(--flash-red-lighter-2);
 }
 
 .noAlloweservationBtn {

@@ -6,7 +6,7 @@
                 <el-statistic value-style="font-size: 28px; color: var(--flash-green-color)" title="商 品 总 数" :value="productCount" />
             </el-col>
             <el-col :span="6">
-                <el-statistic value-style="font-size: 28px; color: var(--flash-green-color)" title="预 约 活 动 总 数" :value="reservationCount" />
+                <el-statistic value-style="font-size: 28px; color: var(--flash-red-lighter-2)" title="预 约 活 动 总 数" :value="reservationCount" />
             </el-col>
             <el-col :span="6">
                 <el-statistic value-style="font-size: 28px; color: var(--flash-green-color)" title="闪 购 活 动 总 数" :value="activityCount" />
@@ -21,24 +21,29 @@
         <el-row>
             <el-col :span="8">
                 <el-card shadow="hover">
-                    <template #header>
-                        <div class="card-header">
-                            <span class="card-title">销 量 排 行 榜</span>
-                        </div>
-                    </template>
-                    <ul v-for="item in top5BySale" :key="item.id">
-                        <li> {{ truncateText(item.productName) }} -- 已售：<span> {{ item.sales }} </span> 件</li>
+                    <div class="card-header">
+                        <span class="card-title">销 量 排 行 榜</span>
+                    </div>
+                    <ul v-for="(item,index) in top5BySale" :key="item.id">
+                        <li v-if="(index + 1 <= 3)"> 
+                            <span> {{ '0' + (index + 1) }} </span> 
+                            {{ truncateText(item.productName) }} 已售：
+                            <span> {{ item.sales }} </span> 件
+                        </li>
+                        <li v-else> 
+                            <span class="rankNum"> {{ '0' + (index + 1) }} </span> 
+                            {{ truncateText(item.productName) }} 已售：
+                            <span> {{ item.sales }} </span> 件
+                        </li>
                     </ul>
                 </el-card>
             </el-col>
 
             <el-col :span="8">
                 <el-card shadow="hover">
-                    <template #header>
-                        <div class="card-header">
-                            <span class="card-title">预 约 排 行 榜</span>
-                        </div>
-                    </template>
+                    <div class="card-header">
+                        <span class="card-title">预 约 排 行 榜</span>
+                    </div>
                     <ul v-for="item in top5ByReservation" :key="item.id">
                         <li> {{ truncateText(item.reservationName) }} -- 预约：<span> {{ item.count }} </span> 人</li>
                     </ul>
@@ -137,12 +142,18 @@ onMounted(() => {
  * @description 截断文本的计算属性
  */
 const truncateText = computed({
-  get: function () {
-    return function (text, maxLength = 25) {
-      return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    get: () => {
+    return (productName) => {
+        let truncated = productName.substring(0, 25);
+        if (truncated.length < 25) {
+            truncated = truncated.padEnd(25, ' ');
+        }
+        return truncated + '...';
     };
-  }
+    },
 });
+
+
 
 
 
@@ -252,10 +263,10 @@ const initReservationCountByDay = () => {
                 type: 'line',
                 smooth: true,
                 lineStyle: {
-                    color: '#fdd381'
+                    color: '#6741d9'
                 },
                 itemStyle: {
-                    color: '#ff8787'
+                    color: '#69db7c'
                 },
             }
         ]
@@ -384,7 +395,7 @@ const getVipCount = () => {
 }
 
 .el-main .el-card {
-    height: 260px;
+    height: 270px;
     border: 1px #ccc solid;
     margin-left: 5px;
     margin-right: 5px;
@@ -435,6 +446,8 @@ const getVipCount = () => {
     font-weight: bold;
     color: var(--flash-blue-lighter-3);
     font-size: 20px;
+    padding-bottom: 3px;
+    border-bottom: 1px var(--flash-grey-lighter-3) solid;
 }
 
 ul {
@@ -447,12 +460,20 @@ ul li {
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 12px;
-    line-height: 15px;
+    line-height: 25px;
 }
 
 ul li span {
     color: var(--flash-red-lighter-2);
     font-weight: bold;
+}
+
+ul li:first-of-type > span:first-child {
+    padding: 3px;
+}
+
+.rankNum {
+    color: var(--flash-black-lighter-3);
 }
 
 #reservationCountByDay {
@@ -470,6 +491,6 @@ ul li span {
     padding-right: 5px;
     letter-spacing: .3em;
     writing-mode: vertical-rl;
-    border-right: 1px var(--flash-blue-lighter-3) solid;
+    border-right: 1px var(--flash-yellow-lighter-3) solid;
 }
 </style>

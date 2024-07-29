@@ -120,7 +120,7 @@ const loadData = (current) => {
 }
 
 .delBtn:hover {
-    background-color: var(--flash-red-lighter-3);
+    background-color: var(--flash-red-lighter-2);
 }
 
 .editBtn {
