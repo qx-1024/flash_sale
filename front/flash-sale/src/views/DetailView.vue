@@ -212,7 +212,7 @@ const buy = () => {
     position: relative;
     height: 100%;
     width: 100%;
-    background-image: url(../images/bg.png);
+    background-image: url(../images/bg3.png);
     background-size: cover;
     z-index: 0;
 }

@@ -3,16 +3,16 @@
       <el-header>
         <el-row>
             <el-col :span="6">
-                <el-statistic value-style="font-size: 28px; color: var(--flash-darkblue-color)" title="商 品 总 数" :value="productCount" />
+                <el-statistic value-style="font-size: 28px; color: var(--flash-green-color)" title="商 品 总 数" :value="productCount" />
             </el-col>
             <el-col :span="6">
-                <el-statistic value-style="font-size: 28px; color: var(--flash-darkblue-color)" title="预 约 活 动 总 数" :value="reservationCount" />
+                <el-statistic value-style="font-size: 28px; color: var(--flash-green-color)" title="预 约 活 动 总 数" :value="reservationCount" />
             </el-col>
             <el-col :span="6">
-                <el-statistic value-style="font-size: 28px; color: var(--flash-darkblue-color)" title="闪 购 活 动 总 数" :value="activityCount" />
+                <el-statistic value-style="font-size: 28px; color: var(--flash-green-color)" title="闪 购 活 动 总 数" :value="activityCount" />
             </el-col>
             <el-col :span="6">
-                <el-statistic value-style="font-size: 28px; color: var(--flash-darkblue-color)" title="订 单 成 交 总 额（单位：元/人民币）" :value="activityCount" />
+                <el-statistic value-style="font-size: 28px; color: var(--flash-red-lighter-2)" title="订 单 成 交 总 额（元/人民币）" :value="totalAmount" precision="2"/>
             </el-col>
         </el-row>
       </el-header>
@@ -27,7 +27,7 @@
                         </div>
                     </template>
                     <ul v-for="item in top5BySale" :key="item.id">
-                        <li> {{ truncateText(item.productName) }} -- 已售：<span> {{ item.sales }} </span></li>
+                        <li> {{ truncateText(item.productName) }} -- 已售：<span> {{ item.sales }} </span> 件</li>
                     </ul>
                 </el-card>
             </el-col>
@@ -81,16 +81,6 @@
                     <div id="reservationCountByDay"></div>
                 </el-card>
             </el-col>
-            <!-- <el-col :span="8">
-                <el-card shadow="hover">
-                    <div class="card-header">
-                        <span class="card-title">闪 购 排 行 榜</span>
-                    </div>
-                    <ul v-for="item in top5ByActivity" :key="item.id">
-                        <li>{{ item.activityName }} -- 参与：<span> {{ item.activityCount }} </span> 人</li>
-                    </ul>
-                </el-card>
-            </el-col> -->
         </el-row>
       </el-footer>
     </el-container>    
@@ -99,34 +89,46 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useTransition } from '@vueuse/core'
 import { doGet } from '../../http/httpRequest'
 
 import * as echarts from 'echarts';
 
-
-
-
 onMounted(() => {
-    initReservationCountByDay();
+    // 获取获取一周每天的预约量并初始化预约统计图
+    getLastWeekReservationNum();
 
+
+    // 获取商品总数
     getProductCount();
 
+    // 获取预约总数
     getReservationCount();
 
+    // 获取闪购活动总数
     getActivityCount();
 
+    // 获取成交总额
+    getTotalAmount();
+
+
+    // 获取销量前5的商品
     getSaleTop5();
 
+    // 获取预约前5的商品
     getReservationTop5();
 
-    getActivityTop5();
 
+    // 获取用户总数
     getUserCount();
 
+    // 获取男性用户总数
     getMaleCount();
 
+    // 获取女性用户总数
     getFemaleCount();
 
+    // 获取vip用户总数
     getVipCount();
 })
 
@@ -192,31 +194,68 @@ const getActivityCount = () => {
         })
 }
 
+/**
+ * @description 获取成交总金额
+ */
+const totalAmount = ref(0)
+const source = ref(0)
+
+totalAmount.value = useTransition(source,{
+    duration: 200
+})
+
+const getTotalAmount = () => {
+    doGet('/order/amountTotal', {})
+        .then(res => {
+            if (res.data.code === 200) {
+                source.value = res.data.data;
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
+
 
 /**
  * @description 预 约 统 计（折线图）
  */
+const weekRservation = ref([]);
+
+const getLastWeekReservationNum = () => {
+    doGet('/reservation/week', {})
+        .then(res => {
+            weekRservation.value = res.data.data
+            console.log(weekRservation.value.map(item => item.date));
+
+            initReservationCountByDay();
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
+
 const initReservationCountByDay = () => {
     var chartDom = document.getElementById('reservationCountByDay');
     var myChart = echarts.init(chartDom);
     var option = {
         xAxis: {
             type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            data: weekRservation.value.map(item => item.date)
         },
         yAxis: {
             type: 'value'
         },
         series: [
             {
-                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                data: weekRservation.value.map(item => item.count),
                 type: 'line',
                 smooth: true,
                 lineStyle: {
-                    color: '#00bbf0'
+                    color: '#fdd381'
                 },
                 itemStyle: {
-                    color: '#00bbf0'
+                    color: '#ff8787'
                 },
             }
         ]
@@ -224,6 +263,7 @@ const initReservationCountByDay = () => {
 
     option && myChart.setOption(option);
 }
+
 
 
 /**
@@ -251,7 +291,6 @@ const getReservationTop5 = () => {
         .then(res => {
             if(res.data.code === 200){
                 top5ByReservation.value = res.data.data
-                console.log(top5ByReservation.value);
             }
         })
         .catch(err => {
@@ -259,21 +298,9 @@ const getReservationTop5 = () => {
         })
 }
 
-/**
- * @description 获取参与人数前5的闪购活动
- */
-const top5ByActivity = ref([])
-const getActivityTop5 = () => {
-    doGet('/activity/top5', {})
-        .then(res => {
-            if(res.data.code ===  200){
-                top5ByActivity.value = res.data.data
-            }
-        })
-        .catch(err => {
-            console.log(err);
-        })
-}
+
+
+
 
 /**
  * @description 获取用户总数量
@@ -374,7 +401,7 @@ const getVipCount = () => {
 
 .userBoard {
     font-size: 24px;
-    color: var(--flash-skyblue-color);
+    color: var(--flash-blue-lighter-3);
 }
 
 .userBoard .el-row {
@@ -383,12 +410,12 @@ const getVipCount = () => {
 }
 
 .one {
-    border-bottom: 1px var(--flash-black-lighter-2) dashed;
+    border-bottom: 1px var(--flash-purple-color) solid;
 }
 
 .one .el-col:nth-child(1),
 .two .el-col:nth-child(1) {
-    border-right: 1px var(--flash-black-lighter-2) dashed;
+    border-right: 1px var(--flash-purple-color) solid;
 }
 
 .one .el-col,
@@ -406,7 +433,7 @@ const getVipCount = () => {
 
 .card-title {
     font-weight: bold;
-    color: var(--flash-skyblue-color);
+    color: var(--flash-blue-lighter-3);
     font-size: 20px;
 }
 
@@ -424,7 +451,7 @@ ul li {
 }
 
 ul li span {
-    color: var(--flash-skyblue-color);
+    color: var(--flash-red-lighter-2);
     font-weight: bold;
 }
 
@@ -437,12 +464,12 @@ ul li span {
 .reservationCountByDayTitle {
     font-size: 18px;
     font-weight: bold;
-    color: var(--flash-skyblue-color);
+    color: var(--flash-blue-lighter-3);
     float: left;
     margin-left: 20px;
     padding-right: 5px;
     letter-spacing: .3em;
     writing-mode: vertical-rl;
-    border-right: 1px var(--flash-skyblue-color) solid;
+    border-right: 1px var(--flash-blue-lighter-3) solid;
 }
 </style>

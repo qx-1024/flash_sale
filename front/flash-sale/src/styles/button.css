@@ -1,0 +1,29 @@
+.addBtn {
+    border: none;
+    color: var(--flash-blue-lighter-4);
+    background-color: var(--flash-blue-color);
+}
+
+.addBtn:hover {
+    background-color: var(--flash-blue-lighter-1);
+}
+
+.delBtn {
+    border: none;
+    color: var(--flash-red-lighter-4);
+    background-color: var(--flash-red-color);
+}
+
+.delBtn:hover {
+    background-color: var(--flash-red-lighter-2);
+}
+
+.editBtn {
+    border: none;
+    color: #fff;
+    background-color: var(--flash-green-color);
+}
+
+.editBtn:hover {
+    background-color: var(--flash-green-lighter-2);
+}

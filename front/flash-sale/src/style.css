@@ -1,27 +1,48 @@
 :root{
-  --flash-black-color: #000000;
-  --flash-black-lighter-1: #3a4750; /* 第一个更浅的颜色 */
-  --flash-black-lighter-2: #000000aa; /* 第二个更浅的颜色 */
-  --flash-black-lighter-3: #999999; /* 第三个更浅的颜色 */
-  --flash-black-lighter-4: #cccccc; /* 第四个更浅的颜色 */
+  --falsh-pure-white: #fff;
+  --flash-pure-black: #000;
 
-  --flash-darkblue-color: #005792;
-  --flash-darkblue-lighter-1: #226b9e; /* 第一个更浅的颜色 */
-  --flash-darkblue-lighter-2: #447f9f; /* 第二个更浅的颜色 */
-  --flash-darkblue-lighter-3: #6692a1; /* 第三个更浅的颜色 */
-  --flash-darkblue-lighter-4: #88a5a3; /* 第四个更浅的颜色 */
+  --flash-black-color: #141414;
+  --flash-black-lighter-1: #292929;
+  --flash-black-lighter-2: #525152;
+  --flash-black-lighter-3: #b8b8b8;
+  --flash-black-lighter-4: #e0e0e0;
 
-  --flash-skyblue-color: #00bbf0;
-  --flash-skyblue-lighter-1: #33cde8; /* 第一个更浅的颜色 */
-  --flash-skyblue-lighter-2: #66e0ff; /* 第二个更浅的颜色 */
-  --flash-skyblue-lighter-3: #99f2ff; /* 第三个更浅的颜色 */
-  --flash-skyblue-lighter-4: #f2f4fa; /* 第四个更浅的颜色 */
+  --flash-red-color: #c92a2a;
+  --flash-red-lighter-1: #f03131;
+  --flash-red-lighter-2: #ff6b6b;
+  --flash-red-lighter-3: #ff8787;
+  --flash-red-lighter-4: #fff5f5;
 
-  --flash-lighterblue-color: #d9faff;
-  --flash-lighterblue-lighter-1: #eefcfb; /* 第一个更浅的颜色 */
-  --flash-lighterblue-lighter-2: #f4fefe; /* 第二个更浅的颜色 */
-  --flash-lighterblue-lighter-3: #fafafa; /* 第三个更浅的颜色 */
-  --flash-lighterblue-lighter-4: #fbfbfb; /* 第四个更浅的颜色 */
+  --flash-blue-color: #1864ab;
+  --flash-blue-lighter-1: #1c7ed6;
+  --flash-blue-lighter-2: #339af0;
+  --flash-blue-lighter-3: #4dabf7;
+  --flash-blue-lighter-4: #e7f5ff;
+
+  --flash-grey-color: #3d3d3d;
+  --flash-grey-lighter-1: #666666;
+  --flash-grey-lighter-2: #8f8f8f;
+  --flash-grey-lighter-3: #cccccc;
+  --flash-grey-lighter-4: #f6f6f6;
+
+  --flash-green-color: #69db7c;
+  --flash-green-lighter-1: #8ce99a;
+  --flash-green-lighter-2: #b2f2bb;
+  --flash-green-lighter-3: #d3f8d8;
+  --flash-green-lighter-4: #ebfbee;
+
+  --flash-purple-color: #5f3dc4;
+  --flash-purple-lighter-1: #6741d9;
+  --flash-purple-lighter-2: #845ef7;
+  --flash-purple-lighter-3: #d0bfff;
+  --flash-purple-lighter-4: #f3f0ff;
+
+  --flash-yellow-color: #e59c58;
+  --flash-yellow-lighter-1: #f0b76f;
+  --flash-yellow-lighter-2: #f7e16f;
+  --flash-yellow-lighter-3: #fdd381;
+  --flash-yellow-lighter-4: #fdeeba;
 }
 
 body{

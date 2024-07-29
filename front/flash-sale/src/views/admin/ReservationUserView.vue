@@ -1,5 +1,5 @@
 <template>
-    <el-button class="mybtn" :icon="Plus" @click="add" size="small" round>添 加 预 约</el-button>
+    <el-button class="addBtn" :icon="Plus" @click="add" size="small" round>添 加 预 约</el-button>
     <img class="empty_data_img" src="../../assets/empty_data.svg" alt="空空如也~" v-if="tableData.length == 0">
     <el-table :data="tableData" stripe style="width: 100%" v-else>
         <el-table-column prop="reservationName" align="center" label="预约活动名称" show-overflow-tooltip/>
@@ -7,8 +7,8 @@
         <el-table-column prop="createTime" align="center" label="添加时间" show-overflow-tooltip/>
         <el-table-column prop="options" align="center" fixed="right" label="操作" width="180">
             <template #default="scoped">
-                <el-button type="success" :icon="Edit" size="small" @click="view(scoped.row.id)" plain round>编 辑</el-button>
-                <el-button type="danger" :icon="Delete" size="small" @click="del(scoped.row.id)" plain round>删 除</el-button>
+                <el-button class="editBtn" :icon="Edit" size="small" @click="view(scoped.row.id)" round>编 辑</el-button>
+                <el-button class="delBtn" :icon="Delete" size="small" @click="del(scoped.row.id)" round>删 除</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -95,20 +95,41 @@ const loadData = (current) => {
     transform: translateX(-25%) translateY(-50%);
 }
 
-.mybtn {
-    border: none;
-    color: var(--flash-lighterblue-lighter-4);
-    background-color: var(--flash-skyblue-color);
-}
-
-.mybtn:hover {
-    background-color: var(--flash-skyblue-lighter-1);
-}
-
 .el-pagination {
     position: absolute;
     bottom: 35px;
     left: 50%;
     transform: translateX(-30%);
-} 
+}
+
+
+.addBtn {
+    border: none;
+    color: var(--flash-blue-lighter-4);
+    background-color: var(--flash-blue-color);
+}
+
+.addBtn:hover {
+    background-color: var(--flash-blue-lighter-1);
+}
+
+.delBtn {
+    border: none;
+    color: var(--flash-red-lighter-4);
+    background-color: var(--flash-red-lighter-2);
+}
+
+.delBtn:hover {
+    background-color: var(--flash-red-lighter-3);
+}
+
+.editBtn {
+    border: none;
+    color: #fff;
+    background-color: var(--flash-green-color);
+}
+
+.editBtn:hover {
+    background-color: var(--flash-green-lighter-2);
+}
 </style>

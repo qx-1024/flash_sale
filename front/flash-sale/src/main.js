@@ -1,6 +1,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+
+// 全局样式
 import './style.css'
+// 全局按钮样式
+import './styles/button.css'
 
 import router from './router/router'
 

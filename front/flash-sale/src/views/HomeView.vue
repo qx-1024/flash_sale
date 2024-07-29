@@ -290,7 +290,7 @@ const logout = () => {
 .ranking-sale {
     font-weight: bold;
     font-size: 36px;
-    color: var(--flash-darkblue-color);
+    color: var(--flash-red-lighter-2);
 }
 
 .ranking-price-box {

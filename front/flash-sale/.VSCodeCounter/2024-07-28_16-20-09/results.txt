@@ -1,0 +1,75 @@
+Date : 2024-07-28 16:20:09
+Directory : f:\flash-sale
+Total : 33 files,  6355 codes, 340 comments, 546 blanks, all 7241 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Vue        |         14 |      2,656 |        310 |        475 |      3,441 |
+| XML        |          9 |      2,053 |          6 |         12 |      2,071 |
+| JSON       |          2 |      1,363 |          0 |          2 |      1,365 |
+| JavaScript |          5 |        240 |         24 |         48 |        312 |
+| CSS        |          1 |         26 |          0 |          4 |         30 |
+| HTML       |          1 |         13 |          0 |          1 |         14 |
+| Markdown   |          1 |          4 |          0 |          4 |          8 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                    | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                       |         33 |      6,355 |        340 |        546 |      7,241 |
+| . (Files)                                               |          5 |      1,388 |          1 |          9 |      1,398 |
+| public                                                  |          1 |          1 |          0 |          0 |          1 |
+| src                                                     |         27 |      4,966 |        339 |        537 |      5,842 |
+| src (Files)                                             |          3 |         50 |          1 |         15 |         66 |
+| src\assets                                              |          8 |      2,052 |          6 |         12 |      2,070 |
+| src\components                                          |          1 |         78 |         30 |         19 |        127 |
+| src\http                                                |          1 |         94 |         15 |         16 |        125 |
+| src\router                                              |          1 |        102 |          7 |         17 |        126 |
+| src\stores                                              |          1 |         15 |          0 |          3 |         18 |
+| src\views                                               |         12 |      2,575 |        280 |        455 |      3,310 |
+| src\views (Files)                                       |          4 |      1,076 |        139 |        197 |      1,412 |
+| src\views\admin                                         |          8 |      1,499 |        141 |        258 |      1,898 |
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+| f:\flash-sale\README.md                                 | Markdown   |          4 |          0 |          4 |          8 |
+| f:\flash-sale\index.html                                | HTML       |         13 |          0 |          1 |         14 |
+| f:\flash-sale\package-lock.json                         | JSON       |      1,336 |          0 |          1 |      1,337 |
+| f:\flash-sale\package.json                              | JSON       |         27 |          0 |          1 |         28 |
+| f:\flash-sale\public\vite.svg                           | XML        |          1 |          0 |          0 |          1 |
+| f:\flash-sale\src\App.vue                               | Vue        |          3 |          0 |          1 |          4 |
+| f:\flash-sale\src\assets\404.svg                        | XML        |         46 |          1 |          2 |         49 |
+| f:\flash-sale\src\assets\aside_bottom.svg               | XML        |          1 |          0 |          0 |          1 |
+| f:\flash-sale\src\assets\astronaut.svg                  | XML        |        932 |          1 |          2 |        935 |
+| f:\flash-sale\src\assets\empty_data.svg                 | XML        |          1 |          0 |          0 |          1 |
+| f:\flash-sale\src\assets\mars.svg                       | XML        |        151 |          1 |          2 |        154 |
+| f:\flash-sale\src\assets\meteor.svg                     | XML        |         29 |          1 |          2 |         32 |
+| f:\flash-sale\src\assets\spaceship.svg                  | XML        |        507 |          1 |          2 |        510 |
+| f:\flash-sale\src\assets\star.svg                       | XML        |        385 |          1 |          2 |        388 |
+| f:\flash-sale\src\components\VertitationCode.vue        | Vue        |         78 |         30 |         19 |        127 |
+| f:\flash-sale\src\http\httpRequest.js                   | JavaScript |         94 |         15 |         16 |        125 |
+| f:\flash-sale\src\main.js                               | JavaScript |         21 |          1 |         10 |         32 |
+| f:\flash-sale\src\router\router.js                      | JavaScript |        102 |          7 |         17 |        126 |
+| f:\flash-sale\src\stores\product.js                     | JavaScript |         15 |          0 |          3 |         18 |
+| f:\flash-sale\src\style.css                             | CSS        |         26 |          0 |          4 |         30 |
+| f:\flash-sale\src\views\404.vue                         | Vue        |        129 |          0 |         20 |        149 |
+| f:\flash-sale\src\views\DetailView.vue                  | Vue        |        297 |         28 |         63 |        388 |
+| f:\flash-sale\src\views\HomeView.vue                    | Vue        |        286 |         33 |         51 |        370 |
+| f:\flash-sale\src\views\LoginView.vue                   | Vue        |        364 |         78 |         63 |        505 |
+| f:\flash-sale\src\views\admin\DashboardView.vue         | Vue        |        189 |         13 |         25 |        227 |
+| f:\flash-sale\src\views\admin\FlashSaleActivityView.vue | Vue        |        146 |          9 |         32 |        187 |
+| f:\flash-sale\src\views\admin\OrderView.vue             | Vue        |         97 |          8 |         16 |        121 |
+| f:\flash-sale\src\views\admin\ProductView.vue           | Vue        |        311 |         48 |         46 |        405 |
+| f:\flash-sale\src\views\admin\ReservationUserView.vue   | Vue        |         90 |          8 |         16 |        114 |
+| f:\flash-sale\src\views\admin\ReservationView.vue       | Vue        |        144 |         10 |         31 |        185 |
+| f:\flash-sale\src\views\admin\StatisticsView.vue        | Vue        |        352 |         36 |         60 |        448 |
+| f:\flash-sale\src\views\admin\UserView.vue              | Vue        |        170 |          9 |         32 |        211 |
+| f:\flash-sale\vite.config.js                            | JavaScript |          8 |          1 |          2 |         11 |
+| Total                                                   |            |      6,355 |        340 |        546 |      7,241 |
++---------------------------------------------------------+------------+------------+------------+------------+------------+

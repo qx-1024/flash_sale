@@ -3,8 +3,8 @@
         <el-aside width="150px">
             <el-menu
                 class="rightMenu"
-                text-color="#00204a"
-                active-text-color="#00bbf0"
+                text-color="#637ea9"
+                active-text-color="#4dabf7"
                 router
                 :unique-opened="true"
                 :default-active="route.path"
@@ -36,12 +36,12 @@
                             alt="秋玄科技"
                         />
                     </el-menu-item>
-                    <div class="flex-grow" />
-                        <el-sub-menu index="1">
-                            <template #title v-if="currentUser.length === 0">用 户 名</template>
-                            <template #title v-else>{{ currentUser.realName }}</template>
-                            <el-menu-item index="1-1" @click="logout">登 出</el-menu-item>
-                        </el-sub-menu>
+                    <span class="flex-grow" />
+                    <el-sub-menu index="2">
+                        <template #title v-if="currentUser.length === 0">用 户 名</template>
+                        <template #title v-else>{{ currentUser.realName }}</template>
+                        <el-menu-item class="logoutItem" index="1-1" @click="logout">登 出</el-menu-item>
+                    </el-sub-menu>
                 </el-menu>
             </el-header>
 
@@ -174,7 +174,7 @@ const logout = () => {
 
 <style scoped>
 .el-container {
-    background-color: var(--flash-skyblue-lighter-4);
+    background-color: var(--flash-grey-lighter-4);
 }
 
 .el-header {
@@ -199,7 +199,9 @@ const logout = () => {
 }
 
 .is-active{
-    border-right: 3px solid var(--flash-skyblue-color);
+    color: #fff;
+    border-right: 3px solid var(--flash-red-lighter-1);
+    background-color: var(--flash-blue-lighter-3);
 }
 
 .el-aside{
@@ -221,7 +223,7 @@ const logout = () => {
     font-size: 11px;
     line-height: 30px;
     text-align: center;
-    color: var(--flash-black-lighter-1);
+    color: var(--flash-black-lighter-3);
     background-color: #fff;
 }
 </style>

@@ -101,22 +101,6 @@ const checkCooldown = () => {
     }
 };
 
-// 添加一个事件监听器来拦截页面刷新
-window.addEventListener('beforeunload', (event) => {
-    // 检查是否有冷却时间
-    const lastRequestTime = window.localStorage.getItem(cooldownKey);
-    if (lastRequestTime) {
-        const currentTime = Date.now();
-        const timeSinceLastRequest = currentTime - parseInt(lastRequestTime, 10);
-
-        // 如果冷却时间未过，则阻止页面刷新
-        if (timeSinceLastRequest < cooldownDuration) {
-            event.preventDefault();
-            return; // 不返回任何值，以避免弹窗
-        }
-    }
-});
-
 // 保存验证码图片 URL 到 localStorage
 watch(captchaImageUrl, (newValue) => {
     if (newValue) {

@@ -34,7 +34,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button class="mybtn" round @click="login">登 录</el-button>
+                <el-button class="comfirmBtn" round @click="login">登 录</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -89,8 +89,8 @@
 
             <el-form-item>
                 <el-space wrap :size="310">
-                    <el-button type="danger" round @click="cancelRegister">取 消</el-button>
-                    <el-button class="mybtn" round @click="register">注 册</el-button>
+                    <el-button class="cacelBtn" round @click="cancelRegister">取 消</el-button>
+                    <el-button class="comfirmBtn" round @click="register">注 册</el-button>
                 </el-space>
             </el-form-item>
         </el-form>
@@ -122,8 +122,8 @@
 
             <el-form-item>
                 <el-space wrap :size="310">
-                    <el-button type="danger" round @click="cancelUpdate">取 消</el-button>
-                    <el-button class="mybtn" round @click="confirmCommit">确 认</el-button>
+                    <el-button class="cacelBtn" round @click="cancelUpdate">取 消</el-button>
+                    <el-button class="comfirmBtn" round @click="confirmCommit">确 认</el-button>
                 </el-space>
             </el-form-item>
         </el-form>
@@ -448,8 +448,8 @@ const confirmCommit = () =>{
 <style scoped>
 .container {
     width: 100%;
-    height: calc(100vh - 100px);
-    background-image: url(../images/bg.png);
+    height: calc(100vh - 200px);
+    background-image: url(../images/bg3.png);
     background-size: cover;
     padding-top: 180px;
 }
@@ -485,21 +485,31 @@ const confirmCommit = () =>{
 h1 {
     margin-top: 0;
     width: 100%;
-    color: var(--flash-black-color);
+    color: var(--flash-blue-color);
 }
 
 .options {
     width: 100%;
 }
 
-.mybtn {
+.comfirmBtn {
     width: 100%;
     border: none;
-    color: #fff;
-    background-color: var(--flash-skyblue-color);
+    color: var(--falsh-pure-white);
+    background-color: var(--flash-green-lighter-1);
 }
 
-.mybtn:hover {
-    background-color: var(--flash-skyblue-lighter-1);
+.comfirmBtn:hover {
+    background-color: var(--flash-green-lighter-2);
+}
+
+.cacelBtn {
+    border: none;
+    color: var(--falsh-pure-white);
+    background-color: var(--flash-red-lighter-2);
+}
+
+.cacelBtn:hover {
+    background-color: var(--flash-red-lighter-3);
 }
 </style>
