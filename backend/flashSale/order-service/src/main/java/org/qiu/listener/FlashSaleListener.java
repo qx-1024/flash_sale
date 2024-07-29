@@ -32,20 +32,20 @@ public class FlashSaleListener {
     @RabbitListener(queues = Constants.FLASH_SALE_QUEUE_NAME)
     public void onFlashSaleEvent(BuyInfo buyInfo){
         Order order = new Order();
-
         String productId = buyInfo.getProductId();
+        String note = buyInfo.getNote();
+
+        BigDecimal price = productService.getPrice(productId);
+        String activityId = productService.getActivityId(productId);
+
+
         order.setOrderId(buyInfo.getOrderId());
         order.setProductId(productId);
         order.setUserId(buyInfo.getUserId());
         order.setPayStatus(buyInfo.getPayStatus());
-
-        BigDecimal price = productService.getPrice(productId);
         order.setAmount(price);
-
-        String activityId = productService.getActivityId(productId);
         order.setActivityId(activityId);
 
-        String note = buyInfo.getNote();
         if (note == null || note.isEmpty()) {
             order.setNote("无");
         } else {

@@ -92,10 +92,6 @@ public class UserController {
 
         User user = (User) redisTemplate.opsForValue().get(Constants.CURRENT_LOGIN_USER + userId);
 
-        if (user == null) {
-            user = userService.selectOne(userId);
-        }
-
         return user != null ? R.OK(user) : R.FAIL("用户未登录");
     }
 

@@ -18,6 +18,7 @@ import org.qiu.utils.JWTUtil;
 import org.qiu.utils.SHA256Util;
 import org.qiu.utils.VerificationUtil;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -69,16 +70,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             String userId = user.getUserId();
             String token = JWTUtil.createToken(userId);
 
-            // 删除 Redis 中的验证码
-            redisTemplate.delete(Constants.CAPTCHA_CODE_KEY + code);
+            CompletableFuture.runAsync(() -> {
+                ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
+                // 删除 Redis 中的验证码
+                redisTemplate.delete(Constants.CAPTCHA_CODE_KEY + code);
 
-            // 保存用户 token 到 Redis
-            redisTemplate.opsForValue().set(Constants.TOKEN_KEY + userId, token,
-                    Constants.TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
+                // 保存用户 token 到 Redis
+                valueOps.set(Constants.TOKEN_KEY + userId, token,
+                        Constants.TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
 
-            // 保存用户 ID 到 Redis，表示用户处于登录状态
-            redisTemplate.opsForValue().set(Constants.CURRENT_LOGIN_USER + userId, user,
-                    Constants.CURRENT_LOGIN_USER_EXPIRE_TIME, TimeUnit.MINUTES);
+                // 保存用户 ID 到 Redis，表示用户处于登录状态
+                valueOps.set(Constants.CURRENT_LOGIN_USER + userId, user,
+                        Constants.CURRENT_LOGIN_USER_EXPIRE_TIME, TimeUnit.MINUTES);
+            });
 
             // 返回 token
             return token;
@@ -163,10 +167,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return user != null ? userMapper.updateById(user) : 0;
     }
 
+    /**
+     * 获取验证码
+     */
     @Override
-    public void getCode(HttpServletRequest request,
-                          HttpServletResponse response,
-                          DefaultKaptcha captchaProducer)
+    public void getCode(HttpServletRequest request, HttpServletResponse response, DefaultKaptcha captchaProducer)
             throws Exception {
         // 获取客户端的IP地址
         String clientIp = getClientIp(request);

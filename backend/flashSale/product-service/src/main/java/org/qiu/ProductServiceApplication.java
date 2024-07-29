@@ -53,7 +53,10 @@ public class ProductServiceApplication implements CommandLineRunner {
      */
     @Bean
     public MessageConverter jsonMessageConverter(){
-        return new Jackson2JsonMessageConverter();
+        Jackson2JsonMessageConverter jjmc = new Jackson2JsonMessageConverter();
+        // 开启自动给消息生成唯一 ID
+        jjmc.setCreateMessageIds(true);
+        return jjmc;
     }
 
     /**

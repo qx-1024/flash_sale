@@ -29,8 +29,13 @@ spring:
     virtual-host: /
     username: qiu
     password: 123456
-    publisher-confirm-type: correlated  # 开启 publisher confirm 机制，并设置 confirm 类型
-    publisher-returns: true             # 开启 publisher returns 机制
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          multiplier: 2
 
 mybatis-plus:
   configuration:
