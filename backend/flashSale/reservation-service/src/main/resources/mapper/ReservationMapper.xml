@@ -16,16 +16,8 @@
         <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
     </resultMap>
 
-    <resultMap id="Top5ResultMap" type="org.qiu.pojo.Reservation">
-        <id property="reservationId" column="reservationId" jdbcType="VARCHAR"/>
-        <result property="activityId" column="activityId" jdbcType="VARCHAR"/>
+    <resultMap id="Top5ResultMap" type="org.qiu.pojo.Top5Query">
         <result property="reservationName" column="reservationName" jdbcType="VARCHAR"/>
-        <result property="reservationStatus" column="reservationStatus" jdbcType="INTEGER"/>
-        <result property="startTime" column="startTime" jdbcType="TIMESTAMP"/>
-        <result property="endTime" column="endTime" jdbcType="TIMESTAMP"/>
-        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
-        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
-        <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
         <result property="count" column="count" jdbcType="INTEGER"/>
     </resultMap>
 
@@ -52,9 +44,14 @@
     </sql>
 
     <sql id="Top5_Column_List">
-        reservationId,activityId,reservationName,
-        reservationStatus,startTime,endTime,
-        createTime,updateTime,isDeleted,count
+        reservationName,count
+    </sql>
+
+    <sql id="Product_Base_Column_List">
+        productId,productName,isFlashSale,
+        price,stock,sales,
+        images,createTime,updateTime,
+        isDeleted
     </sql>
 
     <select id="selectTop5" resultMap="Top5ResultMap">
@@ -92,8 +89,8 @@
         <![CDATA[
         SELECT DATE(createTime) AS date, COUNT(*) AS count
         FROM reservation_user
-        WHERE createTime >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
-        AND createTime <= NOW()
+        WHERE createTime >= DATE_SUB(DATE(NOW()), INTERVAL 7 DAY)
+        AND createTime < DATE(NOW())
         GROUP BY DATE(createTime)
         ORDER BY date;
         ]]>
@@ -112,7 +109,7 @@
     </select>
 
     <select id="selectProduct" resultType="org.qiu.pojo.Product">
-        select *
+        select <include refid="Product_Base_Column_List" />
         from product
         where productId = #{id}
     </select>

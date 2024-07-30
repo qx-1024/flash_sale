@@ -38,7 +38,6 @@ public class FlashSaleListener {
         BigDecimal price = productService.getPrice(productId);
         String activityId = productService.getActivityId(productId);
 
-
         order.setOrderId(buyInfo.getOrderId());
         order.setProductId(productId);
         order.setUserId(buyInfo.getUserId());

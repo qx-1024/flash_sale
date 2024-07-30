@@ -68,7 +68,7 @@ public class ReservationController {
      */
     @GetMapping("/top5")
     public R getTop5Reservations(){
-        List<Reservation> reservationList = reservationService.selectTop5();
+        List<Top5Query> reservationList = reservationService.selectTop5();
         return reservationList != null ? R.OK(reservationList) : R.FAIL("查询预约数量失败");
     }
 

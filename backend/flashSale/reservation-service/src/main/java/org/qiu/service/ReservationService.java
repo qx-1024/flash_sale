@@ -15,7 +15,7 @@ public interface ReservationService extends MPJBaseService<Reservation> {
 
     int saveReservation(Reservation reservation);
 
-    List<Reservation> selectTop5();
+    List<Top5Query> selectTop5();
 
     IPage<ReservationQuery> selectByPage(Integer current);
 

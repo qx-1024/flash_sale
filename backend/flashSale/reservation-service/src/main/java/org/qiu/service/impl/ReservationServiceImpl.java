@@ -96,7 +96,7 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
      * 查询预约量前五的预约活动
      */
     @Override
-    public List<Reservation> selectTop5() {
+    public List<Top5Query> selectTop5() {
         return reservationMapper.selectTop5();
     }
 

@@ -49,7 +49,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
         // 新增商品信息到缓存
         redisTemplate.opsForValue().set(
                 Constants.FLASH_SALE_PRODUCT_KEY + productId,
-               product
+                product
         );
 
         return inserted;
