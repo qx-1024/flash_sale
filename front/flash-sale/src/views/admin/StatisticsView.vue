@@ -41,12 +41,8 @@
 
             <el-col :span="8">
                 <el-card shadow="hover">
-                    <div class="card-header">
-                        <span class="card-title">预 约 排 行 榜</span>
-                    </div>
-                    <ul v-for="item in top5ByReservation" :key="item.id">
-                        <li> {{ truncateText(item.reservationName) }} -- 预约：<span> {{ item.count }} </span> 人</li>
-                    </ul>
+                    <span class="card-title">预 约 排 行 榜</span>
+                    <div id="reservationRank"></div>
                 </el-card>
             </el-col>
 
@@ -100,7 +96,7 @@ import { doGet } from '../../http/httpRequest'
 import * as echarts from 'echarts';
 
 onMounted(() => {
-    // 获取获取一周每天的预约量并初始化预约统计图
+    // 获取获取一周每天的预约量并初始化预约统计图批【折线图】
     getLastWeekReservationNum();
 
 
@@ -120,7 +116,7 @@ onMounted(() => {
     // 获取销量前5的商品
     getSaleTop5();
 
-    // 获取预约前5的商品
+    // 获取预约前5的商品【饼图】
     getReservationTop5();
 
 
@@ -155,7 +151,7 @@ const truncateText = computed({
 
 
 
-
+/************************************************* 顶部 ************************************************* */
 
 /**
  * @description 获取商品总数
@@ -228,54 +224,8 @@ const getTotalAmount = () => {
 }
 
 
-/**
- * @description 预 约 统 计（折线图）
- */
-const weekRservation = ref([]);
 
-const getLastWeekReservationNum = () => {
-    doGet('/reservation/week', {})
-        .then(res => {
-            weekRservation.value = res.data.data
-            console.log(weekRservation.value.map(item => item.date));
-
-            initReservationCountByDay();
-        })
-        .catch(err => {
-            console.log(err);
-        })
-}
-
-const initReservationCountByDay = () => {
-    var chartDom = document.getElementById('reservationCountByDay');
-    var myChart = echarts.init(chartDom);
-    var option = {
-        xAxis: {
-            type: 'category',
-            data: weekRservation.value.map(item => item.date)
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [
-            {
-                data: weekRservation.value.map(item => item.count),
-                type: 'line',
-                smooth: true,
-                lineStyle: {
-                    color: '#6741d9'
-                },
-                itemStyle: {
-                    color: '#69db7c'
-                },
-            }
-        ]
-    };
-
-    option && myChart.setOption(option);
-}
-
-
+/************************************************* 中间 ************************************************* */
 
 /**
  * @description 获取销量前5的商品
@@ -294,14 +244,18 @@ const getSaleTop5 = () => {
 }
 
 /**
- * @description 获取预约量前5的预约活动
+ * @description 获取预约量前5的预约活动（饼图）
  */
 const top5ByReservation = ref([])
 const getReservationTop5 = () => {
     doGet('/reservation/top5', {})
         .then(res => {
             if(res.data.code === 200){
-                top5ByReservation.value = res.data.data
+                top5ByReservation.value = res.data.data;
+
+                console.log(top5ByReservation.value);
+
+                initReservationRank();
             }
         })
         .catch(err => {
@@ -309,8 +263,68 @@ const getReservationTop5 = () => {
         })
 }
 
+const initReservationRank = () => {
+    var chartDom = document.getElementById('reservationRank');
+    var myChart = echarts.init(chartDom);
 
+    var data = top5ByReservation.value.map((item, index) => ({
+        value: item.count,
+        name: item.reservationName,
+        itemStyle: {
+            normal: {
+                color: getColor(index) // 获取颜色的方法
+            }
+        }
+    }));
 
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: function(params) {
+                // 显示完整信息
+                return `${params.name}: ${params.value} 人 (${params.percent.toFixed(2)}%)`;
+            },
+            position: 'bottom'
+        },
+        legend: {
+            show: false
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                mark: { show: true },
+                dataView: { show: false, readOnly: false },
+                restore: { show: false },
+                saveAsImage: { show: true }
+            }
+        },
+        series: [
+            {
+                name: '预约量前五的预约活动',
+                type: 'pie',
+                radius: [15, 50],
+                center: ['50%', '50%'],
+                roseType: 'area',
+                itemStyle: {
+                    borderRadius: 5
+                },
+                label: {
+                    show: true,
+                    position: 'outside',
+                },
+                data: data,
+            }
+        ]
+    };
+
+    function getColor(index) {
+        // 根据索引返回颜色
+        const colors = ['#4dabf7', '#69db7c', '#f7e16f', '#845ef7', '#ff6b6b'];
+        return colors[index % colors.length];
+    }
+
+    option && myChart.setOption(option);
+}
 
 
 /**
@@ -375,6 +389,55 @@ const getVipCount = () => {
         })
 }
 
+
+
+/************************************************* 底部 ************************************************* */
+
+/**
+ * @description 预 约 统 计（折线图）
+ */
+const weekRservation = ref([]);
+
+const getLastWeekReservationNum = () => {
+    doGet('/reservation/week', {})
+        .then(res => {
+            weekRservation.value = res.data.data;
+
+            initReservationCountByDay();
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
+
+const initReservationCountByDay = () => {
+    var chartDom = document.getElementById('reservationCountByDay');
+    var myChart = echarts.init(chartDom);
+    var option = {
+        xAxis: {
+            type: 'category',
+            data: weekRservation.value.map(item => item.date)
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                data: weekRservation.value.map(item => item.count),
+                type: 'line',
+                smooth: true,
+                lineStyle: {
+                    color: '#6741d9'
+                },
+                itemStyle: {
+                    color: '#69db7c'
+                },
+            }
+        ]
+    };
+
+    option && myChart.setOption(option);
+}
 
 </script>
 
@@ -474,6 +537,13 @@ ul li:first-of-type > span:first-child {
 
 .rankNum {
     color: var(--flash-black-lighter-3);
+}
+
+
+#reservationRank {
+    width: 100%;
+    height: 230px;
+    /* transform: translateX(-100px); */
 }
 
 #reservationCountByDay {
