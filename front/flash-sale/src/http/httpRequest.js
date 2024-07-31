@@ -1,10 +1,11 @@
 import axios from "axios";
 
 import { ElMessage } from 'element-plus'
+import router from '../router/router'
 
 axios.defaults.baseURL = "http://localhost:8000";
 
-export function doGet(url, params){
+export function doGet(url, params) {
     return axios({
         method: "get",
         url: url,
@@ -13,19 +14,19 @@ export function doGet(url, params){
     })
 }
 
-export function getImg(url, params){
+export function getImg(url, params) {
     return axios({
         method: "get",
         url: url,
         params: params,
         responseType: 'blob',
         headers: {
-            Accept: 'application/octet-stream', 
+            Accept: 'application/octet-stream',
         }
     })
 }
 
-export function uploadFile(url, data){
+export function uploadFile(url, data) {
     return axios({
         method: "post",
         url: url,
@@ -36,7 +37,7 @@ export function uploadFile(url, data){
     })
 }
 
-export function doPost(url, data){
+export function doPost(url, data) {
     return axios({
         method: "post",
         url: url,
@@ -48,7 +49,7 @@ export function doPost(url, data){
     })
 }
 
-export function doPut(url, data){
+export function doPut(url, data) {
     return axios({
         method: "put",
         url: url,
@@ -57,7 +58,7 @@ export function doPut(url, data){
     })
 }
 
-export function doDelete(url, params){
+export function doDelete(url, params) {
     return axios({
         method: "delete",
         url: url,
@@ -71,13 +72,13 @@ export function doDelete(url, params){
  * @description 封装 axios 请求拦截器
  */
 axios.interceptors.request.use(
-    function(config){
+    function (config) {
         let token = window.localStorage.getItem("token")
-        if(token){
+        if (token) {
             config.headers['Authorization'] = token
         }
         return config
-    }, function(error){
+    }, function (error) {
         return Promise.reject(error)
     }
 )
@@ -85,12 +86,14 @@ axios.interceptors.request.use(
 /**
  * @description 封装 axios 响应拦截器
  */
+let hasShownError = false;
+
 axios.interceptors.response.use(
-    function(response) {
+    function (response) {
         // 如果响应成功，则直接返回
         return response;
     },
-    function(error) {
+    function (error) {
         const originalRequest = error.config;
         const response = error.response;
 
@@ -100,10 +103,27 @@ axios.interceptors.response.use(
             window.localStorage.removeItem('token');
 
             // 显示错误消息
-            ElMessage.error('Token 错误，请重新登录！');
+            if (!hasShownError) {
+                ElMessage.error(response.data.msg);
+                hasShownError = true;
+            }
 
             // 重定向到登录页面
-            window.location.href = '/login';
+            router.push('/login');
+
+            return Promise.reject(error);
+        }
+
+        // 500 错误处理
+        if (response && response.status === 500) {
+            // 显示服务器返回的错误消息
+            if (!hasShownError) {
+                ElMessage.error(response.data.msg || '服务器内部错误');
+                hasShownError = true;
+            }
+
+            // 使用 Vue Router 跳转到登录页面
+            router.push('/login');
 
             return Promise.reject(error);
         }
@@ -114,11 +134,17 @@ axios.interceptors.response.use(
             return Promise.reject(response);
         } else if (error.request) {
             // 如果请求已发出但没有收到响应
-            console.error('No response received:', error.request);
+            if (!hasShownError) {
+                ElMessage.error('No response received:', error.request);
+                hasShownError = true;
+            }
             return Promise.reject(error);
         } else {
             // 处理设置请求时发生的错误
-            console.error('Error setting up request:', error.message);
+            if (!hasShownError) {
+                ElMessage.error('Error setting up request:', error.message);
+                hasShownError = true;
+            }
             return Promise.reject(error);
         }
     }

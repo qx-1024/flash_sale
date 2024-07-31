@@ -6,13 +6,13 @@
   --flash-black-lighter-1: #292929;
   --flash-black-lighter-2: #525152;
   --flash-black-lighter-3: #b8b8b8;
-  --flash-black-lighter-4: #e0e0e0;
+  --flash-black-lighter-4: #bfbfbf;
 
   --flash-red-color: #c92a2a;
   --flash-red-lighter-1: #f03131;
   --flash-red-lighter-2: #ff6b6b;
   --flash-red-lighter-3: #ff8787;
-  --flash-red-lighter-4: #fff5f5;
+  --flash-red-lighter-4: #fbf3f3;
 
   --flash-blue-color: #1864ab;
   --flash-blue-lighter-1: #1c7ed6;
@@ -36,13 +36,21 @@
   --flash-purple-lighter-1: #6741d9;
   --flash-purple-lighter-2: #845ef7;
   --flash-purple-lighter-3: #d0bfff;
-  --flash-purple-lighter-4: #f3f0ff;
+  --flash-purple-lighter-4: #e8e3fa;
 
   --flash-yellow-color: #e59c58;
   --flash-yellow-lighter-1: #f0b76f;
   --flash-yellow-lighter-2: #f7e16f;
   --flash-yellow-lighter-3: #fdd381;
-  --flash-yellow-lighter-4: #fdeeba;
+  --flash-yellow-lighter-4: #fdf2c9;
+
+
+  /* 渐变 */
+  --flash-gradient-red-2-white-bottom-right: linear-gradient(to bottom right, #fbf3f3, #fff);
+
+  --flash-gradient-blue-2-white-bottom-right: linear-gradient(to bottom right, #f5f9fc, #fff);
+
+  --flash-gradient-purple-2-white-bottom-right: linear-gradient(to bottom right, #f5f3fe, #fff);
 }
 
 body{
