@@ -104,9 +104,9 @@ public class ReservationController {
      }
 
     /**
-     * 查询对应预约活动正在进行中的商品ID
+     * 查询对应预约活动正在进行中的商品
      */
-    @GetMapping("/productIds")
+    @GetMapping("/products")
     public R selectProductWithOnGoingReservation(){
         List<Product> products = reservationService.selectProductWithOnGoingReservation();
         return products != null ? R.OK(products) : R.FAIL("查询对应预约活动正在进行中的商品ID失败");

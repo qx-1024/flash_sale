@@ -131,10 +131,7 @@ public class ProductController {
         boolean updated = productService.updateById(product);
 
         // 更新缓存
-        redisTemplate.opsForValue().set(
-                Constants.FLASH_SALE_PRODUCT_KEY + product.getProductId(),
-                product
-        );
+        redisTemplate.opsForValue().set(Constants.FLASH_SALE_PRODUCT_KEY + product.getProductId(), product);
 
         return updated ? R.OK("更新商品成功") : R.FAIL("更新商品失败");
     }

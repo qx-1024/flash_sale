@@ -67,7 +67,7 @@ public class Constants {
 
 
     // flash sale product key
-    public static final String FLASH_SALE_PRODUCT_KEY = "flash:product:list";
+    public static final String FLASH_SALE_PRODUCT_KEY = "flash:products";
 
     // reservation list key
     public static final String RESERVATION_KEY = "flash:reservation:";

@@ -1,5 +1,6 @@
 package org.qiu.filters;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
@@ -21,6 +22,7 @@ import java.nio.charset.StandardCharsets;
  * @Version 1.0
  * @Since 1.0
  **/
+@Slf4j
 @Order(100)
 @Component
 public class ExceptionHandlerFilter implements GlobalFilter {
@@ -51,11 +53,17 @@ public class ExceptionHandlerFilter implements GlobalFilter {
         } else if (e instanceof UnsupportedOperationException) {
             status = HttpStatus.BAD_REQUEST;
             errorMessage = "Unsupported Operation: " + e.getMessage();
+        } else if (e instanceof RuntimeException) {
+            status = HttpStatus.BAD_REQUEST;
+            errorMessage = "Runtime Exception: " + e.getMessage();
         } else {
             // 默认错误处理
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             errorMessage = "An internal server error occurred: " + e.getMessage();
         }
+
+        // 记录错误日志
+        log.error(errorMessage);
 
         exchange.getResponse().setStatusCode(status);
         exchange.getResponse().getHeaders().add("Content-Type", MediaType.APPLICATION_JSON_VALUE);

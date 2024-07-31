@@ -23,4 +23,16 @@
         images,createTime,updateTime,
         isDeleted
     </sql>
+
+    <insert id="isFlashSaleProduct">
+        SELECT
+            CASE
+                WHEN NOW() BETWEEN startTime AND endTime THEN 1
+                ELSE 0
+                END AS is_active
+        FROM
+            activity
+        WHERE
+            productId = #{productId}
+    </insert>
 </mapper>

@@ -44,7 +44,7 @@
     </sql>
 
     <sql id="Top5_Column_List">
-        reservationName,count
+        r.reservationName as reservationName,rc.count as `count`
     </sql>
 
     <sql id="Product_Base_Column_List">
@@ -56,12 +56,18 @@
 
     <select id="selectTop5" resultMap="Top5ResultMap">
         SELECT <include refid="Top5_Column_List"/>
-        FROM reservation r
+        FROM
+            reservation r
         JOIN (
-            SELECT res_u.reservationId as res_id, COUNT(*) as count
-            FROM reservation_user res_u
-            GROUP BY res_u.reservationId
-            ORDER BY count DESC
+            SELECT
+                res_u.reservationId AS res_id,
+                COUNT(*) AS count
+            FROM
+                reservation_user res_u
+            GROUP BY
+                res_u.reservationId
+            ORDER BY
+            `count` DESC
             LIMIT 5
         ) rc ON r.reservationId = rc.res_id;
     </select>
