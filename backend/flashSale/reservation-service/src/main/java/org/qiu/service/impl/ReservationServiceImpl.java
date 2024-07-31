@@ -165,17 +165,26 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
     }
 
     /**
-     * 查询正在预约的商品
+     * 查询正在预约的商品列表
      */
     @Override
     public List<Product> selectProductWithOnGoingReservation() {
         List<String> ids = reservationMapper.selectProductIdWithOnGoingReservation();
 
+        List<Product> products = null;
         if (!CollectionUtils.isEmpty(ids)) {
-            return ids.stream()
+            products = ids.stream()
                     .filter(id -> reservationMapper.selectProduct(id) != null)
                     .map(id -> reservationMapper.selectProduct(id))
-                    .collect(Collectors.toList());
+                    .toList();
+
+            products.forEach(product -> {
+                redisTemplate.opsForValue().set(
+                        Constants.FLASH_RESERVE_PRODUCT_KEY + product.getProductId(), product
+                );
+            });
+
+            return products;
         }
 
         return Collections.emptyList();

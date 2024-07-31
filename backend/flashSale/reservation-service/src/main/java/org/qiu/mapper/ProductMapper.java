@@ -11,6 +11,7 @@ import org.qiu.pojo.Product;
 */
 public interface ProductMapper extends BaseMapper<Product> {
 
+    int isFlashSaleProduct(String productId);
 }
 
 

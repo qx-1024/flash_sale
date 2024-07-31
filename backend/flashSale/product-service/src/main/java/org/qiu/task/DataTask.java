@@ -1,6 +1,7 @@
 package org.qiu.task;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.qiu.constant.Constants;
 import org.qiu.mapper.ProductMapper;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Description:
@@ -31,14 +33,12 @@ public class DataTask {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-
-    // 时间常量
-    private static final long TWELVE_HOUR = 12 * 60 * 60 * 1000;
+    private static final long ONE_MINUTE_IN_MILLIS = 60 * 1000;
 
     /**
      * 在项目启动时初始化缓存，后续每秒更新一次缓存
      */
-    @Scheduled(initialDelay = 0, fixedRate = TWELVE_HOUR)
+    @Scheduled(initialDelay = 0, fixedRate = ONE_MINUTE_IN_MILLIS)
     public void initializeAndUpdateCache() {
         // 查询数据库中所有标记为闪购商品的数据
         List<Product> products = productMapper.selectList(
@@ -46,7 +46,16 @@ public class DataTask {
         );
 
         // 将查询到的闪购商品列表存入 Redis 缓存
-        redisTemplate.opsForValue().set(Constants.FLASH_SALE_PRODUCT_KEY, products);
+        if (products != null && !products.isEmpty()) {
+            // 过滤掉闪购活动已结束的商品
+            products.removeIf(product -> productMapper.isFlashSaleProduct(product.getProductId()) == 0);
+
+            // 将从数据库中查询得到的闪购商品列表存入Redis缓存
+            CompletableFuture.runAsync(() -> {
+                products.forEach(product -> redisTemplate.opsForValue()
+                        .set(Constants.FLASH_SALE_PRODUCT_KEY + product.getProductId(), product));
+            });
+        }
     }
 
 }

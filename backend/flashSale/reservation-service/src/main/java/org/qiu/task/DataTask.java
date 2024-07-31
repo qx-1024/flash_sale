@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -97,5 +98,26 @@ public class DataTask {
         });
     }
 
+    /**
+     * 更新缓存中预约专区的商品列表信息
+     */
+    @Scheduled(initialDelay = 0, fixedRate = ONE_MINUTE_IN_MILLIS)
+    public void updateCache(){
+        List<String> ids = reservationMapper.selectProductIdWithOnGoingReservation();
+
+        List<Product> products = null;
+        if (!CollectionUtils.isEmpty(ids)) {
+            products = ids.stream()
+                    .filter(id -> reservationMapper.selectProduct(id) != null)
+                    .map(id -> reservationMapper.selectProduct(id))
+                    .toList();
+
+            products.forEach(product -> {
+                redisTemplate.opsForValue().set(
+                        Constants.FLASH_RESERVE_PRODUCT_KEY + product.getProductId(), product
+                );
+            });
+        }
+    }
 
 }

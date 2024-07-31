@@ -13,12 +13,8 @@
         <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
     </resultMap>
 
-
     <sql id="Base_Column_List">
         id,reservationId,userId,createTime,endTime,isDeleted
     </sql>
-
-
-
 
 </mapper>

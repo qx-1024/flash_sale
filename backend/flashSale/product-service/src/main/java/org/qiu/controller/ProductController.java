@@ -113,10 +113,7 @@ public class ProductController {
         int saved = productService.saveProduct(product);
 
         // 新增到缓存
-        redisTemplate.opsForValue().set(
-                Constants.FLASH_SALE_PRODUCT_KEY + product.getProductId(),
-                product
-        );
+        redisTemplate.opsForValue().set(Constants.FLASH_SALE_PRODUCT_KEY + product.getProductId(), product);
 
         return saved == 1 ? R.OK("新增商品成功") : R.FAIL("新增商品失败");
     }

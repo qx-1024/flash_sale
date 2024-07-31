@@ -24,7 +24,7 @@
         isDeleted
     </sql>
 
-    <insert id="isFlashSaleProduct">
+    <select id="isFlashSaleProduct">
         SELECT
             CASE
                 WHEN NOW() BETWEEN startTime AND endTime THEN 1
@@ -34,5 +34,5 @@
             activity
         WHERE
             productId = #{productId}
-    </insert>
+    </select>
 </mapper>

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -67,17 +68,21 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
         }
 
         // 如果 Redis 中没有缓存数据，则从数据库中查询闪购商品列表
-        List<Product> list = productMapper.selectList(new QueryWrapper<Product>().eq("isFlashSale", 1));
+        products = productMapper.selectList(new QueryWrapper<Product>().eq("isFlashSale", 1));
 
-        if (list != null && !list.isEmpty()) {
+        if (products != null && !products.isEmpty()) {
             // 过滤掉闪购活动已结束的商品
-            list.removeIf(product -> productMapper.isFlashSaleProduct(product.getProductId()) == 0);
+            products.removeIf(product -> productMapper.isFlashSaleProduct(product.getProductId()) == 0);
 
             // 将从数据库中查询得到的闪购商品列表存入Redis缓存
-            redisTemplate.opsForValue().set(Constants.FLASH_SALE_PRODUCT_KEY, list);
+            List<Product> finalProducts = products;
+            CompletableFuture.runAsync(() -> {
+                finalProducts.forEach(product -> redisTemplate.opsForValue()
+                        .set(Constants.FLASH_SALE_PRODUCT_KEY + product.getProductId(), product));
+            });
         }
 
-        return list;
+        return products;
     }
 
     @Override
