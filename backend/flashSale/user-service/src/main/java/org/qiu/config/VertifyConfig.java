@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
 
 /**
- * @Description: 验证码配置类型
+ * @Description: 验证码配置类
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale

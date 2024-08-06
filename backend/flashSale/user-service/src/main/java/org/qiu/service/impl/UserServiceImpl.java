@@ -19,11 +19,8 @@ import org.qiu.utils.SHA256Util;
 import org.qiu.utils.VerificationUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.awt.image.DataBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +54,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 查询 Redis，验证 code 是否存在？是否未过期？
         String redis_code = (String) redisTemplate.opsForValue()
                 .get(Constants.CAPTCHA_CODE_KEY + code);
-        boolean code_exist = redis_code != null;
+
+        if( redis_code == null ) {
+            return null;
+        }
 
         // 根据用户名查询用户
         User user = userMapper.selectByAccount(account);
@@ -66,12 +66,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         password = SHA256Util.encrypt(password);
         boolean password_correct = user != null && user.getPassword().equals(password);
 
-        if (code_exist && password_correct) {
+        if (password_correct) {
             String userId = user.getUserId();
             String token = JWTUtil.createToken(userId);
 
             CompletableFuture.runAsync(() -> {
                 ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
+
                 // 删除 Redis 中的验证码
                 redisTemplate.delete(Constants.CAPTCHA_CODE_KEY + code);
 
@@ -213,16 +214,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return 客户端的IP地址
      */
     private String getClientIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
+        // Try to get the IP from X-Forwarded-For header, which is the most common case.
+        String ip = request.getHeader(Constants.HEADER_X_FORWARDED_FOR);
+
+        if (ip == null || ip.isEmpty() || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
+            // If X-Forwarded-For is not present or unknown, try Proxy-Client-IP.
+            ip = request.getHeader(Constants.HEADER_PROXY_CLIENT_IP);
         }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
+
+        if (ip == null || ip.isEmpty() || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
+            // If Proxy-Client-IP is not present or unknown, try WL-Proxy-Client-IP.
+            ip = request.getHeader(Constants.HEADER_WL_PROXY_CLIENT_IP);
         }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+
+        if (ip == null || ip.isEmpty() || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
+            // If all else fails, get the remote address directly.
             ip = request.getRemoteAddr();
+
+            // In some cases, getRemoteAddr() might still return "0:0:0:0:0:0:0:1" for IPv6 localhost,
+            // so we check and convert it to "127.0.0.1" if necessary.
+            if (ip.equals("0:0:0:0:0:0:0:1")) {
+                ip = "127.0.0.1";
+            }
         }
+
+        // If the X-Forwarded-For header was used, we split by commas and take the first IP.
+        if (Constants.HEADER_X_FORWARDED_FOR.equalsIgnoreCase(request.getHeaderNames().nextElement())) {
+            String[] ips = ip.split(",");
+            if (ips.length > 0) {
+                ip = ips[0].trim();
+            }
+        }
+
         return ip;
     }
 
