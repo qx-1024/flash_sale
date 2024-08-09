@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
 * @author Qiu
@@ -169,6 +171,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     /**
+     * 更新用户信息
+     * @param user   用户对象
+     * @return       更新结果
+     */
+    @Override
+    public boolean updateUser(User user) {
+        if (user == null) {
+            return false;
+        }
+
+        // 从数据库中查询用户信息，包括手机号、密码的原始值
+        User originalUser = userMapper.selectById(user.getUserId());
+
+        // 检查并还原脱敏后的手机号
+        if (isMaskedPhoneNumber(user.getPhoneNumber())) {
+            user.setPhoneNumber(originalUser.getPhoneNumber());
+        }
+
+        // 检查并还原脱敏后的密码
+        if (Constants.ED.equals(user.getPassword())) {
+            user.setPassword(originalUser.getPassword());
+        }
+
+        return userMapper.updateById(user) > 0;
+    }
+
+    /**
      * 获取验证码
      */
     @Override
@@ -249,4 +278,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return ip;
     }
 
+    /**
+     * 验证电话号码是否已被正确脱敏
+     * @param phoneNumber 电话号码字符串
+     * @return 如果电话号码被正确脱敏，则返回 true；否则返回 false
+     */
+    private boolean isMaskedPhoneNumber(String phoneNumber) {
+        // 正则表达式匹配格式：前三位数字，接着四个星号，最后四位数字
+        return phoneNumber.matches("^\\d{3}\\*\\*\\*\\*\\d{4}$");
+    }
 }

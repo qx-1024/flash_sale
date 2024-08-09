@@ -6,7 +6,7 @@ let router = createRouter({
     routes: [
         {
             path: '/',
-            component: () => import('../views/HomeView.vue'),
+            component: () => import('../views/LoginView.vue'),
             meta: { requiresAdmin: false },
         },
         {
@@ -84,7 +84,7 @@ router.beforeEach(async (to, from, next) => {
     if (to.path === '/admin') {
         // 先确保获取了当前用户信息
         await getCurrentUser();
-        
+
         // 如果用户不是管理员，则重定向到登录页
         if (!isAdmin()) {
             next('/login');

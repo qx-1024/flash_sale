@@ -194,7 +194,7 @@ public class UserController {
      */
     @PutMapping("/update")
     public R updateUser (@RequestBody User user){
-        boolean updated = userService.updateById(user);
+        boolean updated = userService.updateUser(user);
         return updated ? R.OK("更新用户信息成功") : R.FAIL("更新用户信息失败");
     }
 

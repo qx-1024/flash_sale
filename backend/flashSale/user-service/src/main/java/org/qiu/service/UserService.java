@@ -25,4 +25,6 @@ public interface UserService extends IService<User> {
     int updateUserPassWord(String username, String password, String confirmPassword);
 
     void getCode(HttpServletRequest request, HttpServletResponse response, DefaultKaptcha captchaProducer) throws Exception;
+
+    boolean updateUser(User user);
 }

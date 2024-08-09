@@ -51,6 +51,7 @@
         <el-row v-for="row in rowNum_p" :key="row">
           <el-col :span="6" v-for="col in colNum_p" :key="col">
             <el-card
+              class="sale_card"
               style="max-width: 400px"
               shadow="hover"
               @click="toDetail(productList[(row - 1) * 4 + col - 1]?.productId)"
@@ -83,6 +84,7 @@
         <el-row v-for="row in rowNum" :key="row">
           <el-col :span="6" v-for="col in colNum" :key="col">
             <el-card
+              class="resever_card"
               style="max-width: 400px"
               shadow="hover"
               @click="
@@ -399,6 +401,10 @@ h1 {
 .el-card {
   border-radius: 10px;
   border: #2d405944 solid 1px;
+}
+
+.el-card img {
+  height: 250px;
 }
 
 .card-title,

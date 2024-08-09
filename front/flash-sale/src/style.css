@@ -51,6 +51,8 @@
   --flash-gradient-blue-2-white-bottom-right: linear-gradient(to bottom right, #f5f9fc, #fff);
 
   --flash-gradient-purple-2-white-bottom-right: linear-gradient(to bottom right, #f5f3fe, #fff);
+
+  --flash-gradient-green-2-white-bottom-right: linear-gradient(to bottom right, #f3fbf4, #fff);
 }
 
 body{

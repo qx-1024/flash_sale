@@ -54,7 +54,10 @@ export function doPut(url, data) {
         method: "put",
         url: url,
         data: data,
-        dataType: "json"
+        dataType: "json",
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
 }
 

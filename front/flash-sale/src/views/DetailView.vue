@@ -214,7 +214,7 @@ const buy = () => {
 <style scoped>
 .container {
   position: relative;
-  height: 100vh;
+  height: calc(100vh - 85px);
   width: 100%;
   background-image: url(../images/bg3.png);
   background-size: cover;

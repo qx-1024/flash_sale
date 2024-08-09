@@ -25,7 +25,7 @@
         </el-col>
         <el-col :span="6">
           <el-statistic
-            value-style="font-size: 28px; color: var(--flash-red-lighter-2)"
+            value-style="font-size: 28px; color: var(--flash-red-lighter-2); font-weight: bold;"
             title="订 单 成 交 总 额（元/人民币）"
             :value="totalAmount"
             precision="2"
@@ -274,9 +274,6 @@ const getReservationTop5 = () => {
     .then((res) => {
       if (res.data.code === 200) {
         top5ByReservation.value = res.data.data;
-
-        console.log(top5ByReservation.value);
-
         initReservationRank();
       }
     })
@@ -466,7 +463,7 @@ const initReservationCountByDay = () => {
 /******************************************** 顶部统计数据 **************************************/
 .el-header {
   height: 100px;
-  margin-top: 10px;
+  /* margin-top: 10px; */
   margin-left: 30px;
   margin-right: 30px;
   text-align: center;
@@ -593,7 +590,7 @@ ul li:first-of-type > span:first-child {
   border: none;
   border-radius: 10px;
   padding-left: 130px;
-  height: 280px;
+  height: 270px;
   background-image: var(--flash-gradient-purple-2-white-bottom-right);
 }
 
