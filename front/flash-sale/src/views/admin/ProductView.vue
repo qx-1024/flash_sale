@@ -1,13 +1,18 @@
 <template>
+  <!-- 添加按钮 -->
   <el-button class="addBtn" :icon="Plus" @click="add" size="small" round
     >添 加 商 品</el-button
   >
+
+  <!-- 空数据图片 -->
   <img
     class="empty_data_img"
     src="../../assets/empty_data.svg"
     alt="空空如也~"
     v-if="tableData.length == 0"
   />
+
+  <!-- 表格 -->
   <el-table
     :data="tableData"
     stripe
@@ -203,7 +208,6 @@
 
 
 <script setup>
-import { onMounted, ref, toRefs } from "vue";
 import {
   Plus,
   Delete,
@@ -211,6 +215,7 @@ import {
   View,
   UploadFilled,
 } from "@element-plus/icons-vue";
+import { onMounted, ref, toRefs } from "vue";
 import { ElMessage } from "element-plus";
 import {
   doDelete,
@@ -299,8 +304,7 @@ const edit = (id) => {
       if (res.data.code === 200) {
         editProductForm.value = res.data.data;
 
-        editProductForm.value.isFlashSale =
-          editProductForm.value.isFlashSale === 1 ? "是" : "否";
+        editProductForm.value.isFlashSale === 1 ? "是" : "否";
       }
     })
     .catch((err) => {

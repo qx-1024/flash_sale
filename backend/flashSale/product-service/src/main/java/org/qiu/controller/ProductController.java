@@ -33,6 +33,15 @@ public class ProductController {
     private RedisTemplate<String, Object> redisTemplate;
 
     /**
+     * 查询所有商品
+     */
+    @GetMapping("/list")
+    public R selectList(){
+        List<Product> productList = productService.list();
+        return productList != null ? R.OK(productList) : R.FAIL("查询商品列表失败");
+    }
+
+    /**
      * 查询参与闪购的商品列表【热点数据--闪购专区】
      */
     @GetMapping("/flashSaleProductList")
@@ -156,16 +165,6 @@ public class ProductController {
     /**/
     /**/
     /**/
-
-    // TODO 未使用
-    /**
-     * 查询所有商品
-     */
-    @GetMapping("/list")
-    public R selectList(){
-        List<Product> productList = productService.list();
-        return productList != null ? R.OK(productList) : R.FAIL("查询商品列表失败");
-    }
 
     // TODO 未使用
     /**

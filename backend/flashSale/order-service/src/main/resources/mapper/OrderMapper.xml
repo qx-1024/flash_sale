@@ -31,23 +31,41 @@
         SELECT sum(amount) total
         FROM `order`
         WHERE orderStatus = 1
+        and isDeleted = 0
     </select>
 
     <select id="getUserName" resultType="java.lang.String">
         select realName
         from user
-        where userId = #{userId};
+        where userId = #{userId}
+        and isDeleted = 0;
     </select>
 
     <select id="getActivityName" resultType="java.lang.String">
         select activityName
         from activity
-        where activityId = #{activityId};
+        where activityId = #{activityId}
+        and isDeleted = 0;
     </select>
 
     <select id="getProductName" resultType="java.lang.String">
         select productName
         from product
-        where productId = #{productId};
+        where productId = #{productId}
+        and isDeleted = 0;
+    </select>
+
+    <select id="getAmount" resultType="java.math.BigDecimal">
+        select price
+        from product
+        where productId = #{productId}
+        and isDeleted = 0;
+    </select>
+
+    <select id="getActivityId" resultType="java.lang.String">
+        select activityId
+        from activity
+        where productId = #{productId}
+        and isDeleted = 0;
     </select>
 </mapper>

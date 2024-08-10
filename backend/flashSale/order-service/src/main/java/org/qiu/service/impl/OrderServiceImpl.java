@@ -69,7 +69,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     }
 
     /**
-     * 新增订单【异步 MQ】
+     * 新增订单
      * @param order     订单信息
      * @return          新增结果
      */
@@ -77,6 +77,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     public boolean saveOrder(Order order) {
         String orderId = idClient.generateId().toString();
         order.setOrderId(orderId);
+
+        String productId = order.getProductId();
+        order.setAmount(orderMapper.getAmount(productId));
+        order.setActivityId(orderMapper.getActivityId(productId));
 
         redisTemplate.opsForValue().set(Constants.ORDER_KEY + orderId, order);
 
