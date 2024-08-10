@@ -12,6 +12,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface OrderMapper extends BaseMapper<Order> {
 
     double getTotal();
+
+    String getUserName(String userId);
+
+    String getActivityName(String activityId);
+
+    String getProductName(String productId);
 }
 
 

@@ -9,7 +9,7 @@ import org.qiu.service.ReservationUserService;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @Description: 用户预约相关
+ * @Description: 用户预约相关接口
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -61,13 +61,13 @@ public class ReservationUserController {
     /**
      * 取消预约
      */
-    @PostMapping("/cancelReserve")
-    public R cancelReserve(@RequestBody ReservationUser reservationUser){
-        Boolean canceled = reservationUserService.cancelReserve(reservationUser);
+    @DeleteMapping("/cancelReserve")
+    public R cancelReserve(@RequestParam("id") String id){
+        boolean canceled = reservationUserService.cancelReserve(id);
         return canceled ? R.OK("取消预约成功") : R.FAIL("取消预约失败");
     }
 
-
+    // TODO: 未使用
     /**
      * 修改预约
      */

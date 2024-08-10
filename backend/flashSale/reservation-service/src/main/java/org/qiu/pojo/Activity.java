@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 /**
  * 闪购活动实体类
- * @TableName activity
  */
 @Data
 @AllArgsConstructor

@@ -27,4 +27,6 @@ public interface ReservationService extends MPJBaseService<Reservation> {
 
     List<Product> selectProductWithOnGoingReservation();
 
+    List<OngoingReservation> getOngoingReservations();
+
 }

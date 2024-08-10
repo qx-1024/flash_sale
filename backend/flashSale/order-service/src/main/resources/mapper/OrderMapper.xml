@@ -32,4 +32,22 @@
         FROM `order`
         WHERE orderStatus = 1
     </select>
+
+    <select id="getUserName" resultType="java.lang.String">
+        select realName
+        from user
+        where userId = #{userId};
+    </select>
+
+    <select id="getActivityName" resultType="java.lang.String">
+        select activityName
+        from activity
+        where activityId = #{activityId};
+    </select>
+
+    <select id="getProductName" resultType="java.lang.String">
+        select productName
+        from product
+        where productId = #{productId};
+    </select>
 </mapper>

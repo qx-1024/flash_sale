@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * @Description:
+ * @Description: 商品相关定时任务
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale

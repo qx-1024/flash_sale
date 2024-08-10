@@ -99,8 +99,8 @@ public class ProductController {
      */
     @PostMapping("/buy")
     public R buy(@RequestBody BuyInfo buyInfo){
-        boolean bought = productService.buy(buyInfo);
-        return bought ? R.OK("购买成功") : R.FAIL("购买失败");
+        String orderId = productService.buy(buyInfo);
+        return orderId != null ? R.OK("购买成功",orderId) : R.FAIL("购买失败");
     }
 
     /**

@@ -2,6 +2,9 @@ package org.qiu.mapper;
 
 import org.qiu.pojo.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.qiu.pojo.UserOption;
+
+import java.util.List;
 
 /**
 * @author Qiu
@@ -11,6 +14,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface UserMapper extends BaseMapper<User> {
     User selectByAccount(String account);
+
+    List<UserOption> allUserName();
 }
 
 

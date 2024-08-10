@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.qiu.constant.Constants;
 import org.qiu.pojo.User;
+import org.qiu.pojo.UserOption;
 import org.qiu.pojo.UserQuery;
 import org.qiu.result.R;
 import org.qiu.service.UserService;
@@ -40,6 +41,12 @@ public class UserController {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+    @GetMapping("/allUserName")
+    public R allUserName() {
+        List<UserOption> allUserName = userService.allUserName();
+        return allUserName != null ? R.OK("查询成功", allUserName) : R.FAIL("查询失败");
+    }
 
     /**
      * 登录验证码图片

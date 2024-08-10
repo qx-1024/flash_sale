@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @Description:
+ * @Description: 预约相关定时任务
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -48,6 +48,7 @@ public class DataTask {
 
 
     /**
+     * 加载预约活动是否允许预约的信息
      * 在项目启动时初始化缓存，后续在每分钟更新一次缓存
      */
     @Scheduled(initialDelay = 0, fixedRate = ONE_MINUTE_IN_MILLIS)
@@ -67,6 +68,7 @@ public class DataTask {
     }
 
     /**
+     * 更新预约状态
      * 在项目启动时执行一次，后续在每一个整点执行
      */
     @PostConstruct

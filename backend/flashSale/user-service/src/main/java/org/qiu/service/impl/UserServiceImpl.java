@@ -10,6 +10,7 @@ import org.qiu.constant.Constants;
 import org.qiu.clients.IdClient;
 import org.qiu.mapper.UserMapper;
 import org.qiu.pojo.User;
+import org.qiu.pojo.UserOption;
 import org.qiu.result.CodeEnum;
 import org.qiu.result.R;
 import org.qiu.service.UserService;
@@ -24,8 +25,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
 * @author Qiu
@@ -195,6 +194,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         return userMapper.updateById(user) > 0;
+    }
+
+    @Override
+    public List<UserOption> allUserName() {
+        return userMapper.allUserName();
     }
 
     /**

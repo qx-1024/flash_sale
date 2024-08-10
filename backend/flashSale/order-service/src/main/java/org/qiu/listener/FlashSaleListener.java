@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 /**
- * @Description: 闪购监听
+ * @Description: 闪购监听 -- 生成订单【消费者】
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -29,6 +29,9 @@ public class FlashSaleListener {
     @Resource
     private ProductService productService;
 
+    /**
+     * 监听队列，生成订单
+     */
     @RabbitListener(queues = Constants.FLASH_SALE_QUEUE_NAME)
     public void onFlashSaleEvent(BuyInfo buyInfo){
         Order order = new Order();

@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 商品实体类
- * @TableName product
  */
 @Data
 @AllArgsConstructor

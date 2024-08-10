@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.ZonedDateTime;
 
 /**
- * @Description:
+ * @Description: mybatis-plus 自动填充配置类
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale

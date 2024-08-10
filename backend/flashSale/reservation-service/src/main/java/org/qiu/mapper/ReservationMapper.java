@@ -1,10 +1,7 @@
 package org.qiu.mapper;
 
 import com.github.yulichang.base.MPJBaseMapper;
-import org.qiu.pojo.Product;
-import org.qiu.pojo.Reservation;
-import org.qiu.pojo.Top5Query;
-import org.qiu.pojo.WeekReservation;
+import org.qiu.pojo.*;
 
 import java.util.List;
 
@@ -27,6 +24,8 @@ public interface ReservationMapper extends MPJBaseMapper<Reservation> {
     List<String> selectProductIdWithOnGoingReservation();
 
     Product selectProduct(String id);
+
+    List<OngoingReservation> getOngoingReservations();
 }
 
 

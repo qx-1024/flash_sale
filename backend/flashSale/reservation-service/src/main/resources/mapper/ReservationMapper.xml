@@ -119,4 +119,10 @@
         from product
         where productId = #{id}
     </select>
+
+    <select id="getOngoingReservations" resultType="org.qiu.pojo.OngoingReservation">
+        select reservationId, reservationName
+        from reservation r
+        where r.reservationStatus = 2
+    </select>
 </mapper>

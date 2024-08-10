@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 /**
  * 用户实体类
- * @TableName user
  */
 @Data
 @AllArgsConstructor

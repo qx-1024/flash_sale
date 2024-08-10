@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 闪购活动实体类
- * @TableName activity
  */
 @Data
 @AllArgsConstructor

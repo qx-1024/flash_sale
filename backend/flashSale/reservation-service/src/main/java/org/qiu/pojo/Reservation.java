@@ -15,8 +15,7 @@ import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * 活动预约实体类
- * @TableName reservation
+ * 预约活动实体类
  */
 @Data
 @AllArgsConstructor

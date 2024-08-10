@@ -19,7 +19,7 @@ public interface ReservationUserService extends MPJBaseService<ReservationUser> 
 
     Boolean reserve(ReservationUser reservationUser);
 
-    Boolean cancelReserve(ReservationUser reservationUser);
+    Boolean cancelReserve(String id);
 
     Boolean modifyReserve(ReservationUser reservationUser);
 

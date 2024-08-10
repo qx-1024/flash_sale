@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Description: 闪购活动相关接口
@@ -64,7 +65,13 @@ public class ActivityController {
 
         if (activity == null) {
             activity = activityService.getById(activityId);
-            redisTemplate.opsForValue().set(Constants.ACTIVITY_KEY + activityId, activity);
+            if (activity == null) {
+                // 如果 activity 为 null，则表明没有找到记录
+                return R.FAIL("查询闪购活动失败");
+            } else {
+                // 缓存 activity 到 Redis
+                redisTemplate.opsForValue().set(Constants.ACTIVITY_KEY + activityId, activity);
+            }
         }
 
         return R.OK(activity);
@@ -78,6 +85,11 @@ public class ActivityController {
     @PostMapping("/save")
     public R save(@RequestBody Activity activity){
         int saved = activityService.saveActivity(activity);
+
+        if (saved == -1){
+            return R.FAIL("活动时间设置有误");
+        }
+
         return saved == 1 ? R.OK("新增闪购活动成功") : R.FAIL("新增闪购活动失败");
     }
 

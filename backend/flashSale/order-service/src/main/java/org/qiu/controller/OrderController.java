@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.qiu.constant.Constants;
 import org.qiu.pojo.Order;
+import org.qiu.pojo.OrderQuery;
 import org.qiu.result.R;
 import org.qiu.service.OrderService;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -47,7 +48,7 @@ public class OrderController {
      */
     @GetMapping("/page")
     public R selectPage(@RequestParam("current") Integer current) {
-        Page<Order> page = orderService.page(new Page<>(current, Constants.DEFAULT_PAGE_SIZE));
+        Page<OrderQuery> page = orderService.getByPage(current, Constants.DEFAULT_PAGE_SIZE);
         return page != null ? R.OK(page) : R.FAIL("分页查询订单失败");
     }
 
@@ -63,6 +64,9 @@ public class OrderController {
 
         if (order == null) {
             order = orderService.lambdaQuery().eq(Order::getOrderId, orderId).one();
+            if (order != null) {
+                 redisTemplate.opsForValue().set(Constants.ORDER_KEY + orderId, order);
+            }
         }
 
         return order != null ? R.OK(order) : R.FAIL("查询订单详情失败");
@@ -95,9 +99,9 @@ public class OrderController {
      */
     @PutMapping("/update")
     public R update(@RequestBody Order order) {
-        redisTemplate.opsForValue().set(Constants.ORDER_KEY + order.getOrderId(), order);
-
         boolean result = orderService.updateById(order);
+
+        redisTemplate.opsForValue().set(Constants.ORDER_KEY + order.getOrderId(), order);
 
         return result ? R.OK() : R.FAIL("更新订单失败");
     }
@@ -109,9 +113,9 @@ public class OrderController {
      */
     @DeleteMapping("/delete")
     public R delete(@RequestParam("orderId") Long orderId) {
-        redisTemplate.delete(Constants.ORDER_KEY + orderId);
-
         boolean result = orderService.removeById(orderId);
+
+        redisTemplate.delete(Constants.ORDER_KEY + orderId);
 
         return result ? R.OK() : R.FAIL("删除订单失败");
     }

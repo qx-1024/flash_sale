@@ -86,17 +86,17 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     }
 
     @Override
-    public boolean buy(BuyInfo buyInfo) {
+    public String buy(BuyInfo buyInfo) {
         // 已支付，可以生成订单
         if (buyInfo.getPayStatus() == 1) {
-
-            buyInfo.setOrderId(idClient.generateId().toString());
+            String orderId = idClient.generateId().toString();
+            buyInfo.setOrderId(orderId);
 
             rabbitTemplate.convertAndSend(Constants.FLASH_SALE_QUEUE_NAME, buyInfo);
 
-            return true;
+            return orderId;
         }
-        return false;
+        return null;
     }
 }
 

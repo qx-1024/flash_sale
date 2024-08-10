@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 /**
  * 商品实体类
- * @TableName product
  */
 @Data
 @AllArgsConstructor

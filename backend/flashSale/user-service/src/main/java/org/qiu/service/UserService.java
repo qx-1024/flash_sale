@@ -6,6 +6,9 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.qiu.pojo.User;
+import org.qiu.pojo.UserOption;
+
+import java.util.List;
 
 /**
 * @author Qiu
@@ -27,4 +30,6 @@ public interface UserService extends IService<User> {
     void getCode(HttpServletRequest request, HttpServletResponse response, DefaultKaptcha captchaProducer) throws Exception;
 
     boolean updateUser(User user);
+
+    List<UserOption> allUserName();
 }

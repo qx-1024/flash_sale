@@ -1,12 +1,9 @@
 package org.qiu.task;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.qiu.constant.Constants;
-import org.qiu.mapper.ActivityMapper;
 import org.qiu.pojo.Activity;
-import org.qiu.pojo.Product;
 import org.qiu.service.ActivityService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -17,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @Description:
+ * @Description: 闪购活动相关定时任务
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -35,12 +32,12 @@ public class DataTask {
     @Resource
     private ActivityService activityService;
 
-    @Resource
-    private ActivityMapper activityMapper;
-
     private static final long ONE_MINUTE_IN_MILLIS = 60 * 1000;
 
 
+    /**
+     * 加载闪购活动信息到缓存
+     */
     @Scheduled(initialDelay = 0, fixedRate = ONE_MINUTE_IN_MILLIS)
     public void initializeAndUpdateCache() {
         List<Activity> activities = activityService.lambdaQuery().list();
@@ -50,7 +47,9 @@ public class DataTask {
         });
     }
 
-
+    /**
+     * 更新活动状态
+     */
     @PostConstruct
     @Scheduled(cron = "0 0 * * * *")
     public void updateReservationStatus(){

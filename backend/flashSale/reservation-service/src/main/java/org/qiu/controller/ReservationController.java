@@ -109,7 +109,7 @@ public class ReservationController {
     @GetMapping("/products")
     public R selectProductWithOnGoingReservation(){
         List<Product> products = reservationService.selectProductWithOnGoingReservation();
-        return products != null ? R.OK(products) : R.FAIL("查询对应预约活动正在进行中的商品ID失败");
+        return products != null ? R.OK(products) : R.FAIL("查询对应预约活动正在进行中的商品失败");
     }
 
     /**
@@ -158,6 +158,16 @@ public class ReservationController {
         return deleted ? R.OK("删除预约信息成功") : R.FAIL("删除预约信息失败");
     }
 
+    /**
+     * 查询进行中的预约
+     * @return  进行中的预约
+     */
+    @GetMapping("/ongoingReservations")
+    public R selectOngoingReservations(){
+        List<OngoingReservation> reservations = reservationService.getOngoingReservations();
+        return reservations != null ? R.OK(reservations) : R.FAIL("查询进行中预约失败");
+    }
+
 
 
 
@@ -176,19 +186,6 @@ public class ReservationController {
     public R selectAll(){
         List<Reservation> reservations = reservationService.list();
         return reservations != null ? R.OK(reservations) : R.FAIL("查询预约列表失败");
-    }
-
-    // TODO 未使用
-    /**
-     * 查询进行中的预约
-     * @return  进行中的预约
-     */
-    @GetMapping("/ongoingReservations")
-    public R selectOngoingReservations(){
-        List<Reservation> reservations = reservationService.lambdaQuery()
-                .eq(Reservation::getReservationStatus, 2)
-                .list();
-        return reservations != null ? R.OK(reservations) : R.FAIL("查询进行中预约失败");
     }
 
     // TODO 未使用
@@ -220,7 +217,7 @@ public class ReservationController {
     // TODO 未使用
     /**
      * 批量删除预约信息
-     * @param reservationIds    预约 id 列表
+     * @param reservationIds    预约活动 id 列表
      * @return                  删除结果
      */
     @DeleteMapping("/batchDelete")

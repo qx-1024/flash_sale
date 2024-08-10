@@ -15,6 +15,7 @@ import org.qiu.mapper.ActivityMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 /**
@@ -45,6 +46,13 @@ public class ActivityServiceImpl extends MPJBaseServiceImpl<ActivityMapper, Acti
         // 设置闪购活动 id
         String activityId = idClient.generateId().toString();
         activity.setActivityId(activityId);
+
+        if (
+                activity.getStartTime().isAfter(activity.getEndTime()) ||
+                activity.getEndTime().isBefore(LocalDateTime.now())
+        ) {
+            return -1;
+        }
 
         redisTemplate.opsForValue().set(Constants.ACTIVITY_KEY + activityId, activity);
 

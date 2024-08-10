@@ -18,6 +18,8 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -51,9 +53,6 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
             return -4;
         }
 
-        // 生成预约活动 ID
-        reservation.setReservationId(idClient.generateId().toString());
-
         // 根据闪购活动 ID 查询是否有对应预约活动，确保同一个闪购活动不会重复添加预约活动
         Reservation existingReservation = reservationMapper.selectOne(
                 new MPJLambdaWrapper<Reservation>().eq(Reservation::getActivityId, reservation.getActivityId())
@@ -80,6 +79,9 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
                 return -2;
             }
         }
+
+        // 生成预约活动 ID
+        reservation.setReservationId(idClient.generateId().toString());
 
         // 执行插入操作
         redisTemplate.opsForValue().set(Constants.RESERVATION_KEY + reservation.getReservationId(), reservation);
@@ -171,23 +173,29 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
     public List<Product> selectProductWithOnGoingReservation() {
         List<String> ids = reservationMapper.selectProductIdWithOnGoingReservation();
 
-        List<Product> products = null;
-        if (!CollectionUtils.isEmpty(ids)) {
-            products = ids.stream()
-                    .filter(id -> reservationMapper.selectProduct(id) != null)
-                    .map(id -> reservationMapper.selectProduct(id))
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Product> products = ids.stream()
+                    .map(reservationMapper::selectProduct)
+                    .filter(Objects::nonNull)
                     .toList();
 
+        CompletableFuture.runAsync(() -> {
             products.forEach(product -> {
                 redisTemplate.opsForValue().set(
                         Constants.FLASH_RESERVE_PRODUCT_KEY + product.getProductId(), product
                 );
             });
+        });
 
-            return products;
-        }
+        return products;
+    }
 
-        return Collections.emptyList();
+    @Override
+    public List<OngoingReservation> getOngoingReservations() {
+        return reservationMapper.getOngoingReservations();
     }
 
 

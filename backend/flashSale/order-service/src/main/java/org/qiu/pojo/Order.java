@@ -13,7 +13,6 @@ import lombok.Data;
 
 /**
  * 订单实体类
- * @TableName order
  */
 @TableName(value ="`order`")
 @Data

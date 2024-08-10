@@ -18,6 +18,6 @@ public interface ProductService extends IService<Product> {
 
     List<Product> getFlashSaleProductList();
 
-    boolean buy(BuyInfo buyInfo);
+    String buy(BuyInfo buyInfo);
 
 }

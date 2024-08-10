@@ -30,5 +30,12 @@
         select <include refid="Base_Column_List" />
         from user
         where account = #{account}
+        and isDeleted = 0
+    </select>
+
+    <select id="allUserName" resultType="org.qiu.pojo.UserOption">
+        select userId,realName
+        from user
+        where isDeleted = 0
     </select>
 </mapper>

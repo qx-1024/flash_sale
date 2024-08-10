@@ -14,8 +14,6 @@ import org.qiu.service.ReservationUserService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 /**
  * @Description:
  * @Author: QiuXuan
@@ -76,12 +74,12 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
                 // 将查询到的 reservation 放入缓存
                 redisTemplate.opsForValue()
                         .set(Constants.RESERVATION_KEY + reservationId, reservation);
+            } else {
+                return false;
             }
         }
 
-        if (reservation != null &&
-            Constants.RESERVATION_STATUS_IN_PROGRESS.equals(reservation.getReservationStatus())
-        ){
+        if (!Constants.RESERVATION_STATUS_IN_PROGRESS.equals(reservation.getReservationStatus())){
             return false;
         }
 
@@ -93,25 +91,19 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
 
     /**
      * 取消预约
-     * @param reservationUser   预约信息
+     * @param id                预约信息 id
      * @return                  取消预约结果
      */
     @Override
-    public Boolean cancelReserve(ReservationUser reservationUser) {
-        if (reservationUser == null){
-            return false;
-        }
-
+    public Boolean cancelReserve(String id) {
         // 查询是否已经预约
         ReservationUser reservation = reservationUserMapper.selectOne(
-                new MPJLambdaWrapper<ReservationUser>()
-                        .eq(ReservationUser::getUserId, reservationUser.getUserId())
-                        .eq(ReservationUser::getReservationId, reservationUser.getReservationId())
+                new MPJLambdaWrapper<ReservationUser>().eq(ReservationUser::getId, id)
         );
 
         if (reservation != null) {
             // 删除预约记录
-            return reservationUserMapper.deleteById(reservation.getId()) > 0;
+            return reservationUserMapper.deleteById(id) > 0;
         }
 
         return false;

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @Description:
+ * @Description: 订单相关定时任务
  * @Author: QiuXuan
  * @Email: qiu_2022@aliyun.com
  * @Project: flashSale
@@ -36,9 +36,8 @@ public class DataTask {
     // 时长常量
     private static final long TWELVE_HOUR = 12 * 60 * 60 * 1000;
 
-
     /**
-     * 在项目启动时初始化缓存，后续在每分钟更新一次缓存
+     * 在项目启动时初始化缓存，后续在每十二小时更新一次缓存
      */
     @Scheduled(initialDelay = 0, fixedRate = TWELVE_HOUR)
     public void initializeAndUpdateCache() {
@@ -48,14 +47,5 @@ public class DataTask {
             redisTemplate.opsForValue().set(Constants.ORDER_KEY + order.getOrderId(), order);
         });
     }
-
-    /**
-     * 在项目启动时执行一次，后续在每一个整点执行
-     */
-    /*@PostConstruct
-    @Scheduled(cron = "0 0 * * * *")
-    public void updateReservationStatus(){
-
-    }*/
 
 }
