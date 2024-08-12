@@ -131,6 +131,7 @@
 
 
 <script setup>
+import { ElMessage } from "element-plus";
 import { onBeforeMount, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { doGet } from "../http/httpRequest";
@@ -191,6 +192,8 @@ const loadFlashProductList = () => {
         } else {
           rowNum_p.value = Math.floor(totalProducts / 4) + 1;
         }
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {

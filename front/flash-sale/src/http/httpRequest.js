@@ -44,7 +44,7 @@ export function doPost(url, data) {
         data: data,
         dataType: "json",
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json;charset=UTF-8'
         }
     })
 }
@@ -117,11 +117,36 @@ axios.interceptors.response.use(
             return Promise.reject(error);
         }
 
-        // 500 错误处理
-        if (response && response.status === 500) {
+        if (response && response.status === 400 || response.data.code === 400) {
             // 显示服务器返回的错误消息
             if (!hasShownError) {
-                ElMessage.error(response.data.msg || '服务器内部错误');
+                ElMessage.error(response.data.msg || '请求错误');
+                hasShownError = true;
+            }
+
+            // 使用 Vue Router 跳转到登录页面
+            router.push('/login');
+
+            return Promise.reject(error);
+        }
+
+        if (response && response.status === 405 || response.data.code === 405) {
+            // 显示服务器返回的错误消息
+            if (!hasShownError) {
+                ElMessage.error(response.data.msg || '请求方法错误');
+                hasShownError = true;
+            }
+
+            // 使用 Vue Router 跳转到登录页面
+            router.push('/login');
+
+            return Promise.reject(error);
+        }
+
+        if (response && response.status === 409 || response.data.code === 409) {
+            // 显示服务器返回的错误消息
+            if (!hasShownError) {
+                ElMessage.error(response.data.msg || '违反数据完整性');
                 hasShownError = true;
             }
 
@@ -138,7 +163,7 @@ axios.interceptors.response.use(
         } else if (error.request) {
             // 如果请求已发出但没有收到响应
             if (!hasShownError) {
-                ElMessage.error('No response received:', error.request);
+                ElMessage.error('服务器未响应', error.request);
                 hasShownError = true;
             }
             return Promise.reject(error);

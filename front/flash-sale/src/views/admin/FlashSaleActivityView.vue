@@ -1,13 +1,18 @@
 <template>
+  <!-- 添加按钮 -->
   <el-button class="addBtn" :icon="Plus" @click="add" size="small" round
     >添 加 闪 购</el-button
   >
+
+  <!-- 空数据图片 -->
   <img
     class="empty_data_img"
     src="../../assets/empty_data.svg"
     alt="空空如也~"
     v-if="tableData.length == 0"
   />
+
+  <!-- 表格 -->
   <el-table :data="tableData" stripe style="width: 100%" v-else>
     <el-table-column
       prop="activityName"
@@ -52,7 +57,7 @@
           class="editBtn"
           :icon="Edit"
           size="small"
-          @click="view(scoped.row.activityId)"
+          @click="view(scoped.row)"
           round
           >编 辑</el-button
         >
@@ -79,16 +84,55 @@
     @current-change="toPage"
   />
 
-  <!-- 详情与编辑对话框 -->
+  <!-- 编辑对话框 -->
   <el-dialog
-    v-model="viewAndEditDialogVisible"
+    v-model="editDialogVisible"
     title="编辑闪购活动"
     width="500"
     center
   >
+    <el-form
+      ref="editForm"
+      :model="editQuery"
+      label-width="auto"
+      style="max-width: 600px"
+    >
+      <el-form-item label="闪购活动">
+        <el-input v-model="editQuery.activityName" disabled />
+      </el-form-item>
+      <el-form-item label="商品名称">
+        <el-input v-model="editQuery.productName" disabled />
+      </el-form-item>
+      <el-form-item label="活动状态">
+        <el-input v-model="editQuery.activityStatus" disabled />
+      </el-form-item>
+
+      <el-form-item label="开始时间">
+        <el-date-picker
+          v-model="editQuery.startTime"
+          type="datetime"
+          placeholder="请选择开始时间"
+          style="width: 100%"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          :disabled-date="disabledEditStartDate"
+        />
+      </el-form-item>
+
+      <el-form-item label="结束时间">
+        <el-date-picker
+          v-model="editQuery.endTime"
+          type="datetime"
+          placeholder="请选择结束时间"
+          style="width: 100%"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          :disabled-date="disabledEditEndDate"
+        />
+      </el-form-item>
+    </el-form>
+
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="viewAndEditDialogVisible = false">取 消</el-button>
+        <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="commitEdit">确 定</el-button>
       </div>
     </template>
@@ -96,21 +140,49 @@
 
   <!-- 添加对话框 -->
   <el-dialog v-model="addDialogVisible" title="新增闪购活动" width="500" center>
-    <el-form :model="addForm" label-width="auto" style="max-width: 600px">
+    <el-form
+      ref="addForm"
+      :model="addQuery"
+      label-width="auto"
+      style="max-width: 600px"
+    >
       <el-form-item label="活动名称">
-        <el-input v-model="addForm.activityName" />
+        <el-input
+          v-model="addQuery.activityName"
+          placeholder="请输入活动名称"
+        />
       </el-form-item>
+
       <el-form-item label="商品名称">
-        <el-input v-model="addForm.productName" />
+        <el-select v-model="addQuery.productId" placeholder="请选择商品">
+          <el-option
+            v-for="item in productOptions"
+            :key="item.productId"
+            :label="item.productName"
+            :value="item.productId"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="活动时间">
+
+      <el-form-item label="开始时间">
         <el-date-picker
-          v-model="addForm.dateRange"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始时间"
-          end-placeholder="结束时间"
+          v-model="addQuery.startTime"
+          type="datetime"
+          placeholder="请选择开始时间"
+          style="width: 100%"
           value-format="YYYY-MM-DD HH:mm:ss"
+          :disabled-date="disabledAddStartDate"
+        />
+      </el-form-item>
+
+      <el-form-item label="结束时间">
+        <el-date-picker
+          v-model="addQuery.endTime"
+          type="datetime"
+          placeholder="请选择结束时间"
+          style="width: 100%"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          :disabled-date="disabledAddEndDate"
         />
       </el-form-item>
     </el-form>
@@ -126,15 +198,46 @@
 
 
 <script setup>
-import { ref, onMounted } from "vue";
 import { Plus, Delete, Edit, View } from "@element-plus/icons-vue";
-import { doGet } from "../../http/httpRequest";
+import { ref, onMounted } from "vue";
+import { ElMessage } from "element-plus";
+import { doGet, doPost, doDelete, doPut } from "../../http/httpRequest";
 
 const tableData = ref([]);
 
 onMounted(() => {
   loadData(1);
 });
+
+/**
+ * @description 禁用今天之前的日期(不包括今天)
+ */
+const disabledAddStartDate = (time) => {
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return time.getTime() < today.getTime();
+};
+
+const disabledEditStartDate = (time) => {
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return time.getTime() < today.getTime();
+};
+
+/**
+ * @description 禁用开始时间之前的日期
+ */
+const disabledAddEndDate = (time) => {
+  let startTime = new Date(addQuery.value.startTime);
+
+  return time.getTime() < startTime.getTime();
+};
+
+const disabledEditEndDate = (time) => {
+  let startTime = new Date(editQuery.value.startTime);
+
+  return time.getTime() < startTime.getTime();
+};
 
 /****************************************** 分页 *********************************************/
 const num = ref(0);
@@ -178,28 +281,199 @@ const loadData = (current) => {
   });
 };
 
-/*************************************** 详情与编辑 ******************************************/
-const viewAndEditDialogVisible = ref(false);
+/*************************************** 编辑 ******************************************/
+const editDialogVisible = ref(false);
+const editForm = ref(null);
+const editQuery = ref({
+  activityId: "",
+  activityName: "",
+  productId: "",
+  activityStatus: 0,
+  startTime: "",
+  endTime: "",
+});
 
-const addForm = ref({});
-
-const view = () => {
-  viewAndEditDialogVisible.value = true;
+/**
+ * @description 活动状态枚举
+ */
+const ActivityStatus = {
+  0: "未开始",
+  1: "已结束",
+  2: "进行中",
 };
 
+/**
+ * @description 编辑
+ */
+const view = (row) => {
+  editQuery.value = JSON.parse(JSON.stringify(row));
+
+  editDialogVisible.value = true;
+};
+
+/**
+ * @description 提交修改
+ */
 const commitEdit = () => {
-  viewAndEditDialogVisible.value = false;
+  if (editQuery.value.startTime >= editQuery.value.endTime) {
+    ElMessage.error("开始时间不能晚于结束时间");
+    editQuery.value = {};
+    editDialogVisible.value = false;
+    return;
+  }
+
+  if (new Date(editQuery.value.endTime) < new Date()) {
+    ElMessage.error("结束时间不能早于当前时间");
+    editQuery.value = {};
+    editDialogVisible.value = false;
+    return;
+  }
+
+  if (
+    new Date(editQuery.value.startTime) < new Date() &&
+    new Date(editQuery.value.endTime) > new Date()
+  ) {
+    editQuery.value.activityStatus = 2;
+  }
+
+  let activityStatus = editQuery.value.activityStatus;
+  if (typeof activityStatus === "string" && !/^\d+$/.test(activityStatus)) {
+    editQuery.value.activityStatus = transformStatus(
+      editQuery.value.activityStatus,
+      ActivityStatus,
+      null
+    );
+  }
+
+  let json = JSON.stringify(editQuery.value);
+
+  doPut("/activity/update", json)
+    .then((res) => {
+      if (res.data.code === 200) {
+        ElMessage.success("修改成功");
+        toPage(1);
+      } else {
+        ElMessage.error(res.data.msg);
+      }
+    })
+    .catch((err) => {
+      ElMessage.error(err);
+    });
+
+  editDialogVisible.value = false;
 };
 
+/**
+ * @description 枚举转换
+ */
+const transformStatus = (status, enumObj, defaultValue) => {
+  const key = Object.keys(enumObj).find((key) => enumObj[key] === status);
+  return key ? (enumObj[key] === status ? 1 : 0) : defaultValue;
+};
 /*************************************** 添加 ******************************************/
 const addDialogVisible = ref(false);
+const addForm = ref(null);
+const productOptions = ref([]);
+const addQuery = ref({
+  activityName: "",
+  productId: "",
+  activityStatus: 0,
+  startTime: "",
+  endTime: "",
+});
 
+/**
+ * @description 加载所有商品信息
+ */
+const loadProducts = () => {
+  doGet("/product/list", {})
+    .then((res) => {
+      if (res.data.code === 200) {
+        productOptions.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
+      }
+    })
+    .catch((err) => {
+      ElMessage.error(err);
+    });
+};
+
+/**
+ * @description 添加
+ */
 const add = () => {
+  // 加载所有商品信息
+  loadProducts();
+
   addDialogVisible.value = true;
 };
 
+/**
+ * @description 提交添加
+ */
 const commitAdd = () => {
+  // 校验开始时间是否在结束时间之前
+  if (addQuery.value.startTime >= addQuery.value.endTime) {
+    ElMessage.error("开始时间不能晚于结束时间");
+    addQuery.value = {};
+    addDialogVisible.value = false;
+    return;
+  }
+
+  // 现在时间是否在结束时间之后
+  if (new Date(addQuery.value.endTime) < new Date()) {
+    ElMessage.error("结束时间不能早于当前时间");
+    addQuery.value = {};
+    addDialogVisible.value = false;
+    return;
+  }
+
+  // 现在时间是否在结束时间之前
+  if (
+    new Date(addQuery.value.startTime) < new Date() &&
+    new Date(addQuery.value.endTime) > new Date()
+  ) {
+    addQuery.value.activityStatus = 2;
+  }
+
+  let json = JSON.stringify(addQuery.value);
+
+  doPost("/activity/save", json)
+    .then((res) => {
+      if (res.data.code === 200) {
+        ElMessage.success("添加成功");
+        toPage(1);
+      } else {
+        ElMessage.error(res.data.msg);
+      }
+    })
+    .catch((err) => {
+      ElMessage.error(err);
+    });
+
   addDialogVisible.value = false;
+};
+
+/*************************************** 删除 ******************************************/
+/**
+ * @description 删除
+ */
+const del = (activityId) => {
+  doDelete("/activity/delete", {
+    activityId: activityId,
+  })
+    .then((res) => {
+      if (res.data.code === 200) {
+        ElMessage.success("删除成功");
+        toPage(1);
+      } else {
+        ElMessage.error(res.data.msg);
+      }
+    })
+    .catch((err) => {
+      ElMessage.error(err);
+    });
 };
 </script>
 

@@ -1,0 +1,45 @@
+Date : 2024-08-11 09:33:14
+Directory : f:\flash-sale
+Total : 13 files,  1191 codes, 136 comments, 53 blanks, all 1380 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Vue        |         11 |      1,165 |        132 |         44 |      1,341 |
+| JavaScript |          1 |         22 |          3 |          4 |         29 |
+| CSS        |          1 |          4 |          1 |          5 |         10 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                    | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                       |         13 |      1,191 |        136 |         53 |      1,380 |
+| src                                                     |         13 |      1,191 |        136 |         53 |      1,380 |
+| src (Files)                                             |          1 |          4 |          1 |          5 |         10 |
+| src\http                                                |          1 |         22 |          3 |          4 |         29 |
+| src\views                                               |         11 |      1,165 |        132 |         44 |      1,341 |
+| src\views (Files)                                       |          3 |        112 |         33 |         -8 |        137 |
+| src\views\admin                                         |          8 |      1,053 |         99 |         52 |      1,204 |
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------+------------+------------+------------+------------+------------+
+| f:\flash-sale\src\http\httpRequest.js                   | JavaScript |         22 |          3 |          4 |         29 |
+| f:\flash-sale\src\style.css                             | CSS        |          4 |          1 |          5 |         10 |
+| f:\flash-sale\src\views\DetailView.vue                  | Vue        |         12 |          9 |         -7 |         14 |
+| f:\flash-sale\src\views\HomeView.vue                    | Vue        |         59 |         24 |          2 |         85 |
+| f:\flash-sale\src\views\LoginView.vue                   | Vue        |         41 |          0 |         -3 |         38 |
+| f:\flash-sale\src\views\admin\DashboardView.vue         | Vue        |          2 |          0 |         -2 |          0 |
+| f:\flash-sale\src\views\admin\FlashSaleActivityView.vue | Vue        |         57 |          1 |         -5 |         53 |
+| f:\flash-sale\src\views\admin\OrderView.vue             | Vue        |        304 |         20 |         35 |        359 |
+| f:\flash-sale\src\views\admin\ProductView.vue           | Vue        |        108 |          3 |          1 |        112 |
+| f:\flash-sale\src\views\admin\ReservationUserView.vue   | Vue        |        127 |         19 |         13 |        159 |
+| f:\flash-sale\src\views\admin\ReservationView.vue       | Vue        |        100 |          8 |          0 |        108 |
+| f:\flash-sale\src\views\admin\StatisticsView.vue        | Vue        |        110 |         10 |         -2 |        118 |
+| f:\flash-sale\src\views\admin\UserView.vue              | Vue        |        245 |         38 |         12 |        295 |
+| Total                                                   |            |      1,191 |        136 |         53 |      1,380 |
++---------------------------------------------------------+------------+------------+------------+------------+------------+
