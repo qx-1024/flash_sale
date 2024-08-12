@@ -121,6 +121,17 @@ public class ActivityController {
         return deleted ? R.OK("删除闪购活动成功") : R.FAIL("删除闪购活动失败");
     }
 
+    /**
+     * 查询进行中的活动列表
+     * @return  进行中的活动列表
+     */
+    @GetMapping("/ongoingActivities")
+    public R selectOngoingActivities(){
+        List<Activity> activityList = activityService.lambdaQuery()
+                .eq(Activity::getActivityStatus, 1)
+                .list();
+        return activityList != null ? R.OK(activityList) : R.FAIL("查询进行中的闪购活动列表失败");
+    }
 
 
     /**/
@@ -152,19 +163,6 @@ public class ActivityController {
                 .eq(Activity::getActivityStatus, 0)
                 .list();
         return activityList != null ? R.OK(activityList) : R.FAIL("查询未开始的闪购活动列表失败");
-    }
-
-    // TODO 未使用
-    /**
-     * 查询进行中的活动列表
-     * @return  进行中的活动列表
-     */
-    @GetMapping("/ongoingActivities")
-    public R selectOngoingActivities(){
-        List<Activity> activityList = activityService.lambdaQuery()
-                .eq(Activity::getActivityStatus, 1)
-                .list();
-        return activityList != null ? R.OK(activityList) : R.FAIL("查询进行中的闪购活动列表失败");
     }
 
     // TODO 未使用

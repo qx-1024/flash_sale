@@ -13,14 +13,12 @@ import org.qiu.service.ReservationService;
 import org.qiu.mapper.ReservationMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
 * @author Qiu
@@ -89,7 +87,7 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
         if (insertResult > 0) {
             return insertResult; // 返回插入结果
         } else {
-            // 可能需要进一步处理插入失败的情况
+            // 进一步处理插入失败的情况
             return -5; // 插入失败
         }
     }
@@ -182,13 +180,12 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
                     .filter(Objects::nonNull)
                     .toList();
 
-        CompletableFuture.runAsync(() -> {
-            products.forEach(product -> {
-                redisTemplate.opsForValue().set(
-                        Constants.FLASH_RESERVE_PRODUCT_KEY + product.getProductId(), product
-                );
-            });
-        });
+        CompletableFuture.runAsync(
+                () -> products.forEach(
+                        product -> redisTemplate.opsForValue()
+                                .set(Constants.FLASH_RESERVE_PRODUCT_KEY + product.getProductId(), product)
+                )
+        );
 
         return products;
     }

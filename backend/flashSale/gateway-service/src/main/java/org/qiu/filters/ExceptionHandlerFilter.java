@@ -12,6 +12,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * @Description: 异常处理拦截器
@@ -42,19 +43,22 @@ public class ExceptionHandlerFilter implements GlobalFilter {
         String errorMessage;
 
         if (e instanceof IllegalArgumentException) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.BAD_REQUEST;                // 400
             errorMessage = "Bad Request: " + e.getMessage();
+        } else if(e instanceof SQLIntegrityConstraintViolationException){
+            status = HttpStatus.CONFLICT;                   // 409
+            errorMessage = "Data Integrity Violation: " + e.getMessage();
         } else if (e instanceof NullPointerException) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.INTERNAL_SERVER_ERROR;      // 500
             errorMessage = "Null Pointer Exception: " + e.getMessage();
         } else if (e instanceof IllegalStateException) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.BAD_REQUEST;                // 400
             errorMessage = "Illegal State Exception: " + e.getMessage();
         } else if (e instanceof UnsupportedOperationException) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.METHOD_NOT_ALLOWED;         // 405
             errorMessage = "Unsupported Operation: " + e.getMessage();
         } else if (e instanceof RuntimeException) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.INTERNAL_SERVER_ERROR;      // 500
             errorMessage = "Runtime Exception: " + e.getMessage();
         } else {
             // 默认错误处理

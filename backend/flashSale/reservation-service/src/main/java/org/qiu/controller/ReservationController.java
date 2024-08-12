@@ -126,7 +126,7 @@ public class ReservationController {
             case -3 -> R.FAIL("该闪购活动的预约活动已存在");
             case -4 -> R.FAIL("预约活动的开始时间不得晚于结束时间");
             case -5 -> R.FAIL("数据库操作失败");
-            default -> saved == 1 ? R.OK("新增预约信息成功") : R.FAIL("新增预约信息失败");
+            default -> saved == 1 ? R.OK("新增预约活动成功") : R.FAIL("新增预约活动失败");
         };
     }
 

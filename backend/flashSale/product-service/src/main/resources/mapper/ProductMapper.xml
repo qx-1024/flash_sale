@@ -24,7 +24,7 @@
         isDeleted
     </sql>
 
-    <select id="isFlashSaleProduct">
+    <select id="isFlashSaleProduct" resultType="java.lang.Integer">
         SELECT
             CASE
                 WHEN NOW() BETWEEN startTime AND endTime THEN 1

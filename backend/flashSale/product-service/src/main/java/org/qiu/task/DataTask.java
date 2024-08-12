@@ -1,7 +1,6 @@
 package org.qiu.task;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.qiu.constant.Constants;
 import org.qiu.mapper.ProductMapper;
@@ -48,7 +47,11 @@ public class DataTask {
         // 将查询到的闪购商品列表存入 Redis 缓存
         if (products != null && !products.isEmpty()) {
             // 过滤掉闪购活动已结束的商品
-            products.removeIf(product -> productMapper.isFlashSaleProduct(product.getProductId()) == 0);
+            products.removeIf(product -> {
+                Integer isFlashSale = productMapper.isFlashSaleProduct(product.getProductId());
+                // 如果 isFlashSale 为 null 或 0，则表示不是闪购商品
+                return isFlashSale == null || isFlashSale == 0;
+            });
 
             // 将从数据库中查询得到的闪购商品列表存入Redis缓存
             CompletableFuture.runAsync(() -> {
