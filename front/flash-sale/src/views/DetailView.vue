@@ -47,6 +47,7 @@
         </el-button>
 
         <!-- 预约按钮 -->
+        <!-- 不允许预约 -->
         <el-button
           v-if="!allowReservation"
           round
@@ -57,6 +58,7 @@
           <span>立 即 预 约</span>
         </el-button>
 
+        <!-- 允许预约 -->
         <el-popconfirm
           v-else
           title="确认预约或取消预约吗?"
@@ -64,12 +66,12 @@
           cancel-button-text="取消"
           width="200"
           confirm-button-type="danger"
-          icon-color="#ff8a6e"
+          icon-color="#ff6b6b"
           icon="Bell"
-          @confirm="reservation"
+          @confirm="reserve"
         >
           <template #reference>
-            <el-button v-if="!isReservation" round class="reservationBtn">
+            <el-button v-if="!isReserved" round class="reservationBtn">
               <el-icon size="18"><Star /></el-icon>
               <span>立 即 预 约</span>
             </el-button>
@@ -97,9 +99,9 @@
 <script setup>
 import { ElMessage, ElNotification } from "element-plus";
 import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
-import { doGet } from "../http/httpRequest";
 import { useRouter } from "vue-router";
 import { useProductStore } from "../stores/product";
+import { doDelete, doGet, doPost, doPut } from "../http/httpRequest";
 
 const router = useRouter();
 
@@ -108,13 +110,29 @@ const productStore = useProductStore();
 const productId = ref(null);
 const product = ref(null);
 
+// 当前用户
+const currentUser = ref(null);
+// 当前用户是否已预约
+const isReserved = ref(false);
+// 当前商品对应的预约活动信息
+const reservationInfo = ref({});
+// 当前闪购是否允许进行预约
+const allowReservation = ref(false);
+// 预约信息 id
+const id = ref("");
+
 onMounted(() => {
   // 获取商品 ID
   productId.value = productStore.currentProductId;
 
+  // 加载商品详情
   loadPorductDetail();
 
+  // 检查该商品对应的预约活动是否还在进行中
   checkReservation();
+
+  // 加载当前用户信息
+  loadCurrentUser();
 });
 
 /**
@@ -122,7 +140,7 @@ onMounted(() => {
  */
 onUnmounted(() => {
   productStore.currentProductId = null;
-  isReservation.value = false;
+  isReserved.value = false;
 });
 
 /**
@@ -135,25 +153,14 @@ const loadPorductDetail = () => {
     .then((res) => {
       if (res.data.code === 200) {
         product.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
       console.log(err);
     });
 };
-
-/**
- * @description 返回上一页
- */
-const goback = () => {
-  router.go(-1);
-};
-
-/********************************************* 预约 *******************************************/
-// 当前用户是否已预约
-const isReservation = ref(false);
-// 当前闪购是否允许进行预约
-const allowReservation = ref(false);
 
 /**
  * @description 检查该商品对应的预约活动是否还在进行中
@@ -164,40 +171,139 @@ const checkReservation = () => {
   }).then((res) => {
     if (res.data.code == 200) {
       allowReservation.value = res.data.data;
+    } else {
+      ElMessage.error(res.data.msg);
     }
   });
 };
 
 /**
+ * @description 加载当前用户信息
+ */
+const loadCurrentUser = () => {
+  doGet("/user/currentUser", {}).then((res) => {
+    if (res.data.code === 200) {
+      currentUser.value = res.data.data;
+
+      // 加载当前商品对应的预约活动信息
+      loadReservation();
+    }
+  });
+};
+
+/**
+ * @description 加载当前商品对应的预约活动信息
+ */
+const loadReservation = () => {
+  doGet("/reservation/getReservationByProductId", {
+    productId: productId.value,
+  }).then((res) => {
+    if (res.data.code == 200) {
+      reservationInfo.value = res.data.data;
+
+      // 检查当前用户是否已预约
+      checkIsReserved();
+
+      // 加载当前用户与当前商品的相关预约信息
+      loadCurrentReservation();
+    }
+  });
+};
+
+/**
+ * @description 检查当前用户是否已预约
+ */
+const checkIsReserved = () => {
+  doGet("/reservation_user/checkReserve", {
+    reservationId: reservationInfo.value.reservationId,
+    userId: currentUser.value.userId,
+  }).then((resp) => {
+    if (resp.data.code == 200) {
+      isReserved.value = resp.data.data;
+    }
+  });
+};
+
+/**
+ * @description 加载当前用户与当前商品的相关预约信息
+ */
+const loadCurrentReservation = () => {
+  doGet("/reservation_user/reserveInfo", {
+    reservationId: reservationInfo.value.reservationId,
+    userId: currentUser.value.userId,
+  }).then((res) => {
+    if (res.data.code == 200) {
+      id.value = res.data.data.id;
+    }
+  });
+};
+
+/**
+ * @description 返回上一页
+ */
+const goback = () => {
+  router.go(-1);
+};
+
+/********************************************* 预约 *******************************************/
+/**
  * @description 预约
  */
-const reservation = () => {
-  isReservation.value = !isReservation.value;
+const reserve = () => {
+  if (!isReserved.value) {
+    // 未预约 ———— 预约
+    let reservationUser = {
+      id: id.value,
+      reservationId: reservationInfo.value.reservationId,
+      userId: currentUser.value.userId,
+    };
 
-  // 调用后台接口，进行预约
-  // 后台需要一个判断当前用户是否已预约的接口，用于初始化按钮的样式
+    let json = JSON.stringify(reservationUser);
 
-  if (isReservation.value) {
-    ElNotification({
-      title: "预约结果",
-      message: "恭喜您，确认预约成功",
-      type: "success",
-      showClose: false,
-    });
+    doPost("/reservation_user/reserve", json)
+      .then((res) => {
+        if (res.data.code == 200) {
+          isReserved.value = true;
+
+          id.value = res.data.data;
+
+          ElNotification({
+            title: "预约结果",
+            message: "恭喜您，确认预约成功",
+            type: "success",
+            showClose: false,
+          });
+        } else {
+          ElMessage.error(res.data.msg);
+        }
+      })
+      .catch(() => {
+        ElMessage.error("您已预约");
+      });
   } else {
-    ElNotification({
-      title: "预约结果",
-      message: "恭喜您，取消预约成功",
-      type: "error",
-      showClose: false,
+    // 已预约 ———— 取消预约
+    doDelete("/reservation_user/cancelReserve", {
+      id: id.value,
+    }).then((res) => {
+      if (res.data.code == 200) {
+        isReserved.value = false;
+
+        ElNotification({
+          title: "预约结果",
+          message: "恭喜您，取消预约成功",
+          type: "error",
+          showClose: false,
+        });
+      } else {
+        ElMessage.error(res.data.msg);
+      }
     });
   }
 };
 
 /********************************************* 闪购 *******************************************/
 const buy = () => {
-  // 未预约
-  if (isReservation.value === false) {
+  if (isReserved.value === false) {
     // 提示未预约
     ElMessage.error("您尚未预约该闪购活动，请先进行预约！");
   } else {
@@ -333,14 +439,14 @@ img {
 
 /* 价格 */
 .productPrice {
-  color: var(--flash-red-lighter-1);
+  color: var(--flash-red-lighter-2);
   font-size: 30px;
   font-weight: bold;
 }
 
 .el-button {
   float: right;
-  margin-top: 220px;
+  margin-top: 130px;
   border: none;
   color: #fff;
   background-color: var(--flash-green-lighter-1);
@@ -397,6 +503,6 @@ img {
   font-size: 13px;
   height: 30px;
   line-height: 30px;
-  color: #2d405988;
+  color: var(--flash-grey-lighter-2);
 }
 </style>

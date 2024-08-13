@@ -251,7 +251,6 @@ const productRules = ref({
 /********************************************* 分 页 *********************************************/
 const size = ref(0);
 const total = ref(0);
-const currentPage = ref(1);
 
 onMounted(() => {
   loadData(1);
@@ -261,7 +260,6 @@ onMounted(() => {
  * @description 分页，页面跳转
  */
 const toPage = (current) => {
-  currentPage.value = current;
   loadData(current);
 };
 
@@ -281,6 +279,8 @@ const loadData = (current) => {
       tableData.value.forEach((item) => {
         item.isFlashSale = item.isFlashSale === 1 ? "是" : "否";
       });
+    } else {
+      ElMessage.error(res.data.msg);
     }
   });
 };
@@ -305,6 +305,8 @@ const edit = (id) => {
         editProductForm.value = res.data.data;
 
         editProductForm.value.isFlashSale === 1 ? "是" : "否";
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -351,7 +353,9 @@ const commitEdit = () => {
           currentPage.value = 1;
 
           // 重新加载数据
-          loadData(1);
+          toPage(1);
+        } else {
+          ElMessage.error(res.data.msg);
         }
       });
     }

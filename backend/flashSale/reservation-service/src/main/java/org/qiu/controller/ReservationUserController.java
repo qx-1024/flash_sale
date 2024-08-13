@@ -2,10 +2,12 @@ package org.qiu.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.annotation.Resource;
+import org.qiu.mapper.ReservationUserMapper;
 import org.qiu.pojo.ReservationUser;
 import org.qiu.pojo.ReservationUserQuery;
 import org.qiu.result.R;
 import org.qiu.service.ReservationUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -24,6 +26,8 @@ public class ReservationUserController {
 
     @Resource
     private ReservationUserService reservationUserService;
+    @Autowired
+    private ReservationUserMapper reservationUserMapper;
 
 
     /**
@@ -41,10 +45,7 @@ public class ReservationUserController {
     @GetMapping("/reserveInfo")
     public R getReserveInfo(@RequestParam("reservationId") String reservationId,
                             @RequestParam("userId") String userId){
-        ReservationUser reservationInfo = reservationUserService.lambdaQuery()
-                .eq(ReservationUser::getReservationId, reservationId)
-                .eq(ReservationUser::getUserId, userId)
-                .one();
+        ReservationUser reservationInfo = reservationUserMapper.getOne(userId, reservationId);
 
         return reservationInfo != null ? R.OK(reservationInfo) : R.FAIL("查询预约信息失败");
     }
@@ -54,8 +55,8 @@ public class ReservationUserController {
      */
     @PostMapping("/reserve")
     public R reserve(@RequestBody ReservationUser reservationUser){
-        Boolean reserved = reservationUserService.reserve(reservationUser);
-        return reserved ? R.OK("预约成功") : R.FAIL("预约失败");
+        String id = reservationUserService.reserve(reservationUser);
+        return id != null ? R.OK("预约成功", id) : R.FAIL("预约失败");
     }
 
     /**
@@ -65,6 +66,20 @@ public class ReservationUserController {
     public R cancelReserve(@RequestParam("id") String id){
         boolean canceled = reservationUserService.cancelReserve(id);
         return canceled ? R.OK("取消预约成功") : R.FAIL("取消预约失败");
+    }
+
+    /**
+     * 检查用户是否已预约当前预约活动
+     */
+    @GetMapping("/checkReserve")
+    public R checkReserve(@RequestParam("reservationId") String reservationId, @RequestParam("userId") String userId){
+        ReservationUser reservationUser = reservationUserService.lambdaQuery()
+                .eq(ReservationUser::getReservationId, reservationId)
+                .eq(ReservationUser::getUserId, userId)
+                .eq(ReservationUser::getIsDeleted, 0)
+                .one();
+        boolean reserved = reservationUser != null;
+        return reserved ? R.OK("已预约", reserved) : R.OK("未预约", false);
     }
 
     // TODO: 未使用

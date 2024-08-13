@@ -298,6 +298,8 @@ const loadProducts = () => {
     .then((res) => {
       if (res.data.code === 200) {
         productOptions.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -305,6 +307,9 @@ const loadProducts = () => {
     });
 };
 
+/**
+ * @description 新增
+ */
 const add = () => {
   // 加载所有用户信息
   loadUsers();
@@ -315,6 +320,9 @@ const add = () => {
   addDialogVisible.value = true;
 };
 
+/**
+ * @description 提交新增
+ */
 const commitAdd = () => {
   let json = JSON.stringify(addQuery.value);
 
@@ -322,7 +330,7 @@ const commitAdd = () => {
     .then((res) => {
       if (res.data.code === 200) {
         ElMessage.success("新增成功");
-        loadData(1);
+        toPage(1);
       } else {
         ElMessage.error(res.data.msg);
       }
@@ -408,7 +416,7 @@ const commitEdit = () => {
     .then((res) => {
       if (res.data.code === 200) {
         ElMessage.success("修改成功");
-        loadData(1);
+        toPage(1);
       } else {
         ElMessage.error(res.data.msg);
       }

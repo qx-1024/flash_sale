@@ -308,6 +308,8 @@ const view = (userId) => {
           USER_TYPE_MAP[res.data.data.userType] || "未知用户类型";
 
         EditDialogVisible.value = true;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -344,7 +346,9 @@ const commitEdit = () => {
           .then((res) => {
             if (res.data.code === 200) {
               ElMessage.success("修改成功");
-              loadData(1);
+              toPage(1);
+            } else {
+              ElMessage.error(res.data.msg);
             }
           })
           .catch((err) => {
@@ -442,8 +446,9 @@ const commitAdd = () => {
               message: "新增用户成功",
               type: "success",
             });
+            toPage(1);
           } else {
-            ElMessage.error("新增用户失败");
+            ElMessage.error(res.data.msg);
           }
         });
       });

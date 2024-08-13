@@ -183,8 +183,6 @@ const loadFlashProductList = () => {
       if (res.data.code === 200) {
         productList.value = res.data.data;
 
-        console.log(productList.value);
-
         // 修改计算 rowNum 的方式
         const totalProducts = productList.value.length;
         if (totalProducts % 4 === 0) {
@@ -220,10 +218,11 @@ const loadReservationProductList = () => {
         } else {
           rowNum.value = Math.floor(reservationProducts.value.length / 4) + 1;
         }
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
-      console.log(err);
       window.localStorage.removeItem("token");
       router.push("/login");
     });
@@ -249,6 +248,8 @@ const getCurrentUser = () => {
     .then((res) => {
       if (res.data.code === 200) {
         currentUser.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {

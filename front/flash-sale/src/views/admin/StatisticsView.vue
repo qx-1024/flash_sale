@@ -186,6 +186,8 @@ const getProductCount = () => {
     .then((res) => {
       if (res.data.code === 200) {
         productCount.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -202,6 +204,8 @@ const getReservationCount = () => {
     .then((res) => {
       if (res.data.code === 200) {
         reservationCount.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -218,6 +222,8 @@ const getActivityCount = () => {
     .then((res) => {
       if (res.data.code === 200) {
         activityCount.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -240,6 +246,8 @@ const getTotalAmount = () => {
     .then((res) => {
       if (res.data.code === 200) {
         source.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -258,6 +266,8 @@ const getSaleTop5 = () => {
     .then((res) => {
       if (res.data.code === 200) {
         top5BySale.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -275,6 +285,8 @@ const getReservationTop5 = () => {
       if (res.data.code === 200) {
         top5ByReservation.value = res.data.data;
         initReservationRank();
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -356,6 +368,8 @@ const getUserCount = () => {
     .then((res) => {
       if (res.data.code === 200) {
         userCount.value = res.data.data;
+      } else {
+        EMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -370,7 +384,11 @@ const maleCount = ref(0);
 const getMaleCount = () => {
   doGet("/user/male", {})
     .then((res) => {
-      maleCount.value = res.data.data;
+      if (res.data.code === 200) {
+        maleCount.value = res.data.data;
+      } else {
+        EMessage.error(res.data.msg);
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -402,6 +420,8 @@ const getVipCount = () => {
     .then((res) => {
       if (res.data.code === 200) {
         vipCount.value = res.data.data;
+      } else {
+        EMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -419,9 +439,12 @@ const weekRservation = ref([]);
 const getLastWeekReservationNum = () => {
   doGet("/reservation/week", {})
     .then((res) => {
-      weekRservation.value = res.data.data;
-
-      initReservationCountByDay();
+      if (res.data.code === 200) {
+        weekRservation.value = res.data.data;
+        initReservationCountByDay();
+      } else {
+        ElMessage.error(res.data.msg);
+      }
     })
     .catch((err) => {
       console.log(err);

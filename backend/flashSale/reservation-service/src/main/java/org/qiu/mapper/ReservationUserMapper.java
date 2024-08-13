@@ -14,4 +14,7 @@ import org.qiu.pojo.ReservationUser;
  **/
 public interface ReservationUserMapper extends MPJBaseMapper<ReservationUser> {
 
+    ReservationUser getOne(String userId, String reservationId);
+
+    int updateColumn(ReservationUser reservationUser);
 }

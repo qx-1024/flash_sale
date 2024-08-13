@@ -45,22 +45,14 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
      * @return                  预约结果
      */
     @Override
-    public Boolean reserve(ReservationUser reservationUser) {
+    public String reserve(ReservationUser reservationUser) {
         if (reservationUser == null){
-            return false;
+            return null;
         }
 
         // 查询是否已经预约
         String reservationId = reservationUser.getReservationId();
-        ReservationUser ru = reservationUserMapper.selectOne(
-                new MPJLambdaWrapper<ReservationUser>()
-                        .eq(ReservationUser::getUserId, reservationId)
-                        .eq(ReservationUser::getReservationId, reservationUser.getReservationId())
-        );
-
-        if (ru != null) {
-            return false;
-        }
+        ReservationUser ru = reservationUserMapper.getOne(reservationUser.getUserId(), reservationId);
 
         // 判断该预约活动是否在进行中
         Reservation reservation = (Reservation) redisTemplate.opsForValue()
@@ -75,18 +67,32 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
                 redisTemplate.opsForValue()
                         .set(Constants.RESERVATION_KEY + reservationId, reservation);
             } else {
-                return false;
+                return null;
             }
         }
 
         if (!Constants.RESERVATION_STATUS_IN_PROGRESS.equals(reservation.getReservationStatus())){
-            return false;
+            return null;
         }
 
-        reservationUser.setId(idClient.generateId().toString());
+        boolean res = false;
+        String id = "";
+        reservationUser.setIsDeleted(ru.getIsDeleted());
+        if (reservationUser.getIsDeleted() == 1){
+            reservationUser.setIsDeleted(0);
 
-        // 插入预约记录
-        return reservationUserMapper.insert(reservationUser) > 0;
+            res = reservationUserMapper.updateColumn(reservationUser) > 0;
+        } else {
+            id = idClient.generateId().toString();
+            reservationUser.setId(id);
+
+            res = reservationUserMapper.insert(reservationUser) > 0;
+        }
+
+        if (res) {
+            return id;
+        }
+        return null;
     }
 
     /**

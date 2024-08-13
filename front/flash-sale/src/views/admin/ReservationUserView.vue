@@ -136,6 +136,8 @@ const loadData = (current) => {
       tableData.value = res.data.data.records;
       total.value = res.data.data.total;
       size.value = res.data.data.size;
+    } else {
+      ElMessage.error(res.data.msg);
     }
   });
 };
@@ -158,6 +160,8 @@ const loadReservations = () => {
     .then((res) => {
       if (res.data.code === 200) {
         reservationOptions.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {
@@ -173,6 +177,8 @@ const loadUsers = () => {
     .then((res) => {
       if (res.data.code === 200) {
         userOptions.value = res.data.data;
+      } else {
+        ElMessage.error(res.data.msg);
       }
     })
     .catch((err) => {

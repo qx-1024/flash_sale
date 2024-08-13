@@ -14,7 +14,30 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,reservationId,userId,createTime,endTime,isDeleted
+        id,reservationId,userId,createTime,updateTime,isDeleted
     </sql>
+
+    <update id="updateColumn" parameterType="org.qiu.pojo.ReservationUser">
+        update reservation_user
+        <set>
+            <if test="reservationId != null">
+                reservationId = #{reservationId,jdbcType=VARCHAR},</if>
+            <if test="userId != null">
+                 userId = #{userId,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">
+                 createTime = #{createTime,jdbcType=DATETIME},</if>
+            <if test="updateTime != null">
+                 updateTime = #{updateTime,jdbcType=DATETIME},</if>
+            <if test="isDeleted != null">
+                 isDeleted = #{isDeleted,jdbcType=INTEGER},</if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getOne" resultType="org.qiu.pojo.ReservationUser">
+        select <include refid="Base_Column_List" />
+        from reservation_user
+        where userId = #{userId} and reservationId = #{reservationId}
+    </select>
 
 </mapper>
