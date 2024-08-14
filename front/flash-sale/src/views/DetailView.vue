@@ -40,12 +40,6 @@
           <p>￥{{ product.price }}</p>
         </div>
 
-        <!-- 闪购按钮 -->
-        <el-button class="buyBtn" round @click="buy">
-          <el-icon size="16"><SoldOut /></el-icon>
-          <span>立 即 购 买</span>
-        </el-button>
-
         <!-- 预约按钮 -->
         <!-- 不允许预约 -->
         <el-button
@@ -71,19 +65,76 @@
           @confirm="reserve"
         >
           <template #reference>
-            <el-button v-if="!isReserved" round class="reservationBtn">
+            <el-button v-if="!isReserved" round class="cancelBtn">
               <el-icon size="18"><Star /></el-icon>
               <span>立 即 预 约</span>
             </el-button>
 
-            <el-button v-else round class="reservationBtn">
+            <el-button v-else round class="cancelBtn">
               <el-icon size="16"><StarFilled /></el-icon>
               <span>取 消 预 约</span>
             </el-button>
           </template>
         </el-popconfirm>
+
+        <!-- 闪购按钮 -->
+        <el-button class="confirmBtn" round @click="toBuy">
+          <el-icon size="16"><SoldOut /></el-icon>
+          <span>立 即 购 买</span>
+        </el-button>
       </el-col>
     </el-row>
+
+    <!-- 备注对话框 -->
+    <el-dialog
+      v-model="showRemarkDialog"
+      :show-close="false"
+      title="备注信息"
+      width="500"
+      top="20%"
+      center
+    >
+      <el-form ref="remarkForm" :model="remarkQuery" :rules="remarkRules">
+        <el-form-item prop="note">
+          <el-input
+            v-model="remarkQuery.note"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入备注信息"
+          />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <div>
+          <el-button class="cancelBtn" @click="showRemarkDialog = false"
+            >取 消</el-button
+          >
+          <el-button class="confirmBtn" @click="toPay">确 定</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
+    <!-- 二维码对话框 -->
+    <el-dialog
+      v-model="showQrcodeDialog"
+      :show-close="false"
+      title="请支付"
+      width="200"
+      top="20%"
+      center
+    >
+      <img src="../images/qrcode.png" alt="请支付" />
+
+      <template #footer>
+        <div>
+          <el-button class="cancelBtn" @click="showQrcodeDialog = false"
+            >取 消</el-button
+          >
+          <el-button class="confirmBtn" @click="buy">已支付</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 
   <!-- 页脚 -->
@@ -302,17 +353,82 @@ const reserve = () => {
 };
 
 /********************************************* 闪购 *******************************************/
+
+const remarkForm = ref(null);
+const payStatus = ref(0);
+const orderId = ref("");
+const showRemarkDialog = ref(false);
+const showQrcodeDialog = ref(false);
+const remarkQuery = ref({
+  note: "",
+});
+const remarkRules = ref({
+  note: [
+    { min: 0, max: 200, message: "长度在 0 到 200 个字符", trigger: "blur" },
+  ],
+});
+
+const toBuy = () => {
+  showRemarkDialog.value = true;
+};
+
+const toPay = () => {
+  showRemarkDialog.value = false;
+
+  showQrcodeDialog.value = true;
+};
+
+/**
+ * @description 购买
+ */
 const buy = () => {
+  payStatus.value = 1;
+
   if (isReserved.value === false) {
     // 提示未预约
     ElMessage.error("您尚未预约该闪购活动，请先进行预约！");
   } else {
-    // 向后端发送请求进行闪购
-    ElMessage({
-      message: "闪购成功",
-      type: "success",
-    });
+    const buyInfo = {
+      userId: currentUser.value.userId,
+      productId: productId.value,
+      note: remarkQuery.value.note,
+      payStatus: payStatus.value,
+    };
+
+    let json = JSON.stringify(buyInfo);
+
+    doPost("/product/buy", json)
+      .then((res) => {
+        if (res.data.code == 200) {
+          orderId.value = res.data.data;
+
+          doGet("/order/one", {
+            orderId: orderId.value,
+          })
+            .then((res) => {
+              if (res.data.code == 200) {
+                ElMessage({
+                  message: "闪购成功",
+                  type: "success",
+                });
+              } else {
+                ElMessage.error("购买失败");
+              }
+            })
+            .catch(() => {
+              ElMessage.error("购买失败");
+            });
+        } else {
+          ElMessage.error(res.data.msg);
+        }
+      })
+      .catch(() => {
+        ElMessage.error("购买失败");
+      });
   }
+
+  remarkQuery.value.note = "";
+  showQrcodeDialog.value = false;
 };
 </script>
 
@@ -320,7 +436,7 @@ const buy = () => {
 <style scoped>
 .container {
   position: relative;
-  height: calc(100vh - 85px);
+  height: calc(100vh - 81px);
   width: 100%;
   background-image: url(../images/bg3.png);
   background-size: cover;
@@ -444,12 +560,9 @@ img {
   font-weight: bold;
 }
 
-.el-button {
-  float: right;
-  margin-top: 130px;
-  border: none;
-  color: #fff;
-  background-color: var(--flash-green-lighter-1);
+.el-dialog img {
+  margin: 0 20%;
+  width: 100px;
 }
 
 /* 购买按钮 */
@@ -457,17 +570,25 @@ img {
   margin-right: 5px;
 }
 
-.el-button:hover {
+.confirmBtn {
+  border: none;
+  color: #fff;
+  background-color: var(--flash-green-color);
+}
+
+.confirmBtn:hover {
   background-color: var(--flash-green-lighter-2);
 }
 
 /* 允许预约按钮 */
-.reservationBtn {
+.cancelBtn {
+  color: #fff;
   background-color: var(--flash-red-lighter-2);
   margin-right: 10px;
 }
 
-.reservationBtn:hover {
+.cancelBtn:hover {
+  color: #fff;
   background-color: var(--flash-red-lighter-3);
 }
 
@@ -496,7 +617,7 @@ img {
 
 /************************************* 页脚 *******************************************/
 .el-footer {
-  position: absolute;
+  position: fixed;
   bottom: 1px;
   left: 50%;
   transform: translateX(-50%);

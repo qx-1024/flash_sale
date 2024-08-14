@@ -100,7 +100,6 @@ public class ProductController {
         return product != null ? R.OK(product) : R.FAIL("查询商品失败");
     }
 
-
     /**
      * 用户闪购【采用异步消费的方式生成订单信息】
      * @param buyInfo   闪购信息：用户ID、商品ID

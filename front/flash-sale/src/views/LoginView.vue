@@ -486,8 +486,8 @@ const confirmCommit = () => {
 <style scoped>
 .container {
   width: 100%;
-  height: calc(100vh - 200px);
-  background-image: url(../images/bg3.png);
+  height: calc(100vh - 180px);
+  background-image: url(../images/bg.png);
   background-size: cover;
   padding-top: 180px;
 }
@@ -534,11 +534,11 @@ h1 {
   width: 100%;
   border: none;
   color: var(--falsh-pure-white);
-  background-color: var(--flash-green-lighter-1);
+  background-color: var(--flash-blue-lighter-2);
 }
 
 .comfirmBtn:hover {
-  background-color: var(--flash-green-lighter-2);
+  background-color: var(--flash-blue-lighter-3);
 }
 
 .cacelBtn {
