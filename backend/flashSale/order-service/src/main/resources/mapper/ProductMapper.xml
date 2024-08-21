@@ -4,10 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.qiu.mapper.ProductMapper">
 
-    <select id="getPrice" resultType="java.math.BigDecimal">
-        select price from product where productId = #{productId}
-    </select>
-
     <select id="getActivityId" resultType="java.lang.String">
         select activityId from activity where productId = #{productId}
     </select>

@@ -22,11 +22,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     private ProductMapper productMapper;
 
     @Override
-    public BigDecimal getPrice(String productId) {
-        return productMapper.getPrice(productId);
-    }
-
-    @Override
     public String getActivityId(String productId) {
         return productMapper.getActivityId(productId);
     }

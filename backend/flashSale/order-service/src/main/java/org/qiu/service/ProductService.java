@@ -14,7 +14,5 @@ import java.util.List;
 */
 public interface ProductService extends IService<Product> {
 
-    BigDecimal getPrice(String productId);
-
     String getActivityId(String productId);
 }

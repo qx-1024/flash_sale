@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 */
 public interface ProductMapper extends BaseMapper<Product> {
 
-    BigDecimal getPrice(String productId);
-
     String getActivityId(String productId);
 }
 
