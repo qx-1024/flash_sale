@@ -39,10 +39,10 @@ spring:
         # 重试策略配置
         retry:
           enabled: true  # 开启重试
-          initial-interval: 1000ms  # 第一次重试的间隔时间
+          initial-interval: 500ms  # 第一次重试的间隔时间，改为500ms更适合秒杀场景
           max-attempts: 3  # 最大重试次数
           multiplier: 2  # 下一次重试间隔的倍数
-          max-interval: 10000ms  # 最大重试间隔
+          max-interval: 3000ms  # 最大重试间隔，缩短到3秒，避免用户等待时间过长
           # 重试机制为有状态的，使用原来的消费者进行重试
           stateless: false
     # 生产者确认机制
