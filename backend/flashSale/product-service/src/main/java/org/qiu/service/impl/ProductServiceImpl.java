@@ -13,11 +13,11 @@ import org.qiu.mapper.ProductMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
 * @author Qiu
@@ -41,6 +41,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     @Resource
     private RabbitTemplate rabbitTemplate;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
     @Override
     public int saveProduct(Product product) {
         // 设置商品 ID
@@ -61,7 +64,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     @Override
     public List<Product> getFlashSaleProductList() {
         // 从 Redis 中获取缓存的闪购商品列表
-        List<Product> products = (List<Product>) redisTemplate.opsForValue().get(Constants.FLASH_SALE_PRODUCT_KEY);
+        Object obj = redisTemplate.opsForValue().get(Constants.FLASH_SALE_PRODUCT_KEY);
+        List<Product> products = obj != null ? objectMapper.convertValue(obj, new TypeReference<List<Product>>() {}) : null;
 
         if (products != null) {
             return products;

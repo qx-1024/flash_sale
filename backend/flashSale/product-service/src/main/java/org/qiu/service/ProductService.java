@@ -1,6 +1,5 @@
 package org.qiu.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.qiu.pojo.BuyInfo;
 import org.qiu.pojo.Product;
 import com.baomidou.mybatisplus.extension.service.IService;
