@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
 * @author Qiu
@@ -95,15 +96,28 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
 
     @Override
     public String buy(BuyInfo buyInfo) {
-        // 已支付，可以生成订单
-        if (buyInfo.getPayStatus() == 1) {
-            String orderId = idClient.generateId().toString();
-            buyInfo.setOrderId(orderId);
-
-            rabbitTemplate.convertAndSend(Constants.FLASH_SALE_QUEUE_NAME, buyInfo);
-
-            return orderId;
+        if (buyInfo.getPayStatus() != 1) {
+            return null;
         }
+
+        // 生成订单号
+        String orderId = idClient.generateId().toString();
+        buyInfo.setOrderId(orderId);
+
+        // 使用订单号作为幂等标识
+        String orderKey = "order:" + orderId;
+        if (Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(orderKey, "1", 5, TimeUnit.MINUTES))) {
+            try {
+                rabbitTemplate.convertAndSend(Constants.FLASH_SALE_QUEUE_NAME, buyInfo);
+                return orderId;
+            } catch (Exception e) {
+                log.error("订单处理失败: {}", orderId, e);
+                redisTemplate.delete(orderKey);
+                throw new RuntimeException("订单处理失败");
+            }
+        }
+        
+        log.warn("订单重复提交: {}", orderId);
         return null;
     }
 }
