@@ -67,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         password = SHA256Util.encrypt(password);
         boolean password_correct = user != null && user.getPassword().equals(password);
 
-        if (password_correct) {
+        if (password_correct && user != null) {
             String userId = user.getUserId();
             String token = JWTUtil.createToken(userId);
 

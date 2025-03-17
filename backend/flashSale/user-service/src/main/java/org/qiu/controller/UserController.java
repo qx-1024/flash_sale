@@ -12,12 +12,10 @@ import org.qiu.pojo.UserQuery;
 import org.qiu.result.R;
 import org.qiu.service.UserService;
 import org.qiu.utils.JWTUtil;
-import org.qiu.utils.VerificationUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Description: 用户相关接口

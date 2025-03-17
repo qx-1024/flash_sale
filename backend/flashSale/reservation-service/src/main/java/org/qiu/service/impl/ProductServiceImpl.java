@@ -1,17 +1,10 @@
 package org.qiu.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import jakarta.annotation.Resource;
-import org.qiu.clients.IdClient;
-import org.qiu.constant.Constants;
 import org.qiu.mapper.ProductMapper;
 import org.qiu.pojo.Product;
 import org.qiu.service.ProductService;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
 * @author Qiu
