@@ -87,8 +87,8 @@ public class FlashSaleListener {
             // 4. 保存订单
             orderService.save(order);
 
-            // 5. 标记订单处理完成（设置30分钟过期，足够覆盖MQ的重试时间）
-            redisTemplate.opsForValue().set(orderKey, "1", 30, TimeUnit.MINUTES);
+            // 5. 标记订单处理完成
+            redisTemplate.opsForValue().set(orderKey, "1", 24, TimeUnit.HOURS);
             
             log.info("订单处理成功：{}", buyInfo.getOrderId());
             

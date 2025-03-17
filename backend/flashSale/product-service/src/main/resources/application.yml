@@ -33,9 +33,25 @@ spring:
       simple:
         retry:
           enabled: true
-          initial-interval: 1000ms
-          max-attempts: 3
-          multiplier: 2
+          initial-interval: 500ms
+          max-attempts: 5
+          max-interval: 5000ms
+          multiplier: 1.5
+          stateless: true
+        prefetch: 1
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+      reply-timeout: 2000ms
+    cache:
+      channel:
+        size: 25
+      connection:
+        mode: connection
+        size: 5
+    requested-heartbeat: 5s
+    connection-timeout: 2000ms
 
 mybatis-plus:
   configuration:
