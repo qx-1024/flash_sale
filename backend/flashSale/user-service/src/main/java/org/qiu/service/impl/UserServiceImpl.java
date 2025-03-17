@@ -71,19 +71,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             String userId = user.getUserId();
             String token = JWTUtil.createToken(userId);
 
-            CompletableFuture.runAsync(() -> {
-                ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                try {
+                    ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
+                    // 删除 Redis 中的验证码
+                    redisTemplate.delete(Constants.CAPTCHA_CODE_KEY + code);
+                    // 保存用户 token 到 Redis
+                    valueOps.set(Constants.TOKEN_KEY + userId, token,
+                            Constants.TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
 
-                // 删除 Redis 中的验证码
-                redisTemplate.delete(Constants.CAPTCHA_CODE_KEY + code);
-
-                // 保存用户 token 到 Redis
-                valueOps.set(Constants.TOKEN_KEY + userId, token,
-                        Constants.TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
-
-                // 保存用户 ID 到 Redis，表示用户处于登录状态
-                valueOps.set(Constants.CURRENT_LOGIN_USER + userId, user,
-                        Constants.CURRENT_LOGIN_USER_EXPIRE_TIME, TimeUnit.MINUTES);
+                    // 保存用户 ID 到 Redis，表示用户处于登录状态
+                    valueOps.set(Constants.CURRENT_LOGIN_USER + userId, user,
+                            Constants.CURRENT_LOGIN_USER_EXPIRE_TIME, TimeUnit.MINUTES);
+                } catch (Exception e) {
+                    log.error("登录异步操作失败", e);
+                    // 添加重试机制
+                    // retryOperation(userId, token, code);
+                }
+            }).exceptionally(throwable -> {
+                log.error("登录异步操作异常", throwable);
+                // 发送告警通知
+                // alertService.sendAlert("登录异步操作异常", throwable);
+                return null;
             });
 
             // 返回 token
