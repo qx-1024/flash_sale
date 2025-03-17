@@ -25,6 +25,7 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 
 /**
  * @Description: 身份验证拦截器
@@ -136,8 +137,8 @@ public class AuthenticationFilter implements GlobalFilter {
      */
     private static String getString(ServerHttpRequest request) {
         String uriStr = request.getURI().toString().substring(21);
-        // 如果 uriStr 中有 "?" 则截取第一个 ‘/’ 与 ‘？’ 之间的字符传，
-        // 反之则只截取第一个 ‘/’之后的字符串（不需要包含‘/’）
+        // 如果 uriStr 中有 "?" 则截取第一个 '?' 与 '/' 之间的字符传，
+        // 反之则只截取第一个 '/'之后的字符串（不需要包含'/'）
         int firstSlashIndex = uriStr.indexOf('/');
         int questionMarkIndex = uriStr.indexOf('?');
 
@@ -167,7 +168,10 @@ public class AuthenticationFilter implements GlobalFilter {
                                 ServerHttpResponse response,
                                 String limit,
                                 String expireTime) {
-        String clientIpAddress = request.getRemoteAddress().getAddress().getHostAddress();
+        String clientIpAddress = Optional.ofNullable(request.getRemoteAddress())
+                .map(address -> address.getAddress())
+                .map(inetAddress -> inetAddress.getHostAddress())
+                .orElse("unknown");
         String key = Constants.REQUEST_KEY + clientIpAddress;
 
         // 执行 Lua 脚本来进行请求限制

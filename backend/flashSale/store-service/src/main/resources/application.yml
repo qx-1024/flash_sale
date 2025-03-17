@@ -9,7 +9,7 @@ spring:
       server-addr: 127.0.0.1:8848
 
 minio:
-  endpoint: http://192.168.182.128:9000
+  endpoint: http://192.168.19.128:9000
   accessKey: riIFtW7isF1Y1UuZvgJO
   secretKey: tZOfIZIC7HdBKgLyoYevrftbAMWR3TPsgJfs4zxs
   bucket: flash-sale-image-store

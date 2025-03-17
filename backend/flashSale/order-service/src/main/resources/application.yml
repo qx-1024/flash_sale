@@ -17,13 +17,13 @@ spring:
   # Redis
   data:
     redis:
-      host: 192.168.182.128
+      host: 192.168.19.128
       port: 6379
       password: 123456
       database: 0
   # RabbitMQ
   rabbitmq:
-    host: 192.168.182.128
+    host: 192.168.19.128
     port: 5672
     virtual-host: /
     username: qiu

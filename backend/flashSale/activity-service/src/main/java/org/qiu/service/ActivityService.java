@@ -1,10 +1,8 @@
 package org.qiu.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.base.MPJBaseService;
 import org.qiu.pojo.Activity;
-import com.baomidou.mybatisplus.extension.service.IService;
 import org.qiu.pojo.ActivityQuery;
 
 /**

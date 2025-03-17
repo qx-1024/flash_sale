@@ -2,7 +2,6 @@ package org.qiu.mapper;
 
 import com.github.yulichang.base.MPJBaseMapper;
 import org.qiu.pojo.Activity;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
 * @author Qiu
