@@ -1,11 +1,7 @@
 package org.qiu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.qiu.pojo.BuyInfo;
 import org.qiu.pojo.Product;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 /**
 * @author Qiu

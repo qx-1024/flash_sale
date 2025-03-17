@@ -7,8 +7,6 @@ import org.qiu.pojo.Product;
 import org.qiu.service.ProductService;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 /**
 * @author Qiu
 * @description 针对表【product】的数据库操作Service实现

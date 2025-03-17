@@ -1,7 +1,5 @@
 package org.qiu.task;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.qiu.constant.Constants;
 import org.qiu.pojo.Order;
@@ -11,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**

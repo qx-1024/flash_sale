@@ -3,8 +3,6 @@ package org.qiu.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.qiu.pojo.Product;
 
-import java.math.BigDecimal;
-
 /**
 * @author Qiu
 * @description 针对表【product】的数据库操作Mapper

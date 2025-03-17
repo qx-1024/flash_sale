@@ -109,7 +109,7 @@ public class AuthenticationFilter implements GlobalFilter {
 
 
             // redis 中有 token，比较前端传过来的 token 和 redis 的 token 是否相等
-            if (!token.equals(jwt)) {
+            if (token == null || !token.equals(jwt)) {
                 R result = R.FAIL(CodeEnum.TOKEN_INVALID);
                 // 把 R 对象转为 json
                 String json = JSONUtil.toJSON(result);
