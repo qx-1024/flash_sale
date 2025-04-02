@@ -22,7 +22,7 @@ import java.util.List;
  **/
 @CrossOrigin
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("/api/reservation")
 public class ReservationController {
 
     @Resource

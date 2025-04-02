@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @Version 1.0
  * @Since 1.0
  **/
-@RequestMapping("/store")
+@RequestMapping("/api/store")
 @RestController
 public class StoreController {
 

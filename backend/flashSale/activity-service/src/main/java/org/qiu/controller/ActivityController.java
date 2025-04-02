@@ -23,7 +23,7 @@ import java.util.List;
  **/
 @CrossOrigin
 @RestController
-@RequestMapping("/activity")
+@RequestMapping("/api/activity")
 public class ActivityController {
 
     @Resource

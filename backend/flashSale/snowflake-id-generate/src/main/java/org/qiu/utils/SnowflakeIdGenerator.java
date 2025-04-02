@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SnowflakeIdGenerator {
 
+    
     // The initial timestamp, assumed here is 2024-01-01 00:00:00
     private final long epoch = 1704067200000L;
 

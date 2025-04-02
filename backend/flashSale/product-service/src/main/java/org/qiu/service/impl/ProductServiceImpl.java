@@ -94,6 +94,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
         return products;
     }
 
+    
     @Override
     public String buy(BuyInfo buyInfo) {
         if (buyInfo.getPayStatus() != 1) {

@@ -22,6 +22,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +51,7 @@ public class AuthenticationFilter implements GlobalFilter {
     @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
+    
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -63,7 +66,8 @@ public class AuthenticationFilter implements GlobalFilter {
 
         // 同一个 IP 在一秒内仅有一次请求被接收，其余的请求直接拒绝【非管理员】
         if (token != null && !Constants.ADMIN_ID.equals(JWTUtil.parseToken(token))) {
-            applyRateLimit(request, response, "1", "1"); // 限制每秒1次请求，过期时间为1秒
+            // 限制每秒1次请求，过期时间为1秒
+            applyRateLimit(request, response, "1", "1");
         }
 
         // 对登录、注册、获取验证码、登出以外的请求拦截
@@ -109,7 +113,7 @@ public class AuthenticationFilter implements GlobalFilter {
 
 
             // redis 中有 token，比较前端传过来的 token 和 redis 的 token 是否相等
-            if (token == null || !token.equals(jwt)) {
+            if (!token.equals(jwt)) {
                 R result = R.FAIL(CodeEnum.TOKEN_INVALID);
                 // 把 R 对象转为 json
                 String json = JSONUtil.toJSON(result);
@@ -169,15 +173,15 @@ public class AuthenticationFilter implements GlobalFilter {
                                 String limit,
                                 String expireTime) {
         String clientIpAddress = Optional.ofNullable(request.getRemoteAddress())
-                .map(address -> address.getAddress())
-                .map(inetAddress -> inetAddress.getHostAddress())
+                .map(InetSocketAddress::getAddress)
+                .map(InetAddress::getHostAddress)
                 .orElse("unknown");
         String key = Constants.REQUEST_KEY + clientIpAddress;
 
         // 执行 Lua 脚本来进行请求限制
         Long res = redisTemplate.execute(rateLimitScript, Collections.singletonList(key), limit, expireTime);
 
-        if (res != null && res == 0) {
+        if (res == 0) {
             // 如果超过限制，返回 429 Too Many Requests
             response.setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
             response.setComplete();

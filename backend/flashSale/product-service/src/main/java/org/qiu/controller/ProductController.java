@@ -23,7 +23,7 @@ import java.util.List;
  **/
 @CrossOrigin
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 public class ProductController {
 
     @Resource

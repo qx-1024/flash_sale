@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Description: 预约相关定时任务
@@ -112,7 +113,7 @@ public class DataTask {
             products = ids.stream()
                     .filter(id -> reservationMapper.selectProduct(id) != null)
                     .map(id -> reservationMapper.selectProduct(id))
-                    .toList();
+                    .collect(Collectors.toList());
 
             products.forEach(product -> {
                 redisTemplate.opsForValue().set(

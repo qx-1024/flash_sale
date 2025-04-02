@@ -39,6 +39,7 @@ public class ReservationUserServiceImpl extends MPJBaseServiceImpl<ReservationUs
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+    
     /**
      * 预约
      * @param reservationUser   预约信息【预约活动id、用户id】

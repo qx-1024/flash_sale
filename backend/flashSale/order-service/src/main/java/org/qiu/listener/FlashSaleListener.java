@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;
 
-
 /**
  * @Description: 闪购监听 -- 生成订单【消费者】
  * @Author: QiuXuan

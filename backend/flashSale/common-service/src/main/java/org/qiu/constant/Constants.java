@@ -89,10 +89,10 @@ public class Constants {
 
 
     // ignored uri
-    public static final String USER_LOGIN_URI = "/user/login";
-    public static final String USER_LOGOUT_URI = "/user/logout";
-    public static final String USER_REGISTER_URI = "/user/save";
-    public static final String USER_GET_CAPTCHA_URI = "/user/loginValidateCode";
+    public static final String USER_LOGIN_URI = "/api/user/login";
+    public static final String USER_LOGOUT_URI = "/api/user/logout";
+    public static final String USER_REGISTER_URI = "/api/user/save";
+    public static final String USER_GET_CAPTCHA_URI = "/api/user/loginValidateCode";
 
 
     // admin id

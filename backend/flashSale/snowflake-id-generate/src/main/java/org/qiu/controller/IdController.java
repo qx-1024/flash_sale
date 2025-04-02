@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Since 1.0
  **/
 @RestController
-@RequestMapping("/snowflake")
+@RequestMapping("/api/snowflake")
 public class IdController {
 
     @Resource

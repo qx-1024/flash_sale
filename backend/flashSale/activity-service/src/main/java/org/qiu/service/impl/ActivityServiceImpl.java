@@ -35,6 +35,7 @@ public class ActivityServiceImpl extends MPJBaseServiceImpl<ActivityMapper, Acti
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+    
     /**
      * 新增闪购活动
      * @param activity      闪购活动对象

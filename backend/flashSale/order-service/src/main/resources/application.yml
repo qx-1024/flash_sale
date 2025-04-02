@@ -29,6 +29,9 @@ spring:
     username: qiu
     password: 123456
     listener:
+      # 开启消息持久化
+      direct:
+        acknowledge-mode: manual
       simple:
         # 并发消费者数量配置
         concurrency: 4  # 最小消费者数量
@@ -50,11 +53,6 @@ spring:
     publisher-returns: true
     template:
       mandatory: true
-    # 开启消息持久化
-    listener:
-      direct:
-        acknowledge-mode: manual
-
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

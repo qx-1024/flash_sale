@@ -34,7 +34,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-
     @Override
     public Page<OrderQuery> getByPage(Integer current, int defaultPageSize) {
         Page<Order> page = orderMapper.selectPage(new Page<>(current, defaultPageSize), null);

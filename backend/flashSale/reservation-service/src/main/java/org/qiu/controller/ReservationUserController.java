@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  **/
 @CrossOrigin
 @RestController
-@RequestMapping("/reservation_user")
+@RequestMapping("/api/reservation_user")
 public class ReservationUserController {
 
     @Resource

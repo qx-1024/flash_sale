@@ -21,7 +21,7 @@ import java.util.List;
  * @Version 1.0
  * @Since 1.0
  **/
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 @RestController
 public class OrderController {
 

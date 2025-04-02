@@ -30,28 +30,28 @@ spring:
         - id: snowflake
           uri: lb://snowflake-id-generate
           predicates:
-            - Path=/snowflake/**
+            - Path=/api/snowflake/**
         - id: store
           uri: lb://store-service
           predicates:
-            - Path=/store/**
+            - Path=/api/store/**
         - id: user
           uri: lb://user-service
           predicates:
-            - Path=/user/**
+            - Path=/api/user/**
         - id: product
           uri: lb://product-service
           predicates:
-            - Path=/product/**
+            - Path=/api/product/**
         - id: reservation
           uri: lb://reservation-service
           predicates:
-            - Path=/reservation/**, /reservation_user/**
+            - Path=/api/reservation/**, /api/reservation_user/**
         - id: activity
           uri: lb://activity-service
           predicates:
-            - Path=/activity/**
+            - Path=/api/activity/**
         - id: order
           uri: lb://order-service
           predicates:
-            - Path=/order/**
+            - Path=/api/order/**

@@ -190,6 +190,9 @@ public class ReservationServiceImpl extends MPJBaseServiceImpl<ReservationMapper
         return products;
     }
 
+    /**
+     * 查询正在进行中的预约活动
+     */
     @Override
     public List<OngoingReservation> getOngoingReservations() {
         return reservationMapper.getOngoingReservations();
