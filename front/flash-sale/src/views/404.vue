@@ -375,7 +375,7 @@
       </svg>
     </div>
     <div align="center">
-      <a class="btn-back" href="/login">返回登录页</a>
+      <router-link class="btn-back" to="/login">返回登录页</router-link>
     </div>
   </div>
 </template>

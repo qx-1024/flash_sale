@@ -496,6 +496,7 @@ const initReservationCountByDay = () => {
   padding: 25px;
   margin-left: 5px;
   margin-right: 5px;
+  font-family: "sa-digital-number";
 }
 
 /******************************************** 中间卡片 **************************************/
@@ -558,6 +559,7 @@ ul li:first-of-type > span:first-child {
 /******************************************** 用户数据板 **************************************/
 
 .userBoard .el-card {
+  font-family: "sa-digital-number";
   font-size: 24px;
   height: 125px;
   line-height: 85px;

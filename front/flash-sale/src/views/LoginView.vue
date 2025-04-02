@@ -27,7 +27,7 @@
 
         <el-form-item label="验证码" prop="code">
           <el-input
-            style="width: 180px; margin-right: 5px"
+            style="width: 178px; margin-right: 5px"
             v-model="loginQuery.code"
             placeholder="请填写验证码"
           />
@@ -175,6 +175,7 @@ import { onMounted, onUnmounted, ref, toRefs } from "vue";
 import { doGet, doPost, doPut, getImg } from "../http/httpRequest";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import sha256 from 'crypto-js/sha256';
 import axios from "axios";
 
 import Vertitatioin from "../components/VertitationCode.vue";
@@ -260,13 +261,15 @@ let forgetPassword = ref(false);
 /**
  * @description 加密算法（SHA-256）
  */
-const sha_256_encrypt = async (str) => {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(str);
-  const hash = await crypto.subtle.digest("SHA-256", data);
-  const hexHash = Array.from(new Uint8Array(hash))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+const sha_256_encrypt = (str) => {
+  // const encoder = new TextEncoder();
+  // const data = encoder.encode(str);
+  // const hash = await crypto.subtle.digest("SHA-256", data);
+  // const hexHash = Array.from(new Uint8Array(hash))
+  //   .map((byte) => byte.toString(16).padStart(2, "0"))
+  //   .join("");
+
+  const hexHash = sha256(str).toString();
   return hexHash;
 };
 
@@ -292,28 +295,26 @@ let loginQuery = ref({
 const login = () => {
   form.value.validate((isValid) => {
     if (isValid) {
-      sha_256_encrypt(loginQuery.value.password).then((encryptedPassword) => {
-        doGet("/user/login", {
-          account: loginQuery.value.account,
-          password: encryptedPassword,
-          code: loginQuery.value.code,
-        }).then((resp) => {
-          loginQuery.value = {};
-          if (resp.data.code === 200) {
-            // 将后端返回的 token 存储到 localStorage 中
-            localStorage.setItem("token", resp.data.data);
-            ElMessage({
-              message: "登录成功",
-              type: "success",
-            });
-            // 跳转到首页
-            router.push("/home");
-          } else {
-            ElMessage.error("登录失败");
-            // 刷新页面
-            window.location.reload();
-          }
-        });
+      doGet("/user/login", {
+        account: loginQuery.value.account,
+        password: sha_256_encrypt(loginQuery.value.password),
+        code: loginQuery.value.code,
+      }).then((resp) => {
+        loginQuery.value = {};
+        if (resp.data.code === 200) {
+          // 将后端返回的 token 存储到 localStorage 中
+          localStorage.setItem("token", resp.data.data);
+          ElMessage({
+            message: "登录成功",
+            type: "success",
+          });
+          // 跳转到首页
+          router.push("/home");
+        } else {
+          ElMessage.error("登录失败");
+          // 刷新页面
+          window.location.reload();
+        }
       });
     }
   });

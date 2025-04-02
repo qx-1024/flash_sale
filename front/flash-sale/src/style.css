@@ -55,7 +55,23 @@
   --flash-gradient-green-2-white-bottom-right: linear-gradient(to bottom right, #f3fbf4, #fff);
 }
 
+/* 数字字体 */
+@font-face {
+  font-family: 'sa-digital-number';
+  src: url('./assets/fonts/sa-digital-number.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'VictorMonoNerdFont-Bold';
+  src: url('./assets/fonts/VictorMonoNerdFont-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'VictorMonoNerdFont-Light';
+  src: url('./assets/fonts/VictorMonoNerdFont-Light.ttf') format('truetype');
+}
+
 body{
   margin: 0;
-  padding: 0; 
+  padding: 0;
 }

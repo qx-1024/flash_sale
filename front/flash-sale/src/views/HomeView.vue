@@ -373,12 +373,14 @@ const logout = () => {
 }
 
 .ranking-sale {
+  font-family: "sa-digital-number";
   font-weight: bold;
   font-size: 36px;
   color: var(--flash-red-lighter-2);
 }
 
 .ranking-price-box {
+  font-family: "sa-digital-number";
   line-height: 25px;
   height: 25px;
   color: var(--flash-black-lighter-2);

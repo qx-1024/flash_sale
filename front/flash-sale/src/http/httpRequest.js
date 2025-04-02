@@ -3,7 +3,8 @@ import axios from "axios";
 import { ElMessage } from 'element-plus'
 import router from '../router/router'
 
-axios.defaults.baseURL = "http://localhost:8000";
+// 根据环境使用不同的 baseURL
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export function doGet(url, params) {
     return axios({
@@ -76,6 +77,12 @@ export function doDelete(url, params) {
  */
 axios.interceptors.request.use(
     function (config) {
+        if (!config.url.startsWith('/api')) {
+            config.url = '/api' + config.url;
+        }
+
+        console.log(config.url);
+
         let token = window.localStorage.getItem("token")
         if (token) {
             config.headers['Authorization'] = token
