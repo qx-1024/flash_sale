@@ -263,26 +263,26 @@ const getCurrentUser = () => {
  * 轮播图数组
  */
 const swiperList = ref([
-  // {
-  //   id: 1,
-  //   img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240731104517508_76867824546881536.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240731%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240731T024517Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=358fefb261533524fe122d1e72470b2bab22fa781ac935949d3079b75414a6ab",
-  // },
-  // {
-  //   id: 2,
-  //   img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240731104605395_76868025403711488.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240731%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240731T024605Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=3e95305ac3ad1351fb1c3eafdafe124ef447b71d9fbc29858c5fc3d636259fca",
-  // },
-  // {
-  //   id: 3,
-  //   img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240731104640084_76868170899922944.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240731%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240731T024640Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=6e3999dcbcaa3947bb980f4e2f62a9c6d4fa0aeee5c49ed369d1ec63954d4303",
-  // },
-  // {
-  //   id: 4,
-  //   img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240731104701797_76868261970845696.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240731%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240731T024701Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1d82bc2d7d28664b25c9f1d7ba7218264ea63868c28d996b8d3ddddf1a0ace9a",
-  // },
-  // {
-  //   id: 5,
-  //   img: "http://192.168.182.128:9000/flash-sale-image-store/swiper_20240731104723125_76868351389212672.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20240731%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240731T024723Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=d07631e5163ab26c6b4ef2e1e345c8e6989f2b346752c2b99ac51d3830b71837",
-  // },
+  {
+    id: 1,
+    img: "http://192.168.19.128:9000/flash-sale-image-store/swiper_20250522210850317_183929165429743616.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20250522%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250522T130850Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=f5f79eb82005fd8867f30cb332348fcd4a2169951d4ad5cfb3a78de65728b841",
+  },
+  {
+    id: 2,
+    img: "http://192.168.19.128:9000/flash-sale-image-store/swiper_20250522210920069_183929290281590784.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20250522%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250522T130920Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=77e44c58b273ac6a9429aab456a75749b79f1d58c1bc17a422cec6168892bb03",
+  },
+  {
+    id: 3,
+    img: "http://192.168.19.128:9000/flash-sale-image-store/swiper_20250522210942904_183929386041745408.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20250522%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250522T130942Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=ec3a0c5487cc667221d58619ee1e024fc2e697e4e2e49501c41d554c82590230",
+  },
+  {
+    id: 4,
+    img: "http://192.168.19.128:9000/flash-sale-image-store/swiper_20250522211006435_183929484846964736.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20250522%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250522T131006Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=92eafa7746bfaedbebd707d9ea36f27bb90dc77bd32743bb12368ccabb6dffd4",
+  },
+  {
+    id: 5,
+    img: "http://192.168.19.128:9000/flash-sale-image-store/swiper_20250522211027053_183929571329318912.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=riIFtW7isF1Y1UuZvgJO%2F20250522%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250522T131027Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=5b9dbb42c32ca9ad23d8e0fa351203dec8d6c2e712cd2c1bc40c457cd0f1cf98",
+  },
 ]);
 
 /********************************************* 登 录 *********************************************/

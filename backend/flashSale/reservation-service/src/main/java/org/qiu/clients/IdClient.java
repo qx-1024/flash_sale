@@ -14,6 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
  **/
 @FeignClient("snowflake-id-generate")
 public interface IdClient {
-    @GetMapping("/snowflake/generateId")
+    @GetMapping("/api/snowflake/generateId")
     Long generateId();
 }

@@ -159,11 +159,8 @@ public class StoreServiceImpl implements StoreService {
     /**
      * 根据文件大小进行压缩【Thumbnailator】
      */
-    public InputStream compressImageByThumbnails(InputStream inputStream,
-                                                 Long size,
-                                                 String format) throws IOException {
+    public InputStream compressImageByThumbnails(InputStream inputStream, Long size, String format) throws IOException {
         double quality = 1.0;
-
         // 根据不同的图片大小选择压缩质量
         if (size < SIZE_1) {
             quality = QUALITY_5;
@@ -174,8 +171,6 @@ public class StoreServiceImpl implements StoreService {
         } else if (size < SIZE_10) {
             quality = QUALITY_1;
         }
-
-
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             // 使用 Thumbnails 库进行图片压缩
@@ -184,7 +179,6 @@ public class StoreServiceImpl implements StoreService {
                     .outputQuality(quality)
                     .outputFormat(format)
                     .toOutputStream(outputStream);
-
             // 将压缩后的结果转换为 InputStream
             return new ByteArrayInputStream(outputStream.toByteArray());
         } finally {
